@@ -5,10 +5,6 @@ namespace PersistenceLayer.DbContexts
 {
     public class AnswerFlowContext : DbContext
     {
-        public AnswerFlowContext()
-        {
-
-        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

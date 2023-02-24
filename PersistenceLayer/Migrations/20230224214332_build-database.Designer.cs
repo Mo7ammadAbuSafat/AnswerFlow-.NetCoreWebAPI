@@ -12,8 +12,8 @@ using PersistenceLayer.DbContexts;
 namespace PersistenceLayer.Migrations
 {
     [DbContext(typeof(AnswerFlowContext))]
-    [Migration("20230224210047_buildDatabase")]
-    partial class buildDatabase
+    [Migration("20230224214332_build-database")]
+    partial class builddatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
