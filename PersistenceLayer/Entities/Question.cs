@@ -18,5 +18,6 @@ namespace PersistenceLayer.Entities
         public DateTime? ClosedDate { get; set; }
         public DateTime? LastEditDate { get; set; }
         public ICollection<QuestionHistory>? QuestionHistory { get; set; }
+        public ICollection<User> UsersWhoSaveThisQuestion { get; set; }
     }
 }

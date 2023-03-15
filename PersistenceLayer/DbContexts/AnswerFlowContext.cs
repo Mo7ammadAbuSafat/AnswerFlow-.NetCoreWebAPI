@@ -13,12 +13,21 @@ namespace PersistenceLayer.DbContexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             modelBuilder.Entity<User>()
                      .HasMany(t => t.FollowingUsers)
                      .WithMany(t => t.FollowerUsers)
                      .UsingEntity(j => j.ToTable("Following"));
 
+            modelBuilder.Entity<User>()
+                     .HasMany<Question>(u => u.SavedQuestions)
+                     .WithMany(q => q.UsersWhoSaveThisQuestion)
+                     .UsingEntity(n => n.ToTable("SavedQuestions"));
+
+            modelBuilder.Entity<Question>()
+                    .HasOne<User>(s => s.User)
+                    .WithMany(g => g.Questions)
+                    .HasForeignKey(s => s.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
         }
 
         public DbSet<User> Users { get; set; }

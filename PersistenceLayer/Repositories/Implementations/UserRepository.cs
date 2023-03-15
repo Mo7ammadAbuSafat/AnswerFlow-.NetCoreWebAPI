@@ -39,5 +39,49 @@ namespace PresentationLayer.Repositories.Implementations
                 .Where(c => c.Id == userId)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<IEnumerable<User>?> GetFollowingUsersForUserById(int userId)
+        {
+            var user = await context.Users
+                 .Where(c => c.Id == userId)
+                 .Include(u => u.FollowingUsers)
+                 .FirstOrDefaultAsync();
+            return user?.FollowingUsers;
+        }
+
+        public async Task<IEnumerable<User>> GetFollowerUsersForUserById(int userId)
+        {
+            return (IEnumerable<User>)await context.Users
+                .Where(c => c.Id == userId)
+                .Include(u => u.FollowerUsers)
+                .Select(c => c.FollowerUsers)
+                .ToListAsync();
+        }
+
+        public bool CheckIfEmailExists(string email)
+        {
+            return context.Users.Any(u => u.Email == email);
+        }
+
+        public async Task<User?> GetUserByEmail(string email)
+        {
+            return await context.Users.Where(u => u.Email == email).SingleOrDefaultAsync();
+        }
+
+        public User? GetUserByVerifyToken(string token)
+        {
+            return context.Users.Where(u => u.VerificationToken == token).SingleOrDefault();
+        }
+
+        public async Task<IEnumerable<Tag>?> GetFollowingTagsForUserById(int userId)
+        {
+            var user = await context.Users
+                 .Where(c => c.Id == userId)
+                 .Include(u => u.Tags)
+                 .FirstOrDefaultAsync();
+            return user?.Tags;
+        }
+
+
     }
 }

@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using BusinessLayer.DTOs.outgoing;
+using BusinessLayer.DTOs.UserDtos;
 using PersistenceLayer.Entities;
 
-namespace AnswerFlow.API.Porfiles
+namespace BusinessLayer.Profiles
 {
     public class UserProfile : Profile
     {
         public UserProfile()
         {
-            CreateMap<User, UserOverviewDto>();
+            CreateMap<User, UserOverviewResponseDto>();
         }
     }
 }

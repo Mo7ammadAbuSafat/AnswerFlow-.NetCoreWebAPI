@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
-using BusinessLayer.DTOs.outgoing;
+using BusinessLayer.DTOs.TagDtos;
 using PersistenceLayer.Entities;
 
-namespace AnswerFlow.API.Porfiles
+namespace BusinessLayer.Profiles
 {
     public class TagProfile : Profile
     {
         public TagProfile()
         {
-            CreateMap<Tag, TagDto>();
+            CreateMap<Tag, TagResponseDto>();
+            CreateMap<TagRequestDto, Tag>();
         }
     }
 }
