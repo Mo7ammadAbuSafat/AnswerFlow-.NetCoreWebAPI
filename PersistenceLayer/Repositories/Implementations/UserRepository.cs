@@ -68,11 +68,6 @@ namespace PresentationLayer.Repositories.Implementations
             return await context.Users.Where(u => u.Email == email).SingleOrDefaultAsync();
         }
 
-        public User? GetUserByVerifyToken(string token)
-        {
-            return context.Users.Where(u => u.VerificationToken == token).SingleOrDefault();
-        }
-
         public async Task<IEnumerable<Tag>?> GetFollowingTagsForUserById(int userId)
         {
             var user = await context.Users

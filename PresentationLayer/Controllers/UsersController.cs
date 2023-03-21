@@ -18,36 +18,61 @@ namespace PresentationLayer.Controllers
         [HttpPost("registration")]
         public async Task<IActionResult> RegisterUser(UserRegistrationRequestDto userRegistration)
         {
-            bool success = await userServices.RegisterUserAsync(userRegistration);
-            if (!success)
-            {
-                return BadRequest("SomeThingWrong");
-
-            }
-            return Ok("Succesful Registraion");
+            var user = await userServices.RegisterUserAsync(userRegistration);
+            return Ok(user);
         }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> LoginUser(UserLoginRequestDto userLogin)
         {
-            bool success = await userServices.LoginUserAsync(userLogin);
-            if (!success)
-            {
-                return BadRequest("SomeThingWrong");
-            }
-            return Ok("Succesful Login");
+            var user = await userServices.LoginUserAsync(userLogin);
+            return Ok(user);
         }
 
-        [HttpPost("verifying-email")]
-        public async Task<IActionResult> VerifyUserEmail(string token)
+
+        [HttpPost("{userId}/verifying-email")]
+        public async Task<IActionResult> VerifyUserEmail([FromRoute] int userId, [FromQuery] string code)
+
         {
-            bool success = await userServices.VerifyEmailAsync(token);
-            if (!success)
-            {
-                return BadRequest("SomeThingWrong");
-            }
-            return Ok("Successful verified");
+            var user = await userServices.VerifyEmailAsync(userId, code);
+            return Ok(user);
         }
+
+
+        [HttpPost("{userId}/verification-email-code")]
+        public async Task<IActionResult> ResendEmailVerificationCode([FromRoute] int userId)
+
+        {
+            await userServices.ResendVerificationCodeAsync(userId);
+            return Ok("success");
+        }
+
+
+        [HttpPost("reset-password-code")]
+        public async Task<IActionResult> SendResetPasswordCode([FromQuery] string email)
+
+        {
+            var user = await userServices.SendResetPasswordCodeAsync(email);
+            return Ok(user);
+        }
+
+
+        [HttpPost("{userId}/resend-reset-password-code")]
+        public async Task<IActionResult> ResendResetPasswordCode([FromRoute] int userId)
+        {
+            await userServices.ResendResetPasswordCodeAsync(userId);
+            return Ok("success");
+        }
+
+
+        [HttpPut("{userId}/reset-password")]
+        public async Task<IActionResult> ResetPasswordByCodeSendedToEmail(int userId, [FromBody] ResetPasswordWithCodeRequestDto resetPasswordWithCodeRequestDto)
+        {
+            await userServices.ResetPasswordByCodeSendedToEmailAsync(userId, resetPasswordWithCodeRequestDto);
+            return Ok("success");
+        }
+
 
         [HttpPost("{userId}/following-users/{followedUserId}")]
         public async Task<IActionResult> FollowUser(int userId, int followedUserId)
@@ -56,12 +81,14 @@ namespace PresentationLayer.Controllers
             return Ok("successful");
         }
 
+
         [HttpDelete("{userId}/following-users/{followedUserId}")]
         public async Task<IActionResult> UnfollowUser(int userId, int followedUserId)
         {
             await userServices.UnfollowUserAsync(userId, followedUserId);
             return Ok("successful");
         }
+
 
         [HttpGet("{userId}/following-users")]
         public async Task<IActionResult> GetFollowingUsersForUserById(int userId)
@@ -70,6 +97,7 @@ namespace PresentationLayer.Controllers
             return Ok(users);
         }
 
+
         [HttpPost("{userId}/following-tags/{tagId}")]
         public async Task<IActionResult> FollowTag(int userId, int tagId)
         {
@@ -77,12 +105,14 @@ namespace PresentationLayer.Controllers
             return Ok("successful");
         }
 
+
         [HttpDelete("{userId}/following-tags/{tagId}")]
         public async Task<IActionResult> unfollowTag(int userId, int tagId)
         {
             await userServices.UnfollowTagAsync(userId, tagId);
             return Ok("successful");
         }
+
 
         [HttpGet("{userId}/following-tags")]
         public async Task<IActionResult> GetFollowingTagsForUserById(int userId)

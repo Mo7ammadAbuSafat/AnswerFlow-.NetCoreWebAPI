@@ -10,8 +10,10 @@ namespace PersistenceLayer.Entities
         public string Email { get; set; }
         public byte[] PasswordHash { get; set; } = new byte[32];
         public byte[] PasswordSalt { get; set; } = new byte[32];
-        public string? VerificationToken { get; set; }
+        public string? VerificationCode { get; set; }
         public DateTime? VerifiedDate { get; set; }
+        public string? ResetPasswordCode { get; set; }
+        public DateTime? ResetPasswordCodeExpiresDate { get; set; }
         public string About { get; set; } = string.Empty;
         public DateTime CreationDate { get; set; }
         public int? ImageId { get; set; }

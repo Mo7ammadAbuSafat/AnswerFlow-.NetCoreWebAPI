@@ -5,9 +5,13 @@ namespace BusinessLayer.Services.Interfaces
 {
     public interface IUserServices
     {
-        Task<bool> RegisterUserAsync(UserRegistrationRequestDto userRegistration);
-        Task<bool> LoginUserAsync(UserLoginRequestDto userLogin);
-        Task<bool> VerifyEmailAsync(string token);
+        Task<UserOverviewResponseDto> RegisterUserAsync(UserRegistrationRequestDto userRegistration);
+        Task<UserOverviewResponseDto> LoginUserAsync(UserLoginRequestDto userLogin);
+        Task<UserOverviewResponseDto> VerifyEmailAsync(int userId, string code);
+        Task ResendVerificationCodeAsync(int userId);
+        Task<UserOverviewResponseDto> SendResetPasswordCodeAsync(string email);
+        Task ResendResetPasswordCodeAsync(int userId);
+        Task ResetPasswordByCodeSendedToEmailAsync(int userId, ResetPasswordWithCodeRequestDto resetPasswordDto);
         Task FollowUserAsync(int userId, int followedUserId);
         Task<IEnumerable<UserOverviewResponseDto>> GetFollowingUsersForUserByIdAsync(int userId);
         Task UnfollowUserAsync(int userId, int followedUserId);

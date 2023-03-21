@@ -6,14 +6,13 @@ namespace PersistenceLayer.Repositories.Interfaces
     {
         Task AddAsync(User user);
         void Delete(User user);
-        Task<IEnumerable<User>> GetFollowerUsersForUserById(int userId);
-        Task<IEnumerable<User>?> GetFollowingUsersForUserById(int userId);
         Task<User?> GetUserById(int userId);
         Task<int> SaveChangesAsync();
         void Update(User user);
+        Task<IEnumerable<User>> GetFollowerUsersForUserById(int userId);
+        Task<IEnumerable<User>?> GetFollowingUsersForUserById(int userId);
         bool CheckIfEmailExists(string email);
         Task<User?> GetUserByEmail(string email);
-        User? GetUserByVerifyToken(string token);
         Task<IEnumerable<Tag>?> GetFollowingTagsForUserById(int userId);
 
     }

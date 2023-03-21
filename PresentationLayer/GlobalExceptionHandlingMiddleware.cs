@@ -21,7 +21,6 @@ namespace PresentationLayer
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             HttpStatusCode statusCode;
-            var trackTrace = exception.StackTrace;
             string massege = exception.Message;
 
             var exceptionType = exception.GetType();
@@ -39,7 +38,7 @@ namespace PresentationLayer
                 statusCode = HttpStatusCode.InternalServerError;
             }
 
-            var exceptionResult = JsonSerializer.Serialize(new { error = massege, trackTrace });
+            var exceptionResult = JsonSerializer.Serialize(new { error = massege });
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)statusCode;
 

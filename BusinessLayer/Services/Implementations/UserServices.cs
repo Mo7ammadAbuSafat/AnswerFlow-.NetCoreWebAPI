@@ -25,11 +25,12 @@ namespace BusinessLayer.Services.Implementations
             this.tagRepository = tagRepository;
         }
 
-        public async Task<bool> RegisterUserAsync(UserRegistrationRequestDto userRegistration)
+        public async Task<UserOverviewResponseDto> RegisterUserAsync(UserRegistrationRequestDto userRegistration)
         {
+
             if (userRepository.CheckIfEmailExists(userRegistration.Email))
             {
-                throw new BadRequestException($"this email {userRegistration.Email} is already exist");
+                throw new BadRequestException($"this email is already exist");
             }
 
             CreatePasswordHash(userRegistration.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -41,20 +42,20 @@ namespace BusinessLayer.Services.Implementations
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 CreationDate = DateTime.Now,
-                VerificationToken = CreateRandomToken()
+                VerificationCode = CreateRandomCode()
             };
-            SendEmailWithVerificationToken(user.Email, user.VerificationToken);
+            SendEmailWithCode(user.Email, "Verification Account", user.VerificationCode);
             await userRepository.AddAsync(user);
             await userRepository.SaveChangesAsync();
-            return true;
+            return mapper.Map<UserOverviewResponseDto>(user);
         }
 
-        public async Task<bool> LoginUserAsync(UserLoginRequestDto userLogin)
+        public async Task<UserOverviewResponseDto> LoginUserAsync(UserLoginRequestDto userLogin)
         {
             var user = await userRepository.GetUserByEmail(userLogin.Email);
             if (user == null)
             {
-                throw new BadRequestException($"this email {userLogin.Email} is not exist");
+                throw new BadRequestException("this email is not exist");
             }
 
             if (!VerifyPassword(userLogin.Password, user.PasswordHash, user.PasswordSalt))
@@ -66,31 +67,100 @@ namespace BusinessLayer.Services.Implementations
             {
                 throw new BadRequestException($"You must Verify your email");
             }
-            return true;
+            return mapper.Map<UserOverviewResponseDto>(user);
         }
 
-        public async Task<bool> VerifyEmailAsync(string token)
+        public async Task<UserOverviewResponseDto> VerifyEmailAsync(int userId, string code)
         {
-            var user = userRepository.GetUserByVerifyToken(token);
+            var user = await userRepository.GetUserById(userId);
             if (user == null)
             {
-                throw new BadRequestException("Verify token is not valid");
+                throw new BadRequestException("No user with this id");
+            }
+            if (code != user.VerificationCode)
+            {
+                throw new BadRequestException("Invalid code");
             }
             user.VerifiedDate = DateTime.Now;
             await userRepository.SaveChangesAsync();
-
-            return true;
+            return mapper.Map<UserOverviewResponseDto>(user);
         }
 
-        private static void SendEmailWithVerificationToken(string email, string token)
+        public async Task ResendVerificationCodeAsync(int userId)
+        {
+            var user = await userRepository.GetUserById(userId);
+            if (user == null)
+            {
+                throw new BadRequestException("No user with this id");
+            }
+            if (user.VerificationCode == null)
+            {
+                user.VerificationCode = CreateRandomCode();
+                await userRepository.SaveChangesAsync();
+            }
+            SendEmailWithCode(user.Email, "Verification Account", user.VerificationCode);
+        }
+
+        public async Task<UserOverviewResponseDto> SendResetPasswordCodeAsync(string email)
+        {
+            var user = await userRepository.GetUserByEmail(email);
+            if (user == null)
+            {
+                throw new BadRequestException("This email is not exist");
+            }
+            user.ResetPasswordCode = CreateRandomCode();
+            user.ResetPasswordCodeExpiresDate = DateTime.Now.AddDays(1);
+            await userRepository.SaveChangesAsync();
+            SendEmailWithCode(email, "Reset Password", user.ResetPasswordCode);
+            return mapper.Map<UserOverviewResponseDto>(user);
+        }
+
+        public async Task ResendResetPasswordCodeAsync(int userId)
+        {
+            var user = await userRepository.GetUserById(userId);
+            if (user == null)
+            {
+                throw new BadRequestException("No user with this id");
+            }
+            user.ResetPasswordCode = CreateRandomCode();
+            user.ResetPasswordCodeExpiresDate = DateTime.Now.AddDays(1);
+            await userRepository.SaveChangesAsync();
+            SendEmailWithCode(user.Email, "Reset Password", user.ResetPasswordCode);
+        }
+
+        public async Task ResetPasswordByCodeSendedToEmailAsync(int userId, ResetPasswordWithCodeRequestDto resetPasswordDto)
+        {
+            var user = await userRepository.GetUserById(userId);
+            if (user == null)
+            {
+                throw new BadRequestException("No user with this id");
+            }
+            if (user.ResetPasswordCode != resetPasswordDto.Code)
+            {
+                throw new BadRequestException("Invalid Code");
+            }
+            if (user.ResetPasswordCodeExpiresDate < DateTime.Now)
+            {
+                await ResendResetPasswordCodeAsync(user.Id);
+                throw new BadRequestException("Expired Code, we sent another one");
+            }
+
+            CreatePasswordHash(resetPasswordDto.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+            user.ResetPasswordCode = null;
+            await userRepository.SaveChangesAsync();
+        }
+
+        private static void SendEmailWithCode(string email, string subject, string code)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("answer flow", "answerflowverification@outlook.com"));
+            message.From.Add(new MailboxAddress("AnswerFlow Team", "answerflowverification@outlook.com"));
             message.To.Add(new MailboxAddress("user", email));
-            message.Subject = "Verification Account";
+            message.Subject = subject;
             message.Body = new TextPart("plain")
             {
-                Text = $"this is the verification token : {token} , copy it and send it"
+                Text = $"{subject} code : {code} , copy it and send it"
 
             };
 
@@ -122,9 +192,11 @@ namespace BusinessLayer.Services.Implementations
             }
         }
 
-        private static string CreateRandomToken()
+        private static string CreateRandomCode()
         {
-            return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
+            Random rnd = new();
+            int num = rnd.Next();
+            return num.ToString();
         }
 
         public async Task FollowUserAsync(int userId, int followedUserId)

@@ -17,6 +17,6 @@ namespace BusinessLayer.DTOs.UserDtos
 
         [Required]
         [Compare("Password")]
-        public string PasswordConfirmed { get; set; }
+        public string ConfirmPassword { get; set; }
     }
 }
