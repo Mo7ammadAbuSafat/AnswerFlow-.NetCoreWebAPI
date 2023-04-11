@@ -34,18 +34,39 @@ namespace PersistenceLayer.Repositories.Implementations
             return await context.SaveChangesAsync();
         }
 
-        public async Task<Tag?> GetTagByIdAsync(int tagId)
+        public async Task<IEnumerable<Tag>> GetAllTagsAsync()
+        {
+            return await context.Tags.OrderBy(t => t.Name).ToListAsync();
+        }
+
+        public async Task<Tag> GetTagByIdAsync(int tagId)
         {
             return await context.Tags
                 .Where(c => c.Id == tagId)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Tag?> GetTagByNameAsync(string tagName)
+        public async Task<Tag> GetTagByNameAsync(string tagName)
         {
             return await context.Tags
                 .Where(c => c.Name == tagName)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<IEnumerable<Tag>> GetTagsByIdsAsync(IEnumerable<int> tagsIds)
+        {
+            return await context.Tags
+                .Where(c => tagsIds.Contains(c.Id))
+                .ToListAsync();
+        }
+
+        public async Task<List<Tag>> GetTagsByNamesAsync(IEnumerable<string> tagsNames)
+        {
+            return await context.Tags
+                .Where(c => tagsNames.Contains(c.Name))
+                .ToListAsync();
+        }
+
+
     }
 }

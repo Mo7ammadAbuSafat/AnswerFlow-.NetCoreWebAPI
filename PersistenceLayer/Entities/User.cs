@@ -18,16 +18,16 @@ namespace PersistenceLayer.Entities
         public DateTime CreationDate { get; set; }
         public int? ImageId { get; set; }
         public Image? Image { get; set; }
-        public ICollection<User> FollowingUsers { get; set; }
-        public ICollection<User> FollowerUsers { get; set; }
-        public ICollection<Question> Questions { get; set; }
-        public ICollection<Question> SavedQuestions { get; set; }
-        public ICollection<QuestionVote> QuestionVotes { get; set; }
-        public ICollection<AnswerVote> AnswerVotes { get; set; }
-        public ICollection<Replay> Replays { get; set; }
-        public ICollection<Answer> Answers { get; set; }
-        public ICollection<QuestionReport> QuestionReports { get; set; }
-        public ICollection<AnswerReport> AnswerReports { get; set; }
-        public ICollection<Tag> Tags { get; set; }
+        public ICollection<User> FollowingUsers { get; set; } = new List<User>();
+        public ICollection<User> FollowerUsers { get; set; } = new List<User>();
+        public ICollection<Question> Questions { get; set; } = new List<Question>();
+        public ICollection<SavedQuestion> SavedQuestions { get; set; } = new List<SavedQuestion>();
+        public ICollection<QuestionVote> QuestionVotes { get; set; } = new List<QuestionVote>();
+        public ICollection<AnswerVote> AnswerVotes { get; set; } = new List<AnswerVote>();
+        public ICollection<Replay> Replays { get; set; } = new List<Replay>();
+        public ICollection<Answer> Answers { get; set; } = new List<Answer>();
+        public ICollection<QuestionReport> QuestionReports { get; set; } = new List<QuestionReport>();
+        public ICollection<AnswerReport> AnswerReports { get; set; } = new List<AnswerReport>();
+        public ICollection<Tag> Tags { get; set; } = new List<Tag>();
     }
 }

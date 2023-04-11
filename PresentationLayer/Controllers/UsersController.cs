@@ -66,11 +66,34 @@ namespace PresentationLayer.Controllers
         }
 
 
-        [HttpPut("{userId}/reset-password")]
-        public async Task<IActionResult> ResetPasswordByCodeSendedToEmail(int userId, [FromBody] ResetPasswordWithCodeRequestDto resetPasswordWithCodeRequestDto)
+        [HttpPut("{userId}/reset-password-by-code")]
+        public async Task<IActionResult> ResetPasswordByCodeSendedToEmail([FromRoute] int userId, [FromBody] ResetPasswordWithCodeRequestDto resetPasswordDto)
         {
-            await userServices.ResetPasswordByCodeSendedToEmailAsync(userId, resetPasswordWithCodeRequestDto);
+            await userServices.ResetPasswordByCodeSendedToEmailAsync(userId, resetPasswordDto);
             return Ok("success");
+        }
+
+
+        [HttpPut("{userId}/reset-password-by-old-password")]
+        public async Task<IActionResult> ResetPasswordByOldPassword([FromRoute] int userId, [FromBody] ResetPasswordWithOldPasswordRequestDto resetPasswordDto)
+        {
+            await userServices.ResetPasswordByOldPasswordAsync(userId, resetPasswordDto);
+            return Ok("success");
+        }
+
+
+        [HttpPut("{userId}/user-information")]
+        public async Task<IActionResult> UpdateUserInformation([FromRoute] int userId, [FromBody] UserInformationToUpdateRequestDto userInformationDto)
+        {
+            var user = await userServices.UpdateUserInformationAsync(userId, userInformationDto);
+            return Ok(user);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
+        {
+            var user = await userServices.GetUserByEmailAsync(email);
+            return Ok(user);
         }
 
 

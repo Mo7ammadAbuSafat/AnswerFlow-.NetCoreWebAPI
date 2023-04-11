@@ -34,10 +34,12 @@ namespace PersistenceLayer.Repositories.Implementations
             return await context.SaveChangesAsync();
         }
 
-        public async Task<Answer?> GetAnswerByIdAsync(int answerId)
+        public async Task<Answer> GetAnswerByIdAsync(int answerId)
         {
             return await context.Answers
                 .Where(c => c.Id == answerId)
+                .Include(a => a.Votes)
+                .ThenInclude(v => v.User)
                 .FirstOrDefaultAsync();
         }
     }

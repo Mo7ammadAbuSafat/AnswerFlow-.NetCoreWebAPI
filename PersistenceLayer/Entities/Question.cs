@@ -10,14 +10,14 @@ namespace PersistenceLayer.Entities
         public string Title { get; set; }
         public string Body { get; set; }
         public DateTime CreationDate { get; set; }
-        public ICollection<Tag> Tags { get; set; }
-        public ICollection<Image>? Imeges { get; set; }
-        public ICollection<Answer> Answers { get; set; }
-        public ICollection<QuestionVote> Votes { get; set; }
+        public ICollection<Tag> Tags { get; set; } = new List<Tag>();
+        public ICollection<Image> Imeges { get; set; } = new List<Image>();
+        public ICollection<Answer> Answers { get; set; } = new List<Answer>();
+        public ICollection<QuestionVote> Votes { get; set; } = new List<QuestionVote>();
         public QuestionStatus Status { get; set; }
         public DateTime? ClosedDate { get; set; }
         public DateTime? LastEditDate { get; set; }
-        public ICollection<QuestionHistory>? QuestionHistory { get; set; }
-        public ICollection<User> UsersWhoSaveThisQuestion { get; set; }
+        public ICollection<QuestionHistory>? QuestionHistory { get; set; } = new List<QuestionHistory>();
+        public ICollection<SavedQuestion> QuestionSavers { get; set; } = new List<SavedQuestion>();
     }
 }

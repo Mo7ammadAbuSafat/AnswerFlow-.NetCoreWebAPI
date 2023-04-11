@@ -13,15 +13,14 @@ namespace PersistenceLayer.DbContexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Question>()
+                    .HasMany(t => t.Tags)
+                    .WithMany(t => t.Questions);
+
             modelBuilder.Entity<User>()
                      .HasMany(t => t.FollowingUsers)
                      .WithMany(t => t.FollowerUsers)
                      .UsingEntity(j => j.ToTable("Following"));
-
-            modelBuilder.Entity<User>()
-                     .HasMany<Question>(u => u.SavedQuestions)
-                     .WithMany(q => q.UsersWhoSaveThisQuestion)
-                     .UsingEntity(n => n.ToTable("SavedQuestions"));
 
             modelBuilder.Entity<Question>()
                     .HasOne<User>(s => s.User)
@@ -32,6 +31,7 @@ namespace PersistenceLayer.DbContexts
 
         public DbSet<User> Users { get; set; }
         public DbSet<Question> Questions { get; set; }
+        public DbSet<SavedQuestion> SavedQuestions { get; set; }
         public DbSet<QuestionVote> QuestionVotes { get; set; }
         public DbSet<QuestionReport> QuestionReports { get; set; }
         public DbSet<QuestionHistory> QuestionHistories { get; set; }

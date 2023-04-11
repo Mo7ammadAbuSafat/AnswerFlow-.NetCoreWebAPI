@@ -6,6 +6,12 @@ namespace PresentationLayer
 {
     public class GlobalExceptionHandlingMiddleware : IMiddleware
     {
+        public readonly ILogger<GlobalExceptionHandlingMiddleware> Logger;
+
+        public GlobalExceptionHandlingMiddleware(ILogger<GlobalExceptionHandlingMiddleware> Logger)
+        {
+            this.Logger = Logger;
+        }
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             try
@@ -20,6 +26,7 @@ namespace PresentationLayer
 
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            Logger.LogError(exception, exception.Message);
             HttpStatusCode statusCode;
             string massege = exception.Message;
 

@@ -8,8 +8,8 @@ namespace PersistenceLayer.Entities
         public string Body { get; set; }
         public int? ImageId { get; set; }
         public Image Image { get; set; }
-        public ICollection<AnswerVote> Votes { get; set; }
-        public ICollection<Replay> Replays { get; set; }
+        public ICollection<AnswerVote> Votes { get; set; } = new List<AnswerVote>();
+        public ICollection<Replay> Replays { get; set; } = new List<Replay>();
         public DateTime CreationDate { get; set; }
         public AnswerStatus AnswerStatus { get; set; }
         public Question Question { get; set; }

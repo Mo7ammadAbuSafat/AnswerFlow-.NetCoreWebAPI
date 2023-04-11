@@ -33,10 +33,12 @@ namespace PresentationLayer.Repositories.Implementations
             return await context.SaveChangesAsync();
         }
 
-        public async Task<User?> GetUserById(int userId)
+        public async Task<User> GetUserById(int userId)
         {
             return await context.Users
                 .Where(c => c.Id == userId)
+                .Include(c => c.Image)
+                .Include(c => c.SavedQuestions)
                 .FirstOrDefaultAsync();
         }
 
@@ -63,9 +65,9 @@ namespace PresentationLayer.Repositories.Implementations
             return context.Users.Any(u => u.Email == email);
         }
 
-        public async Task<User?> GetUserByEmail(string email)
+        public async Task<User> GetUserByEmail(string email)
         {
-            return await context.Users.Where(u => u.Email == email).SingleOrDefaultAsync();
+            return await context.Users.Where(u => u.Email == email).Include(c => c.Image).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Tag>?> GetFollowingTagsForUserById(int userId)
@@ -76,7 +78,6 @@ namespace PresentationLayer.Repositories.Implementations
                  .FirstOrDefaultAsync();
             return user?.Tags;
         }
-
 
     }
 }

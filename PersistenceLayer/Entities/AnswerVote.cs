@@ -6,6 +6,7 @@ namespace PersistenceLayer.Entities
     {
         public int Id { get; set; }
         public VoteType Type { get; set; }
+        public User? User { get; set; }
         public int? UserId { get; set; }
         public int AnswerId { get; set; }
         public Answer Answer { get; set; }

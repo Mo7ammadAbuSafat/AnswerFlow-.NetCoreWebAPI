@@ -6,7 +6,7 @@ namespace PersistenceLayer.Repositories.Interfaces
     {
         Task AddAsync(Answer answer);
         void Delete(Answer answer);
-        Task<Answer?> GetAnswerByIdAsync(int answerId);
+        Task<Answer> GetAnswerByIdAsync(int answerId);
         Task<int> SaveChangesAsync();
         void Update(Answer answer);
     }
