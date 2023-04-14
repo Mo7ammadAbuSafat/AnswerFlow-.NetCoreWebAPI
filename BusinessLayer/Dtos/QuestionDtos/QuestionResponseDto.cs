@@ -14,7 +14,7 @@ namespace BusinessLayer.DTOs.QuestionDtos
         public string Title { get; set; }
         public string Body { get; set; }
         public DateTime CreationDate { get; set; }
-        public ICollection<TagResponseDto> Tags { get; set; }
+        public ICollection<TagResponseDto> Tags1 { get; set; }
 
         public ICollection<SavedQuestionResponseDto> QuestionSavers { get; set; }
 

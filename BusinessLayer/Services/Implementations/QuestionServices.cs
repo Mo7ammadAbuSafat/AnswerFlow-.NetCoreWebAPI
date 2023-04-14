@@ -61,7 +61,17 @@ namespace BusinessLayer.Services.Implementations
                 UserId = user.Id,
             };
 
-            await addTags(question, questionToAddRequestDto.TagsNames);
+            foreach (string tagName in questionToAddRequestDto.TagsNames)
+            {
+                var tag = await tagRepository.GetTagByNameAsync(tagName);
+                question.Tags.Add(new TagQuestion()
+                {
+                    UserWhoAddId = user.Id,
+                    TagId = tag.Id,
+                    Question = question
+
+                });
+            }
             await questionRepository.AddAsync(question);
 
             await questionRepository.SaveChangesAsync();
@@ -69,14 +79,6 @@ namespace BusinessLayer.Services.Implementations
             return mapper.Map<QuestionResponseDto>(question);
         }
 
-        private async Task addTags(Question question, ICollection<string> tagNames)
-        {
-            foreach (string tagName in tagNames)
-            {
-                var tag = await tagRepository.GetTagByNameAsync(tagName);
-                question.Tags.Add(tag);
-            }
-        }
 
         public async Task VoteForAQuestionAsync(int userId, int questionId, VoteType voteType)
         {

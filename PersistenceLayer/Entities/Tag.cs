@@ -6,7 +6,7 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public string Category { get; set; }
-        public ICollection<Question> Questions { get; set; } = new List<Question>();
+        public ICollection<TagQuestion> Questions { get; set; } = new List<TagQuestion>();
         public ICollection<User> Users { get; set; } = new List<User>();
     }
 }

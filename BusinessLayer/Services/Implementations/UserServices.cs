@@ -3,7 +3,6 @@ using BusinessLayer.DTOs.TagDtos;
 using BusinessLayer.DTOs.UserDtos;
 using BusinessLayer.Exceptions;
 using BusinessLayer.Services.Interfaces;
-using MailKit.Net.Smtp;
 using MimeKit;
 using PersistenceLayer.Entities;
 using PersistenceLayer.Repositories.Interfaces;
@@ -182,13 +181,13 @@ namespace BusinessLayer.Services.Implementations
 
             };
 
-            using (var client = new SmtpClient())
-            {
-                client.Connect("smtp-mail.outlook.com", 587, false);
-                client.Authenticate("answerflowverification@outlook.com", "AbuSafat123456789");
-                client.Send(message);
-                client.Disconnect(true);
-            }
+            //using (var client = new SmtpClient())
+            //{
+            //    client.Connect("smtp-mail.outlook.com", 587, false);
+            //    client.Authenticate("answerflowverification@outlook.com", "AbuSafat123456789");
+            //    client.Send(message);
+            //    client.Disconnect(true);
+            //}
         }
 
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)

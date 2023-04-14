@@ -12,8 +12,8 @@ using PersistenceLayer.DbContexts;
 namespace PersistenceLayer.Migrations
 {
     [DbContext(typeof(AnswerFlowContext))]
-    [Migration("20230320173319_renameVerificationTokenToVerificationCode")]
-    partial class renameVerificationTokenToVerificationCode
+    [Migration("20230412003841_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -316,6 +316,32 @@ namespace PersistenceLayer.Migrations
                     b.ToTable("Replays");
                 });
 
+            modelBuilder.Entity("PersistenceLayer.Entities.SavedQuestion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SavedQuestions");
+                });
+
             modelBuilder.Entity("PersistenceLayer.Entities.Tag", b =>
                 {
                     b.Property<int>("Id")
@@ -339,6 +365,34 @@ namespace PersistenceLayer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tags");
+                });
+
+            modelBuilder.Entity("PersistenceLayer.Entities.TagQuestion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserWhoAddId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("TagId");
+
+                    b.HasIndex("UserWhoAddId");
+
+                    b.ToTable("TagQuestion");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.User", b =>
@@ -371,6 +425,12 @@ namespace PersistenceLayer.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<string>("ResetPasswordCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ResetPasswordCodeExpiresDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
@@ -389,36 +449,6 @@ namespace PersistenceLayer.Migrations
                     b.HasIndex("ImageId");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("QuestionTag", b =>
-                {
-                    b.Property<int>("QuestionsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TagsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("QuestionsId", "TagsId");
-
-                    b.HasIndex("TagsId");
-
-                    b.ToTable("QuestionTag");
-                });
-
-            modelBuilder.Entity("QuestionUser", b =>
-                {
-                    b.Property<int>("SavedQuestionsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsersWhoSaveThisQuestionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("SavedQuestionsId", "UsersWhoSaveThisQuestionId");
-
-                    b.HasIndex("UsersWhoSaveThisQuestionId");
-
-                    b.ToTable("SavedQuestions", (string)null);
                 });
 
             modelBuilder.Entity("TagUser", b =>
@@ -514,11 +544,13 @@ namespace PersistenceLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PersistenceLayer.Entities.User", null)
+                    b.HasOne("PersistenceLayer.Entities.User", "User")
                         .WithMany("AnswerVotes")
                         .HasForeignKey("UserId");
 
                     b.Navigation("Answer");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.Question", b =>
@@ -568,11 +600,13 @@ namespace PersistenceLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PersistenceLayer.Entities.User", null)
+                    b.HasOne("PersistenceLayer.Entities.User", "User")
                         .WithMany("QuestionVotes")
                         .HasForeignKey("UserId");
 
                     b.Navigation("Question");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.Replay", b =>
@@ -594,6 +628,52 @@ namespace PersistenceLayer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("PersistenceLayer.Entities.SavedQuestion", b =>
+                {
+                    b.HasOne("PersistenceLayer.Entities.Question", "Question")
+                        .WithMany("QuestionSavers")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PersistenceLayer.Entities.User", "User")
+                        .WithMany("SavedQuestions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PersistenceLayer.Entities.TagQuestion", b =>
+                {
+                    b.HasOne("PersistenceLayer.Entities.Question", "Question")
+                        .WithMany("Tags")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PersistenceLayer.Entities.Tag", "Tag")
+                        .WithMany("Questions")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PersistenceLayer.Entities.User", "UserWhoAdd")
+                        .WithMany()
+                        .HasForeignKey("UserWhoAddId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("Tag");
+
+                    b.Navigation("UserWhoAdd");
+                });
+
             modelBuilder.Entity("PersistenceLayer.Entities.User", b =>
                 {
                     b.HasOne("PersistenceLayer.Entities.Image", "Image")
@@ -601,36 +681,6 @@ namespace PersistenceLayer.Migrations
                         .HasForeignKey("ImageId");
 
                     b.Navigation("Image");
-                });
-
-            modelBuilder.Entity("QuestionTag", b =>
-                {
-                    b.HasOne("PersistenceLayer.Entities.Question", null)
-                        .WithMany()
-                        .HasForeignKey("QuestionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PersistenceLayer.Entities.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("QuestionUser", b =>
-                {
-                    b.HasOne("PersistenceLayer.Entities.Question", null)
-                        .WithMany()
-                        .HasForeignKey("SavedQuestionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PersistenceLayer.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersWhoSaveThisQuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("TagUser", b =>
@@ -676,7 +726,16 @@ namespace PersistenceLayer.Migrations
 
                     b.Navigation("QuestionHistory");
 
+                    b.Navigation("QuestionSavers");
+
+                    b.Navigation("Tags");
+
                     b.Navigation("Votes");
+                });
+
+            modelBuilder.Entity("PersistenceLayer.Entities.Tag", b =>
+                {
+                    b.Navigation("Questions");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.User", b =>
@@ -694,6 +753,8 @@ namespace PersistenceLayer.Migrations
                     b.Navigation("Questions");
 
                     b.Navigation("Replays");
+
+                    b.Navigation("SavedQuestions");
                 });
 #pragma warning restore 612, 618
         }

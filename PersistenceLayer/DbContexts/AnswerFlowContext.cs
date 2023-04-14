@@ -8,14 +8,11 @@ namespace PersistenceLayer.DbContexts
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source=ABUSAFAT;Initial Catalog= AnswerFlow;Integrated Security=True;Connect Timeout=30;Encrypt=False;");
+            optionsBuilder.UseSqlServer("Data Source=ABUSAFAT;Initial Catalog= AnswerFlowNew;Integrated Security=True;Connect Timeout=30;Encrypt=False;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Question>()
-                    .HasMany(t => t.Tags)
-                    .WithMany(t => t.Questions);
 
             modelBuilder.Entity<User>()
                      .HasMany(t => t.FollowingUsers)

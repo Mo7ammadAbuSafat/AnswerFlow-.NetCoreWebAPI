@@ -9,7 +9,7 @@ namespace PersistenceLayer.Repositories.Interfaces
         Task<IEnumerable<Question>> GetAllQuestionsAsync();
         Task<Question> GetQuestionByIdAsync(int questionId);
         Task<IEnumerable<Question>> GetQuestionsAnsweredByUserByIdAsync(int userId);
-        Task<IEnumerable<Question>> GetQuestionsFilterdByFollowedTagsForUserByIdAsync(int userId);
+        //Task<IEnumerable<Question>> GetQuestionsFilterdByFollowedTagsForUserByIdAsync(int userId);
         Task<IEnumerable<Question>> GetQuestionsFilterdByFollowedUsersForUserByIdAsync(int userId);
         Task<IEnumerable<Question>> GetQuestionsFilteredByTagAsync(Tag tag);
         Task<IEnumerable<Question>> GetQuestionsFilteredByTagsAsync(ICollection<Tag> tags);
