@@ -7,5 +7,6 @@ namespace BusinessLayer.DTOs.TagDtos
         [Required]
         public string Name { get; set; }
         public string? Description { get; set; }
+        public string? SourceLink { get; set; }
     }
 }

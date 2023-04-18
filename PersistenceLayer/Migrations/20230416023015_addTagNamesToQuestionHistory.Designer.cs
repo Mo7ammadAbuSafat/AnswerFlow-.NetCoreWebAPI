@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PersistenceLayer.DbContexts;
 
@@ -11,9 +12,11 @@ using PersistenceLayer.DbContexts;
 namespace PersistenceLayer.Migrations
 {
     [DbContext(typeof(AnswerFlowContext))]
-    partial class AnswerFlowContextModelSnapshot : ModelSnapshot
+    [Migration("20230416023015_addTagNamesToQuestionHistory")]
+    partial class addTagNamesToQuestionHistory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,36 +170,6 @@ namespace PersistenceLayer.Migrations
                     b.HasIndex("QuestionId");
 
                     b.ToTable("QuestionHistories");
-                });
-
-            modelBuilder.Entity("PersistenceLayer.Entities.QuestionReport", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("QuestionReports");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.QuestionVote", b =>
@@ -427,25 +400,6 @@ namespace PersistenceLayer.Migrations
                     b.Navigation("Question");
                 });
 
-            modelBuilder.Entity("PersistenceLayer.Entities.QuestionReport", b =>
-                {
-                    b.HasOne("PersistenceLayer.Entities.Question", "Question")
-                        .WithMany("Reports")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PersistenceLayer.Entities.User", "User")
-                        .WithMany("QuestionReports")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("PersistenceLayer.Entities.QuestionVote", b =>
                 {
                     b.HasOne("PersistenceLayer.Entities.Question", "Question")
@@ -545,8 +499,6 @@ namespace PersistenceLayer.Migrations
 
                     b.Navigation("EditHistory");
 
-                    b.Navigation("Reports");
-
                     b.Navigation("Votes");
                 });
 
@@ -555,8 +507,6 @@ namespace PersistenceLayer.Migrations
                     b.Navigation("AnswerVotes");
 
                     b.Navigation("Answers");
-
-                    b.Navigation("QuestionReports");
 
                     b.Navigation("QuestionVotes");
 

@@ -20,5 +20,26 @@ namespace PresentationLayer.Controllers
             var tags = await tagServices.GetAllTagsAsync();
             return Ok(tags);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<TagResponseDto>> AddNewTag(TagRequestDto tagRequestDto)
+        {
+            var tag = await tagServices.AddNewTagAsync(tagRequestDto);
+            return Ok(tag);
+        }
+
+        [HttpPut("{tagId}")]
+        public async Task<ActionResult<TagResponseDto>> UpdateTag(int tagId, TagRequestDto tagRequestDto)
+        {
+            var tag = await tagServices.UpdateTagAsync(tagId, tagRequestDto);
+            return Ok(tag);
+        }
+
+        [HttpDelete("{tagId}")]
+        public async Task<IActionResult> DeleteTag(int tagId)
+        {
+            await tagServices.DeleteTagAsync(tagId);
+            return Ok();
+        }
     }
 }

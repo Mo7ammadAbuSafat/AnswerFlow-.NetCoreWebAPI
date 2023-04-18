@@ -3,6 +3,7 @@ using BusinessLayer.DTOs.TagDtos;
 using BusinessLayer.DTOs.UserDtos;
 using BusinessLayer.Exceptions;
 using BusinessLayer.Services.Interfaces;
+using MailKit.Net.Smtp;
 using MimeKit;
 using PersistenceLayer.Entities;
 using PersistenceLayer.Repositories.Interfaces;
@@ -16,12 +17,14 @@ namespace BusinessLayer.Services.Implementations
         private readonly IUserRepository userRepository;
         private readonly IMapper mapper;
         private readonly ITagRepository tagRepository;
+        private readonly IUnitOfWork unitOfWork;
 
-        public UserServices(IUserRepository userRepository, IMapper mapper, ITagRepository tagRepository)
+        public UserServices(IUserRepository userRepository, IMapper mapper, ITagRepository tagRepository, IUnitOfWork unitOfWork)
         {
             this.userRepository = userRepository;
             this.mapper = mapper;
             this.tagRepository = tagRepository;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<UserInformationResponseDto> RegisterUserAsync(UserRegistrationRequestDto userRegistration)
@@ -45,7 +48,7 @@ namespace BusinessLayer.Services.Implementations
             };
             SendEmailWithCode(user.Email, "Verification Account", user.VerificationCode);
             await userRepository.AddAsync(user);
-            await userRepository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             return mapper.Map<UserInformationResponseDto>(user);
         }
 
@@ -81,7 +84,7 @@ namespace BusinessLayer.Services.Implementations
                 throw new BadRequestException("Invalid code");
             }
             user.VerifiedDate = DateTime.Now;
-            await userRepository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             return mapper.Map<UserInformationResponseDto>(user);
         }
 
@@ -95,7 +98,7 @@ namespace BusinessLayer.Services.Implementations
             if (user.VerificationCode == null)
             {
                 user.VerificationCode = CreateRandomCode();
-                await userRepository.SaveChangesAsync();
+                await unitOfWork.SaveChangesAsync();
             }
             SendEmailWithCode(user.Email, "Verification Account", user.VerificationCode);
         }
@@ -109,7 +112,7 @@ namespace BusinessLayer.Services.Implementations
             }
             user.ResetPasswordCode = CreateRandomCode();
             user.ResetPasswordCodeExpiresDate = DateTime.Now.AddDays(1);
-            await userRepository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             SendEmailWithCode(email, "Reset Password", user.ResetPasswordCode);
             return mapper.Map<UserOverviewResponseDto>(user);
         }
@@ -123,7 +126,7 @@ namespace BusinessLayer.Services.Implementations
             }
             user.ResetPasswordCode = CreateRandomCode();
             user.ResetPasswordCodeExpiresDate = DateTime.Now.AddDays(1);
-            await userRepository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             SendEmailWithCode(user.Email, "Reset Password", user.ResetPasswordCode);
         }
 
@@ -166,13 +169,19 @@ namespace BusinessLayer.Services.Implementations
             CreatePasswordHash(resetPasswordDto.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
-            await userRepository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         private static void SendEmailWithCode(string email, string subject, string code)
         {
+            var Host = Configration.config["Smtp:Host"];
+            var UserName = Configration.config["Smtp:UserName"];
+            var FromEmail = Configration.config["Smtp:FromEmail"];
+            var Password = Configration.config["Smtp:Password"];
+            var Port = Convert.ToInt16(Configration.config["Smtp:Port"]);
+
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("AnswerFlow Team", "answerflowverification@outlook.com"));
+            message.From.Add(new MailboxAddress(UserName, FromEmail));
             message.To.Add(new MailboxAddress("user", email));
             message.Subject = subject;
             message.Body = new TextPart("plain")
@@ -181,13 +190,14 @@ namespace BusinessLayer.Services.Implementations
 
             };
 
-            //using (var client = new SmtpClient())
-            //{
-            //    client.Connect("smtp-mail.outlook.com", 587, false);
-            //    client.Authenticate("answerflowverification@outlook.com", "AbuSafat123456789");
-            //    client.Send(message);
-            //    client.Disconnect(true);
-            //}
+            using (var client = new SmtpClient())
+            {
+                client.Connect(Host, Port, false);
+                client.Authenticate(FromEmail, Password);
+                client.Send(message);
+                client.Disconnect(true);
+            }
+
         }
 
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -225,7 +235,7 @@ namespace BusinessLayer.Services.Implementations
             }
             user.Username = userInformationDto.Username;
             user.About = userInformationDto.About;
-            await userRepository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             return mapper.Map<UserInformationResponseDto>(user);
         }
 
@@ -252,7 +262,7 @@ namespace BusinessLayer.Services.Implementations
                 throw new BadRequestException($"there is no user with this id: {followedUserId}");
             }
             user.FollowingUsers.Add(followedUser);
-            await userRepository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task UnfollowUserAsync(int userId, int followedUserId)
@@ -272,7 +282,7 @@ namespace BusinessLayer.Services.Implementations
                 throw new BadRequestException($"The user did't follow this user");
             }
             user.FollowingUsers.Remove(followedUser);
-            await userRepository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<UserOverviewResponseDto>> GetFollowingUsersForUserByIdAsync(int userId)
@@ -294,7 +304,7 @@ namespace BusinessLayer.Services.Implementations
                 throw new BadRequestException($"there is no tag with this id: {tagId}");
             }
             user.Tags.Add(tag);
-            await userRepository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<TagResponseDto>> GetFollowingTagsForUserByIdAsync(int userId)
@@ -320,7 +330,7 @@ namespace BusinessLayer.Services.Implementations
                 throw new BadRequestException($"The user did't follow this tag");
             }
             user.Tags.Remove(tag);
-            await userRepository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
     }
 }

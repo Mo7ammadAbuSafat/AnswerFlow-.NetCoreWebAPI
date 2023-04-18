@@ -9,6 +9,7 @@ namespace BusinessLayer.Porfiles
         public QuestionProfile()
         {
             CreateMap<Question, QuestionResponseDto>();
+            CreateMap<QuestionHistory, QuestionHistoryResponseDto>();
         }
     }
 }

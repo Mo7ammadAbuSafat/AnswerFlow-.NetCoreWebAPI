@@ -1,5 +1,6 @@
 using BusinessLayer.Services.Implementations;
 using BusinessLayer.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using PersistenceLayer.DbContexts;
 using PersistenceLayer.Repositories.Implementations;
 using PersistenceLayer.Repositories.Interfaces;
@@ -12,18 +13,22 @@ builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
+builder.Services.AddScoped<IQuestionReportRepository, QuestionReportRepository>();
 builder.Services.AddScoped<ITagServices, TagServices>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IQuestionServices, QuestionServices>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddTransient<AnswerFlowContext, AnswerFlowContext>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
+
 builder.Services.AddCors(c =>
 {
     c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().
      AllowAnyHeader());
 });
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<AnswerFlowContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddControllers(options =>
 {

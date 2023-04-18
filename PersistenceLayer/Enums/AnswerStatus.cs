@@ -3,6 +3,6 @@
     public enum AnswerStatus
     {
         Approved = 1,
-        NotApproved = 2
+        NotApproved = 0
     }
 }

@@ -12,33 +12,18 @@ using PersistenceLayer.DbContexts;
 namespace PersistenceLayer.Migrations
 {
     [DbContext(typeof(AnswerFlowContext))]
-    [Migration("20230412003841_init")]
-    partial class init
+    [Migration("20230415144912_editTagAttributes")]
+    partial class editTagAttributes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.3")
+                .HasAnnotation("ProductVersion", "7.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ImageQuestion", b =>
-                {
-                    b.Property<int>("ImegesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QuestionsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ImegesId", "QuestionsId");
-
-                    b.HasIndex("QuestionsId");
-
-                    b.ToTable("ImageQuestion");
-                });
 
             modelBuilder.Entity("PersistenceLayer.Entities.Answer", b =>
                 {
@@ -58,54 +43,19 @@ namespace PersistenceLayer.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("ImageId")
-                        .HasColumnType("int");
-
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ImageId");
 
                     b.HasIndex("QuestionId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Answers");
-                });
-
-            modelBuilder.Entity("PersistenceLayer.Entities.AnswerReport", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AnswerId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AnswerId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AnswerReports");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.AnswerVote", b =>
@@ -125,7 +75,7 @@ namespace PersistenceLayer.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -166,13 +116,7 @@ namespace PersistenceLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ClosedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("LastEditDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
@@ -182,8 +126,7 @@ namespace PersistenceLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
-                        .IsRequired()
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -191,65 +134,6 @@ namespace PersistenceLayer.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Questions");
-                });
-
-            modelBuilder.Entity("PersistenceLayer.Entities.QuestionHistory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("EditDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.ToTable("QuestionHistories");
-                });
-
-            modelBuilder.Entity("PersistenceLayer.Entities.QuestionReport", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("QuestionReports");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.QuestionVote", b =>
@@ -269,7 +153,7 @@ namespace PersistenceLayer.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -281,67 +165,6 @@ namespace PersistenceLayer.Migrations
                     b.ToTable("QuestionVotes");
                 });
 
-            modelBuilder.Entity("PersistenceLayer.Entities.Replay", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AnswerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("ImageId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AnswerId");
-
-                    b.HasIndex("ImageId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Replays");
-                });
-
-            modelBuilder.Entity("PersistenceLayer.Entities.SavedQuestion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("SavedQuestions");
-                });
-
             modelBuilder.Entity("PersistenceLayer.Entities.Tag", b =>
                 {
                     b.Property<int>("Id")
@@ -350,49 +173,19 @@ namespace PersistenceLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SourceLink")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Tags");
-                });
-
-            modelBuilder.Entity("PersistenceLayer.Entities.TagQuestion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TagId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserWhoAddId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("TagId");
-
-                    b.HasIndex("UserWhoAddId");
-
-                    b.ToTable("TagQuestion");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.User", b =>
@@ -404,15 +197,14 @@ namespace PersistenceLayer.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("About")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int?>("ImageId")
                         .HasColumnType("int");
@@ -426,7 +218,7 @@ namespace PersistenceLayer.Migrations
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("ResetPasswordCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(20)");
 
                     b.Property<DateTime?>("ResetPasswordCodeExpiresDate")
                         .HasColumnType("datetime2");
@@ -436,10 +228,11 @@ namespace PersistenceLayer.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(40)");
 
                     b.Property<string>("VerificationCode")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
 
                     b.Property<DateTime?>("VerifiedDate")
                         .HasColumnType("datetime2");
@@ -449,6 +242,36 @@ namespace PersistenceLayer.Migrations
                     b.HasIndex("ImageId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("QuestionTag", b =>
+                {
+                    b.Property<int>("QuestionsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("QuestionsId", "TagsId");
+
+                    b.HasIndex("TagsId");
+
+                    b.ToTable("QuestionTag", (string)null);
+                });
+
+            modelBuilder.Entity("QuestionUser", b =>
+                {
+                    b.Property<int>("QuestionSaversId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SavedQuestionsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("QuestionSaversId", "SavedQuestionsId");
+
+                    b.HasIndex("SavedQuestionsId");
+
+                    b.ToTable("SavedQuestions", (string)null);
                 });
 
             modelBuilder.Entity("TagUser", b =>
@@ -463,7 +286,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("TagUser");
+                    b.ToTable("UserTag", (string)null);
                 });
 
             modelBuilder.Entity("UserUser", b =>
@@ -481,27 +304,8 @@ namespace PersistenceLayer.Migrations
                     b.ToTable("Following", (string)null);
                 });
 
-            modelBuilder.Entity("ImageQuestion", b =>
-                {
-                    b.HasOne("PersistenceLayer.Entities.Image", null)
-                        .WithMany()
-                        .HasForeignKey("ImegesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PersistenceLayer.Entities.Question", null)
-                        .WithMany()
-                        .HasForeignKey("QuestionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("PersistenceLayer.Entities.Answer", b =>
                 {
-                    b.HasOne("PersistenceLayer.Entities.Image", "Image")
-                        .WithMany()
-                        .HasForeignKey("ImageId");
-
                     b.HasOne("PersistenceLayer.Entities.Question", "Question")
                         .WithMany("Answers")
                         .HasForeignKey("QuestionId")
@@ -510,28 +314,11 @@ namespace PersistenceLayer.Migrations
 
                     b.HasOne("PersistenceLayer.Entities.User", "User")
                         .WithMany("Answers")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Image");
-
-                    b.Navigation("Question");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("PersistenceLayer.Entities.AnswerReport", b =>
-                {
-                    b.HasOne("PersistenceLayer.Entities.Answer", "Answer")
-                        .WithMany()
-                        .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PersistenceLayer.Entities.User", "User")
-                        .WithMany("AnswerReports")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Answer");
+                    b.Navigation("Question");
 
                     b.Navigation("User");
                 });
@@ -546,7 +333,9 @@ namespace PersistenceLayer.Migrations
 
                     b.HasOne("PersistenceLayer.Entities.User", "User")
                         .WithMany("AnswerVotes")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Answer");
 
@@ -564,34 +353,6 @@ namespace PersistenceLayer.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PersistenceLayer.Entities.QuestionHistory", b =>
-                {
-                    b.HasOne("PersistenceLayer.Entities.Question", "Question")
-                        .WithMany("QuestionHistory")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-                });
-
-            modelBuilder.Entity("PersistenceLayer.Entities.QuestionReport", b =>
-                {
-                    b.HasOne("PersistenceLayer.Entities.Question", "Question")
-                        .WithMany()
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PersistenceLayer.Entities.User", "User")
-                        .WithMany("QuestionReports")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Question");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("PersistenceLayer.Entities.QuestionVote", b =>
                 {
                     b.HasOne("PersistenceLayer.Entities.Question", "Question")
@@ -602,42 +363,6 @@ namespace PersistenceLayer.Migrations
 
                     b.HasOne("PersistenceLayer.Entities.User", "User")
                         .WithMany("QuestionVotes")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Question");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("PersistenceLayer.Entities.Replay", b =>
-                {
-                    b.HasOne("PersistenceLayer.Entities.Answer", null)
-                        .WithMany("Replays")
-                        .HasForeignKey("AnswerId");
-
-                    b.HasOne("PersistenceLayer.Entities.Image", "Image")
-                        .WithMany()
-                        .HasForeignKey("ImageId");
-
-                    b.HasOne("PersistenceLayer.Entities.User", "User")
-                        .WithMany("Replays")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Image");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("PersistenceLayer.Entities.SavedQuestion", b =>
-                {
-                    b.HasOne("PersistenceLayer.Entities.Question", "Question")
-                        .WithMany("QuestionSavers")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PersistenceLayer.Entities.User", "User")
-                        .WithMany("SavedQuestions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -647,33 +372,6 @@ namespace PersistenceLayer.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PersistenceLayer.Entities.TagQuestion", b =>
-                {
-                    b.HasOne("PersistenceLayer.Entities.Question", "Question")
-                        .WithMany("Tags")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PersistenceLayer.Entities.Tag", "Tag")
-                        .WithMany("Questions")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PersistenceLayer.Entities.User", "UserWhoAdd")
-                        .WithMany()
-                        .HasForeignKey("UserWhoAddId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-
-                    b.Navigation("Tag");
-
-                    b.Navigation("UserWhoAdd");
-                });
-
             modelBuilder.Entity("PersistenceLayer.Entities.User", b =>
                 {
                     b.HasOne("PersistenceLayer.Entities.Image", "Image")
@@ -681,6 +379,36 @@ namespace PersistenceLayer.Migrations
                         .HasForeignKey("ImageId");
 
                     b.Navigation("Image");
+                });
+
+            modelBuilder.Entity("QuestionTag", b =>
+                {
+                    b.HasOne("PersistenceLayer.Entities.Question", null)
+                        .WithMany()
+                        .HasForeignKey("QuestionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PersistenceLayer.Entities.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("QuestionUser", b =>
+                {
+                    b.HasOne("PersistenceLayer.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("QuestionSaversId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PersistenceLayer.Entities.Question", null)
+                        .WithMany()
+                        .HasForeignKey("SavedQuestionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TagUser", b =>
@@ -715,8 +443,6 @@ namespace PersistenceLayer.Migrations
 
             modelBuilder.Entity("PersistenceLayer.Entities.Answer", b =>
                 {
-                    b.Navigation("Replays");
-
                     b.Navigation("Votes");
                 });
 
@@ -724,37 +450,18 @@ namespace PersistenceLayer.Migrations
                 {
                     b.Navigation("Answers");
 
-                    b.Navigation("QuestionHistory");
-
-                    b.Navigation("QuestionSavers");
-
-                    b.Navigation("Tags");
-
                     b.Navigation("Votes");
-                });
-
-            modelBuilder.Entity("PersistenceLayer.Entities.Tag", b =>
-                {
-                    b.Navigation("Questions");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.User", b =>
                 {
-                    b.Navigation("AnswerReports");
-
                     b.Navigation("AnswerVotes");
 
                     b.Navigation("Answers");
 
-                    b.Navigation("QuestionReports");
-
                     b.Navigation("QuestionVotes");
 
                     b.Navigation("Questions");
-
-                    b.Navigation("Replays");
-
-                    b.Navigation("SavedQuestions");
                 });
 #pragma warning restore 612, 618
         }

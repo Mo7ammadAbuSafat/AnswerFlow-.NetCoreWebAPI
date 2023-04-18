@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PersistenceLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class firstMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -46,15 +46,15 @@ namespace PersistenceLayer.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Type = table.Column<int>(type: "int", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Username = table.Column<string>(type: "varchar(40)", nullable: false),
+                    Email = table.Column<string>(type: "varchar(100)", nullable: false),
                     PasswordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    VerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VerificationCode = table.Column<string>(type: "varchar(20)", nullable: false),
                     VerifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ResetPasswordCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ResetPasswordCode = table.Column<string>(type: "varchar(20)", nullable: true),
                     ResetPasswordCodeExpiresDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    About = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    About = table.Column<string>(type: "varchar(200)", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ImageId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -101,9 +101,7 @@ namespace PersistenceLayer.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    ClosedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastEditDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -117,7 +115,7 @@ namespace PersistenceLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TagUser",
+                name: "UserTag",
                 columns: table => new
                 {
                     TagsId = table.Column<int>(type: "int", nullable: false),
@@ -125,15 +123,15 @@ namespace PersistenceLayer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TagUser", x => new { x.TagsId, x.UsersId });
+                    table.PrimaryKey("PK_UserTag", x => new { x.TagsId, x.UsersId });
                     table.ForeignKey(
-                        name: "FK_TagUser_Tags_TagsId",
+                        name: "FK_UserTag_Tags_TagsId",
                         column: x => x.TagsId,
                         principalTable: "Tags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TagUser_Users_UsersId",
+                        name: "FK_UserTag_Users_UsersId",
                         column: x => x.UsersId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -146,21 +144,15 @@ namespace PersistenceLayer.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageId = table.Column<int>(type: "int", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AnswerStatus = table.Column<int>(type: "int", nullable: false),
-                    QuestionId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true)
+                    QuestionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Answers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Answers_Images_ImageId",
-                        column: x => x.ImageId,
-                        principalTable: "Images",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Answers_Questions_QuestionId",
                         column: x => x.QuestionId,
@@ -171,80 +163,32 @@ namespace PersistenceLayer.Migrations
                         name: "FK_Answers_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ImageQuestion",
+                name: "QuestionTag",
                 columns: table => new
                 {
-                    ImegesId = table.Column<int>(type: "int", nullable: false),
-                    QuestionsId = table.Column<int>(type: "int", nullable: false)
+                    QuestionsId = table.Column<int>(type: "int", nullable: false),
+                    TagsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ImageQuestion", x => new { x.ImegesId, x.QuestionsId });
+                    table.PrimaryKey("PK_QuestionTag", x => new { x.QuestionsId, x.TagsId });
                     table.ForeignKey(
-                        name: "FK_ImageQuestion_Images_ImegesId",
-                        column: x => x.ImegesId,
-                        principalTable: "Images",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ImageQuestion_Questions_QuestionsId",
+                        name: "FK_QuestionTag_Questions_QuestionsId",
                         column: x => x.QuestionsId,
                         principalTable: "Questions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "QuestionHistories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EditDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    QuestionId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_QuestionHistories", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_QuestionHistories_Questions_QuestionId",
-                        column: x => x.QuestionId,
-                        principalTable: "Questions",
+                        name: "FK_QuestionTag_Tags_TagsId",
+                        column: x => x.TagsId,
+                        principalTable: "Tags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "QuestionReports",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    QuestionId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_QuestionReports", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_QuestionReports_Questions_QuestionId",
-                        column: x => x.QuestionId,
-                        principalTable: "Questions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_QuestionReports_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -254,7 +198,7 @@ namespace PersistenceLayer.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Type = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     QuestionId = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -271,94 +215,32 @@ namespace PersistenceLayer.Migrations
                         name: "FK_QuestionVotes_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "SavedQuestions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    QuestionId = table.Column<int>(type: "int", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    SavedQuestionsId = table.Column<int>(type: "int", nullable: false),
+                    SaversForQuestionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SavedQuestions", x => x.Id);
+                    table.PrimaryKey("PK_SavedQuestions", x => new { x.SavedQuestionsId, x.SaversForQuestionId });
                     table.ForeignKey(
-                        name: "FK_SavedQuestions_Questions_QuestionId",
-                        column: x => x.QuestionId,
+                        name: "FK_SavedQuestions_Questions_SavedQuestionsId",
+                        column: x => x.SavedQuestionsId,
                         principalTable: "Questions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SavedQuestions_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_SavedQuestions_Users_SaversForQuestionId",
+                        column: x => x.SaversForQuestionId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TagQuestion",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserWhoAddId = table.Column<int>(type: "int", nullable: false),
-                    QuestionId = table.Column<int>(type: "int", nullable: false),
-                    TagId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TagQuestion", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TagQuestion_Questions_QuestionId",
-                        column: x => x.QuestionId,
-                        principalTable: "Questions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TagQuestion_Tags_TagId",
-                        column: x => x.TagId,
-                        principalTable: "Tags",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TagQuestion_Users_UserWhoAddId",
-                        column: x => x.UserWhoAddId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AnswerReports",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AnswerId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AnswerReports", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AnswerReports_Answers_AnswerId",
-                        column: x => x.AnswerId,
-                        principalTable: "Answers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AnswerReports_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -368,7 +250,7 @@ namespace PersistenceLayer.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Type = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     AnswerId = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -385,55 +267,9 @@ namespace PersistenceLayer.Migrations
                         name: "FK_AnswerVotes_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "Replays",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageId = table.Column<int>(type: "int", nullable: true),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true),
-                    AnswerId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Replays", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Replays_Answers_AnswerId",
-                        column: x => x.AnswerId,
-                        principalTable: "Answers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Replays_Images_ImageId",
-                        column: x => x.ImageId,
-                        principalTable: "Images",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Replays_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AnswerReports_AnswerId",
-                table: "AnswerReports",
-                column: "AnswerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AnswerReports_UserId",
-                table: "AnswerReports",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Answers_ImageId",
-                table: "Answers",
-                column: "ImageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Answers_QuestionId",
@@ -461,29 +297,14 @@ namespace PersistenceLayer.Migrations
                 column: "FollowingUsersId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ImageQuestion_QuestionsId",
-                table: "ImageQuestion",
-                column: "QuestionsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_QuestionHistories_QuestionId",
-                table: "QuestionHistories",
-                column: "QuestionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_QuestionReports_QuestionId",
-                table: "QuestionReports",
-                column: "QuestionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_QuestionReports_UserId",
-                table: "QuestionReports",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Questions_UserId",
                 table: "Questions",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuestionTag_TagsId",
+                table: "QuestionTag",
+                column: "TagsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_QuestionVotes_QuestionId",
@@ -496,62 +317,24 @@ namespace PersistenceLayer.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Replays_AnswerId",
-                table: "Replays",
-                column: "AnswerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Replays_ImageId",
-                table: "Replays",
-                column: "ImageId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Replays_UserId",
-                table: "Replays",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SavedQuestions_QuestionId",
+                name: "IX_SavedQuestions_SaversForQuestionId",
                 table: "SavedQuestions",
-                column: "QuestionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SavedQuestions_UserId",
-                table: "SavedQuestions",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TagQuestion_QuestionId",
-                table: "TagQuestion",
-                column: "QuestionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TagQuestion_TagId",
-                table: "TagQuestion",
-                column: "TagId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TagQuestion_UserWhoAddId",
-                table: "TagQuestion",
-                column: "UserWhoAddId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TagUser_UsersId",
-                table: "TagUser",
-                column: "UsersId");
+                column: "SaversForQuestionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_ImageId",
                 table: "Users",
                 column: "ImageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTag_UsersId",
+                table: "UserTag",
+                column: "UsersId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AnswerReports");
-
             migrationBuilder.DropTable(
                 name: "AnswerVotes");
 
@@ -559,28 +342,16 @@ namespace PersistenceLayer.Migrations
                 name: "Following");
 
             migrationBuilder.DropTable(
-                name: "ImageQuestion");
-
-            migrationBuilder.DropTable(
-                name: "QuestionHistories");
-
-            migrationBuilder.DropTable(
-                name: "QuestionReports");
+                name: "QuestionTag");
 
             migrationBuilder.DropTable(
                 name: "QuestionVotes");
 
             migrationBuilder.DropTable(
-                name: "Replays");
-
-            migrationBuilder.DropTable(
                 name: "SavedQuestions");
 
             migrationBuilder.DropTable(
-                name: "TagQuestion");
-
-            migrationBuilder.DropTable(
-                name: "TagUser");
+                name: "UserTag");
 
             migrationBuilder.DropTable(
                 name: "Answers");

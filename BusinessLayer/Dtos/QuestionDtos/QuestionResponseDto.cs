@@ -1,5 +1,4 @@
 ﻿using BusinessLayer.DTOs.AnswerDtos;
-using BusinessLayer.DTOs.SavedQuestionDtos;
 using BusinessLayer.DTOs.TagDtos;
 using BusinessLayer.DTOs.UserDtos;
 using BusinessLayer.DTOs.VoteDtos;
@@ -14,10 +13,8 @@ namespace BusinessLayer.DTOs.QuestionDtos
         public string Title { get; set; }
         public string Body { get; set; }
         public DateTime CreationDate { get; set; }
-        public ICollection<TagResponseDto> Tags1 { get; set; }
-
-        public ICollection<SavedQuestionResponseDto> QuestionSavers { get; set; }
-
+        public ICollection<TagResponseDto> Tags { get; set; }
+        public ICollection<UserOverviewResponseDto> QuestionSavers { get; set; }
         public ICollection<QuestionVoteResponseDto> Votes { get; set; }
         public int FinalVotesValue
         {
@@ -31,5 +28,7 @@ namespace BusinessLayer.DTOs.QuestionDtos
         public ICollection<AnswerResponseDto> Answers { get; set; }
         public int AnswersCount { get; set; }
         public QuestionStatus Status { get; set; }
+        public ICollection<QuestionHistoryResponseDto> EditHistory { get; set; }
+        public DateTime? LastEditDate { get; set; }
     }
 }

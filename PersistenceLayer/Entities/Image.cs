@@ -4,6 +4,5 @@
     {
         public int Id { get; set; }
         public string ImagePath { get; set; }
-        public ICollection<Question> Questions { get; set; } = new List<Question>();
     }
 }
