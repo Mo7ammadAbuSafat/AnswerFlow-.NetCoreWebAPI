@@ -11,6 +11,7 @@ namespace PersistenceLayer.DbContexts
         public DbSet<QuestionReport> QuestionReports { get; set; }
         public DbSet<QuestionVote> QuestionVotes { get; set; }
         public DbSet<Answer> Answers { get; set; }
+        public DbSet<AnswerReport> AnswerReports { get; set; }
         public DbSet<AnswerVote> AnswerVotes { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Image> Images { get; set; }
@@ -73,6 +74,16 @@ namespace PersistenceLayer.DbContexts
                     .WithMany(g => g.QuestionReports)
                     .HasForeignKey(s => s.UserId);
 
+            modelBuilder.Entity<AnswerReport>()
+                    .HasOne(s => s.Answer)
+                    .WithMany(g => g.Reports)
+                    .HasForeignKey(s => s.AnswerId);
+
+            modelBuilder.Entity<AnswerReport>()
+                    .HasOne(s => s.User)
+                    .WithMany(g => g.AnswerReports)
+                    .HasForeignKey(s => s.UserId);
+
 
             modelBuilder.Entity<User>().Property(u => u.About).IsRequired(false);
             modelBuilder.Entity<User>().Property(u => u.VerifiedDate).IsRequired(false);
@@ -87,8 +98,7 @@ namespace PersistenceLayer.DbContexts
 
 
             modelBuilder.Entity<Tag>().Property(t => t.SourceLink).IsRequired(false);
-            modelBuilder.Entity<Tag>().Property(t => t.Description).IsRequired(false);
-            modelBuilder.Entity<Tag>().Property(t => t.Description).HasColumnType("varchar(200)");
+
 
         }
     }

@@ -96,8 +96,14 @@ namespace PresentationLayer.Controllers
             return Ok(user);
         }
 
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetFullUserById(int userId)
+        {
+            var user = await userServices.GetFullUserByIdAsync(userId);
+            return Ok(user);
+        }
 
-        [HttpPost("{userId}/following-users/{followedUserId}")]
+        [HttpPost("{userId}/following/{followedUserId}")]
         public async Task<IActionResult> FollowUser(int userId, int followedUserId)
         {
             await userServices.FollowUserAsync(userId, followedUserId);
@@ -105,7 +111,7 @@ namespace PresentationLayer.Controllers
         }
 
 
-        [HttpDelete("{userId}/following-users/{followedUserId}")]
+        [HttpDelete("{userId}/following/{followedUserId}")]
         public async Task<IActionResult> UnfollowUser(int userId, int followedUserId)
         {
             await userServices.UnfollowUserAsync(userId, followedUserId);
@@ -113,7 +119,7 @@ namespace PresentationLayer.Controllers
         }
 
 
-        [HttpGet("{userId}/following-users")]
+        [HttpGet("{userId}/following")]
         public async Task<IActionResult> GetFollowingUsersForUserById(int userId)
         {
             var users = await userServices.GetFollowingUsersForUserByIdAsync(userId);
@@ -121,7 +127,7 @@ namespace PresentationLayer.Controllers
         }
 
 
-        [HttpPost("{userId}/following-tags/{tagId}")]
+        [HttpPost("{userId}/tags/{tagId}/following")]
         public async Task<IActionResult> FollowTag(int userId, int tagId)
         {
             await userServices.FollowTagAsync(userId, tagId);
@@ -129,7 +135,7 @@ namespace PresentationLayer.Controllers
         }
 
 
-        [HttpDelete("{userId}/following-tags/{tagId}")]
+        [HttpDelete("{userId}/tags/{tagId}/following")]
         public async Task<IActionResult> unfollowTag(int userId, int tagId)
         {
             await userServices.UnfollowTagAsync(userId, tagId);
@@ -137,7 +143,7 @@ namespace PresentationLayer.Controllers
         }
 
 
-        [HttpGet("{userId}/following-tags")]
+        [HttpGet("{userId}/tags/following")]
         public async Task<IActionResult> GetFollowingTagsForUserById(int userId)
         {
             var tags = await userServices.GetFollowingTagsForUserByIdAsync(userId);

@@ -27,5 +27,6 @@ namespace PersistenceLayer.Entities
         public ICollection<Answer> Answers { get; set; } = new List<Answer>();
         public ICollection<Tag> Tags { get; set; } = new List<Tag>();
         public ICollection<QuestionReport> QuestionReports { get; set; } = new List<QuestionReport>();
+        public ICollection<AnswerReport> AnswerReports { get; set; } = new List<AnswerReport>();
     }
 }

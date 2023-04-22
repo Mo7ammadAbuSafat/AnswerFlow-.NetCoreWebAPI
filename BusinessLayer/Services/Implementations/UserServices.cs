@@ -27,7 +27,7 @@ namespace BusinessLayer.Services.Implementations
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<UserInformationResponseDto> RegisterUserAsync(UserRegistrationRequestDto userRegistration)
+        public async Task<UserOverviewResponseDto> RegisterUserAsync(UserRegistrationRequestDto userRegistration)
         {
 
             if (userRepository.CheckIfEmailExists(userRegistration.Email))
@@ -49,10 +49,10 @@ namespace BusinessLayer.Services.Implementations
             SendEmailWithCode(user.Email, "Verification Account", user.VerificationCode);
             await userRepository.AddAsync(user);
             await unitOfWork.SaveChangesAsync();
-            return mapper.Map<UserInformationResponseDto>(user);
+            return mapper.Map<UserOverviewResponseDto>(user);
         }
 
-        public async Task<UserInformationResponseDto> LoginUserAsync(UserLoginRequestDto userLogin)
+        public async Task<UserOverviewResponseDto> LoginUserAsync(UserLoginRequestDto userLogin)
         {
             var user = await userRepository.GetUserByEmail(userLogin.Email);
             if (user == null)
@@ -69,10 +69,10 @@ namespace BusinessLayer.Services.Implementations
             {
                 throw new BadRequestException($"You must Verify your email");
             }
-            return mapper.Map<UserInformationResponseDto>(user);
+            return mapper.Map<UserOverviewResponseDto>(user);
         }
 
-        public async Task<UserInformationResponseDto> VerifyEmailAsync(int userId, string code)
+        public async Task<UserOverviewResponseDto> VerifyEmailAsync(int userId, string code)
         {
             var user = await userRepository.GetUserById(userId);
             if (user == null)
@@ -85,7 +85,7 @@ namespace BusinessLayer.Services.Implementations
             }
             user.VerifiedDate = DateTime.Now;
             await unitOfWork.SaveChangesAsync();
-            return mapper.Map<UserInformationResponseDto>(user);
+            return mapper.Map<UserOverviewResponseDto>(user);
         }
 
         public async Task ResendVerificationCodeAsync(int userId)
@@ -226,7 +226,7 @@ namespace BusinessLayer.Services.Implementations
             return num.ToString();
         }
 
-        public async Task<UserInformationResponseDto> UpdateUserInformationAsync(int userId, UserInformationToUpdateRequestDto userInformationDto)
+        public async Task<UserOverviewResponseDto> UpdateUserInformationAsync(int userId, UserInformationToUpdateRequestDto userInformationDto)
         {
             var user = await userRepository.GetUserById(userId);
             if (user == null)
@@ -236,7 +236,7 @@ namespace BusinessLayer.Services.Implementations
             user.Username = userInformationDto.Username;
             user.About = userInformationDto.About;
             await unitOfWork.SaveChangesAsync();
-            return mapper.Map<UserInformationResponseDto>(user);
+            return mapper.Map<UserOverviewResponseDto>(user);
         }
 
         public async Task<UserOverviewResponseDto> GetUserByEmailAsync(string email)
@@ -247,6 +247,16 @@ namespace BusinessLayer.Services.Implementations
                 throw new NotFoundException("No user with this email");
             }
             return mapper.Map<UserOverviewResponseDto>(user);
+        }
+
+        public async Task<FullUserResponseDto> GetFullUserByIdAsync(int userId)
+        {
+            var user = await userRepository.GetFullUserById(userId);
+            if (user == null)
+            {
+                throw new NotFoundException("No user with this id");
+            }
+            return mapper.Map<FullUserResponseDto>(user);
         }
 
         public async Task FollowUserAsync(int userId, int followedUserId)

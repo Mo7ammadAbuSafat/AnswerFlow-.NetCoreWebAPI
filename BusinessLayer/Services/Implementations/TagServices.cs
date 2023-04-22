@@ -49,8 +49,13 @@ namespace BusinessLayer.Services.Implementations
                 throw new BadRequestException("tag is not exist");
             }
 
+            var tagWithNewName = await tagRepository.GetTagByNameAsync(tagRequestDto.Name);
+            if (tagWithNewName != null && tagWithNewName.Id != tag.Id)
+            {
+                throw new BadRequestException("tag already exist");
+            }
+
             tag.Name = tagRequestDto.Name.ToLower();
-            tag.Description = tagRequestDto.Description;
             tag.SourceLink = tagRequestDto.SourceLink;
 
             await unitOfWork.SaveChangesAsync();
@@ -68,7 +73,6 @@ namespace BusinessLayer.Services.Implementations
             tagRepository.Delete(tag);
             await unitOfWork.SaveChangesAsync();
         }
-
 
     }
 }

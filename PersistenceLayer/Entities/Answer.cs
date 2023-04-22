@@ -13,7 +13,6 @@ namespace PersistenceLayer.Entities
         public AnswerStatus AnswerStatus { get; set; }
         public Question Question { get; set; }
         public int QuestionId { get; set; }
-
-
+        public ICollection<AnswerReport> Reports { get; set; } = new List<AnswerReport>();
     }
 }

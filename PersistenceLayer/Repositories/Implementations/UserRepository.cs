@@ -39,6 +39,22 @@ namespace PresentationLayer.Repositories.Implementations
                 .Where(c => c.Id == userId)
                 .Include(c => c.Image)
                 .Include(c => c.SavedQuestions)
+                .Include(c => c.Tags)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<User> GetFullUserById(int userId)
+        {
+            return await context.Users
+                .Where(c => c.Id == userId)
+                .Include(c => c.Image)
+                .Include(c => c.SavedQuestions)
+                .Include(c => c.Tags)
+                .Include(c => c.FollowingUsers)
+                    .ThenInclude(f => f.Image)
+                .Include(c => c.FollowerUsers)
+                    .ThenInclude(f => f.Image)
+
                 .FirstOrDefaultAsync();
         }
 

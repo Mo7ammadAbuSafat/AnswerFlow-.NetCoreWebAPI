@@ -10,6 +10,7 @@ namespace BusinessLayer.DTOs.AnswerDtos
         public string Body { get; set; }
         public DateTime CreationDate { get; set; }
         public AnswerStatus AnswerStatus { get; set; }
+        public int QuestionId { get; set; }
         public UserOverviewResponseDto User { get; set; }
         public ICollection<AnswerVoteResponseDto> Votes { get; set; }
         public int FinalVotesValue

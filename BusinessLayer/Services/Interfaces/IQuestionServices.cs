@@ -7,13 +7,13 @@ namespace BusinessLayer.Services.Interfaces
 {
     public interface IQuestionServices
     {
-        Task<IEnumerable<QuestionResponseDto>> GetAllQuestionsAsync();
-        Task<IEnumerable<QuestionResponseDto>> GetFilteredQuestionsAsync
-            (string? sortBy = null,
-            DateTime? dateTime = null,
-            QuestionStatus? status = null,
-            ICollection<string>? tagNames = null
-            );
+        //Task<IEnumerable<QuestionResponseDto>> GetAllQuestionsAsync();
+        //Task<IEnumerable<QuestionResponseDto>> GetFilteredQuestionsAsync
+        //    (string? sortBy = null,
+        //    DateTime? dateTime = null,
+        //    QuestionStatus? status = null,
+        //    ICollection<string>? tagNames = null
+        //    );
 
         Task<QuestionsWithPaginationResponseDto> GetFilteredQuestionsWithPaginationAsync
             (
@@ -24,8 +24,14 @@ namespace BusinessLayer.Services.Interfaces
             QuestionStatus? questionStatus = null,
             ICollection<string>? tagNames = null
             );
+        Task<QuestionsWithPaginationResponseDto> GetFollowingQuestionsForUserByIdAsync(
+           int pageNumber,
+           int pageSize,
+           int userId);
+        Task<IEnumerable<QuestionResponseDto>> GetQuestionsPostedByUserByIdAsync(int userId);
         Task<QuestionResponseDto> AddNewQuestionAsync(QuestionToAddRequestDto questionToAddRequestDto);
         Task<QuestionResponseDto> UpdateQuestionAsync(int questionId, QuestionUpdateRequestDto questionUpdateRequestDto);
+        Task<QuestionResponseDto> UpdateQuestionTagsAsync(int questionId, QuestionTagsUpdateRequestDto questionTagsUpdateRequestDto);
         Task DeleteQuestionAsync(int questionId);
         Task VoteForAQuestionAsync(int userId, int questionId, VoteType voteType);
         Task DeleteVoteFromAQuestionAsync(int userId, int questionId);
@@ -40,5 +46,7 @@ namespace BusinessLayer.Services.Interfaces
         Task ApproveAnswerAsync(int questionId, int answerId);
         Task ReportQuestionAsync(int questionId, QuestionReportRequestDto questionReportRequestDto);
         Task<IEnumerable<QuestionReportResponseDto>> GetQuestionReportsAsync();
+        Task ReportAnswerAsync(int questionId, int answerId, AnswerReportRequestDto answerReportRequestDto);
+        Task<IEnumerable<AnswerReportResponseDto>> GetAnswerReportsAsync();
     }
 }

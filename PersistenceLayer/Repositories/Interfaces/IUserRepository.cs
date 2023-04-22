@@ -13,6 +13,7 @@ namespace PersistenceLayer.Repositories.Interfaces
         Task<IEnumerable<User>?> GetFollowingUsersForUserById(int userId);
         bool CheckIfEmailExists(string email);
         Task<User> GetUserByEmail(string email);
+        Task<User> GetFullUserById(int userId);
         Task<IEnumerable<Tag>?> GetFollowingTagsForUserById(int userId);
 
     }

@@ -14,6 +14,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
 builder.Services.AddScoped<IQuestionReportRepository, QuestionReportRepository>();
+builder.Services.AddScoped<IAnswerReportRepository, AnswerReportRepository>();
 builder.Services.AddScoped<ITagServices, TagServices>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IQuestionServices, QuestionServices>();

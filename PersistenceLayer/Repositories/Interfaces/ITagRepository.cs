@@ -13,5 +13,6 @@ namespace PersistenceLayer.Repositories.Interfaces
         void Update(Tag tag);
         Task<IEnumerable<Tag>> GetTagsByIdsAsync(IEnumerable<int> tagsIds);
         Task<List<Tag>> GetTagsByNamesAsync(IEnumerable<string> tagsNames);
+
     }
 }

@@ -9,7 +9,7 @@ namespace BusinessLayer.Profiles
         public UserProfile()
         {
             CreateMap<User, UserOverviewResponseDto>();
-            CreateMap<User, UserInformationResponseDto>();
+            CreateMap<User, FullUserResponseDto>();
         }
     }
 }

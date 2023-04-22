@@ -66,7 +66,5 @@ namespace PersistenceLayer.Repositories.Implementations
                 .Where(c => tagsNames.Contains(c.Name))
                 .ToListAsync();
         }
-
-
     }
 }

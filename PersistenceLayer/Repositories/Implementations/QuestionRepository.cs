@@ -82,7 +82,7 @@ namespace PersistenceLayer.Repositories.Implementations
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Question>> GetQuestionsForUserByIdAsync(int userId)
+        public async Task<IEnumerable<Question>> GetQuestionsPostedByUserByIdAsync(int userId)
         {
             return await context.Questions
                 .Where(c => c.UserId == userId)
@@ -90,46 +90,10 @@ namespace PersistenceLayer.Repositories.Implementations
                 .Include(c => c.User.Image)
                 .Include(c => c.Tags)
                 .Include(c => c.Votes)
-                .Include(c => c.EditHistory)
-                .OrderByDescending(c => c.CreationDate)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Question>> GetQuestionsFilteredByTagAsync(Tag tag)
-        {
-            return await context.Questions
-                .Where(c => c.Tags.Any(t => t.Id == tag.Id))
-                .Include(c => c.User)
-                .Include(c => c.User.Image)
-                .Include(c => c.Tags)
-                .Include(c => c.Votes)
-                .Include(c => c.EditHistory)
-                .OrderByDescending(c => c.CreationDate)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Question>> GetQuestionsFilteredByTagsIdAsync(ICollection<int> tagIds)
-        {
-            return await context.Questions
-                .Where(c => c.Tags.Any(t => tagIds.Contains(t.Id)))
-                .Include(c => c.User)
-                .Include(c => c.User.Image)
-                .Include(c => c.Tags)
-                .Include(c => c.Votes)
-                .Include(c => c.EditHistory)
-                .OrderByDescending(c => c.CreationDate)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Question>> GetQuestionsFilteredByTagsAsync(ICollection<Tag> tags)
-        {
-            return await context.Questions
-                .Where(c => c.Tags.Intersect(tags).Any())
-                .Include(c => c.User)
-                .Include(c => c.User.Image)
-                .Include(c => c.Tags)
-                .Include(c => c.Votes)
-                .Include(c => c.EditHistory)
+                .ThenInclude(v => v.User)
+                .Include(c => c.Answers)
+                .Include(c => c.QuestionSavers)
+                .Include(c => c.EditHistory.OrderByDescending(e => e.EditDate))
                 .OrderByDescending(c => c.CreationDate)
                 .ToListAsync();
         }
@@ -143,33 +107,6 @@ namespace PersistenceLayer.Repositories.Implementations
                 .Include(c => c.Tags)
                 .Include(c => c.Votes)
                 .Include(c => c.EditHistory)
-                .OrderByDescending(c => c.CreationDate)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Question>> GetQuestionsFilterdByFollowedUsersForUserByIdAsync(int userId)
-        {
-            return await context.Questions
-                .Where(c => c.User != null && c.User.FollowerUsers.Any(u => u.Id == userId))
-                .Include(c => c.User)
-                .Include(c => c.User.Image)
-                .Include(c => c.Tags)
-                .Include(c => c.Votes)
-                .Include(c => c.EditHistory)
-                .OrderByDescending(c => c.CreationDate)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Question>> GetQuestionsFilterdByFollowedTagsForUserByIdAsync(int userId)
-        {
-            var user = await context.Users.Where(u => u.Id == userId).FirstAsync();
-
-            return await context.Questions
-                .Where(c => (c.User != null) && (c.Tags.Any(t => t.Users.Contains(user))))
-                .Include(c => c.User)
-                .Include(c => c.User.Image)
-                .Include(c => c.Tags)
-                .Include(c => c.Votes)
                 .OrderByDescending(c => c.CreationDate)
                 .ToListAsync();
         }

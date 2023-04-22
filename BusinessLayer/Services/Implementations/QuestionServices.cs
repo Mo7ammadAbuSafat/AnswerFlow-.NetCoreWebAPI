@@ -19,6 +19,7 @@ namespace BusinessLayer.Services.Implementations
         private readonly ITagRepository tagRepository;
         private readonly IAnswerRepository answerRepository;
         private readonly IQuestionReportRepository questionReportRepository;
+        private readonly IAnswerReportRepository answerReportRepository;
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
 
@@ -28,6 +29,7 @@ namespace BusinessLayer.Services.Implementations
             ITagRepository tagRepository,
             IAnswerRepository answerRepository,
             IQuestionReportRepository questionReportRepository,
+            IAnswerReportRepository answerReportRepository,
             IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.questionRepository = questionRepository;
@@ -35,61 +37,62 @@ namespace BusinessLayer.Services.Implementations
             this.tagRepository = tagRepository;
             this.answerRepository = answerRepository;
             this.questionReportRepository = questionReportRepository;
+            this.answerReportRepository = answerReportRepository;
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
 
-        public async Task<IEnumerable<QuestionResponseDto>> GetAllQuestionsAsync()
-        {
-            var questions = await questionRepository.GetAllQuestionsAsync();
-            return mapper.Map<IEnumerable<QuestionResponseDto>>(questions);
-        }
+        //public async Task<IEnumerable<QuestionResponseDto>> GetAllQuestionsAsync()
+        //{
+        //    var questions = await questionRepository.GetAllQuestionsAsync();
+        //    return mapper.Map<IEnumerable<QuestionResponseDto>>(questions);
+        //}
 
-        public async Task<IEnumerable<QuestionResponseDto>> GetFilteredQuestionsAsync
-            (string? sortBy = null,
-            DateTime? dateTime = null,
-            QuestionStatus? status = null,
-            ICollection<string>? tagNames = null
-            )
-        {
-            IQueryable<Question> questions = await questionRepository.GetIQueryableQuestions();
+        //public async Task<IEnumerable<QuestionResponseDto>> GetFilteredQuestionsAsync
+        //    (string? sortBy = null,
+        //    DateTime? dateTime = null,
+        //    QuestionStatus? status = null,
+        //    ICollection<string>? tagNames = null
+        //    )
+        //{
+        //    IQueryable<Question> questions = await questionRepository.GetIQueryableQuestions();
 
-            if (tagNames != null && tagNames.Count != 0)
-            {
-                questions = questions.Where(q => q.Tags.Any(t => tagNames.Contains(t.Name)));
-            }
-            if (dateTime != null)
-            {
-                questions = questions.Where(q => q.CreationDate >= dateTime);
-            }
-            if (status != null)
-            {
-                questions = questions.Where(q => q.Status == status);
-            }
-            if (sortBy != null)
-            {
-                switch (sortBy)
-                {
-                    case "date":
-                        questions = questions.OrderByDescending(q => q.CreationDate);
-                        break;
-                    case "topVoted":
-                        questions = questions.OrderByDescending(q => q.Votes.Count);
-                        break;
-                    case "topAnswered":
-                        questions = questions.OrderByDescending(q => q.Answers.Count);
-                        break;
-                    default:
-                        questions = questions = questions.OrderByDescending(q => q.CreationDate);
-                        break;
-                }
-            }
-            else questions = questions.OrderByDescending(q => q.CreationDate);
+        //    if (tagNames != null && tagNames.Count != 0)
+        //    {
+        //        questions = questions.Where(q => q.Tags.Any(t => tagNames.Contains(t.Name)));
+        //    }
+        //    if (dateTime != null)
+        //    {
+        //        questions = questions.Where(q => q.CreationDate >= dateTime);
+        //    }
+        //    if (status != null)
+        //    {
+        //        questions = questions.Where(q => q.Status == status);
+        //    }
+        //    if (sortBy != null)
+        //    {
+        //        switch (sortBy)
+        //        {
+        //            case "date":
+        //                questions = questions.OrderByDescending(q => q.CreationDate);
+        //                break;
+        //            case "topVoted":
+        //                questions = questions.OrderByDescending(q => q.Votes.Count);
+        //                break;
+        //            case "topAnswered":
+        //                questions = questions.OrderByDescending(q => q.Answers.Count);
+        //                break;
+        //            default:
+        //                questions = questions = questions.OrderByDescending(q => q.CreationDate);
+        //                break;
+        //        }
+        //    }
+        //    else questions = questions.OrderByDescending(q => q.CreationDate);
 
-            var FilteredQuestions = await questions.ToListAsync();
+        //    var FilteredQuestions = await questions.ToListAsync();
 
-            return mapper.Map<IEnumerable<QuestionResponseDto>>(FilteredQuestions);
-        }
+        //    return mapper.Map<IEnumerable<QuestionResponseDto>>(FilteredQuestions);
+        //}
 
         public async Task<QuestionsWithPaginationResponseDto> GetFilteredQuestionsWithPaginationAsync
             (
@@ -153,6 +156,49 @@ namespace BusinessLayer.Services.Implementations
             return result;
         }
 
+        public async Task<QuestionsWithPaginationResponseDto> GetFollowingQuestionsForUserByIdAsync(
+            int pageNumber,
+            int pageSize,
+            int userId)
+        {
+            var user = await userRepository.GetUserById(userId);
+            if (user == null)
+            {
+                throw new NotFoundException("No user with this id");
+            }
+
+            IQueryable<Question> questions = await questionRepository.GetIQueryableQuestions();
+            questions = questions.Where(c => c.User != null &&
+                (c.User.FollowerUsers.Any(u => u.Id == userId) ||
+                c.Tags.Any(t => t.Users.Any(u => u.Id == userId))));
+
+            var numOfPages = Math.Ceiling(questions.Count() / (pageSize * 1f));
+            if (pageNumber > numOfPages && numOfPages != 0)
+            {
+                throw new BadRequestException("num of pages is smaller than page number that you entered");
+            }
+
+            var finalQuestions = await questions
+                                        .Skip((pageNumber - 1) * pageSize)
+                                        .Take(pageSize)
+                                        .OrderByDescending(c => c.CreationDate)
+                                        .ToListAsync();
+            var result = new QuestionsWithPaginationResponseDto()
+            {
+                questions = mapper.Map<IEnumerable<QuestionResponseDto>>(finalQuestions),
+                currentPage = pageNumber,
+                numOfPages = (int)numOfPages
+            };
+
+            return result;
+        }
+
+        public async Task<IEnumerable<QuestionResponseDto>> GetQuestionsPostedByUserByIdAsync(int userId)
+        {
+            var questions = await questionRepository.GetQuestionsPostedByUserByIdAsync(userId);
+            return mapper.Map<IEnumerable<QuestionResponseDto>>(questions);
+        }
+
         public async Task<QuestionResponseDto> GetQuestionByIdAsync(int questionId)
         {
             var question = await questionRepository.GetQuestionByIdAsync(questionId);
@@ -210,6 +256,33 @@ namespace BusinessLayer.Services.Implementations
 
             question.Title = questionUpdateRequestDto.Title;
             question.Body = questionUpdateRequestDto.Body;
+            question.Tags = tags;
+            question.LastEditDate = dateNow;
+            question.EditHistory.Add(editHistory);
+
+            await unitOfWork.SaveChangesAsync();
+
+            return mapper.Map<QuestionResponseDto>(question);
+        }
+
+        public async Task<QuestionResponseDto> UpdateQuestionTagsAsync(int questionId, QuestionTagsUpdateRequestDto questionTagsUpdateRequestDto)
+        {
+            var question = await questionRepository.GetQuestionByIdAsync(questionId);
+            if (question == null)
+            {
+                throw new NotFoundException("No question with this id");
+            }
+            var dateNow = DateTime.Now;
+            var editHistory = new QuestionHistory()
+            {
+                Title = question.Title,
+                Body = question.Body,
+                TagNames = string.Join(", ", question.Tags.Select(t => t.Name).ToArray()),
+                EditDate = dateNow,
+            };
+
+            var tags = await tagRepository.GetTagsByNamesAsync(questionTagsUpdateRequestDto.TagsNames);
+
             question.Tags = tags;
             question.LastEditDate = dateNow;
             question.EditHistory.Add(editHistory);
@@ -500,6 +573,45 @@ namespace BusinessLayer.Services.Implementations
         {
             var reports = await questionReportRepository.GetQuestionReportsAsync();
             return mapper.Map<IEnumerable<QuestionReportResponseDto>>(reports);
+        }
+
+        public async Task ReportAnswerAsync(int questionId, int answerId, AnswerReportRequestDto answerReportRequestDto)
+        {
+            var user = await userRepository.GetUserById(answerReportRequestDto.UserId);
+            if (user == null)
+            {
+                throw new NotFoundException("No user with this id");
+            }
+            var question = await questionRepository.GetQuestionByIdAsync(questionId);
+            if (question == null)
+            {
+                throw new NotFoundException("No question with this id");
+            }
+            var answer = await answerRepository.GetAnswerByIdAsync(answerId);
+            if (answer == null)
+            {
+                throw new NotFoundException("No answer with this id");
+            }
+            if (answer.QuestionId != questionId)
+            {
+                throw new BadRequestException("this answer doesn't for this question");
+            }
+
+            var answerReport = new AnswerReport()
+            {
+                Answer = answer,
+                CreationDate = DateTime.Now,
+                User = user,
+                Description = answerReportRequestDto.Description,
+            };
+            answer.Reports.Add(answerReport);
+            await unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<AnswerReportResponseDto>> GetAnswerReportsAsync()
+        {
+            var reports = await answerReportRepository.GetAnswerReportsAsync();
+            return mapper.Map<IEnumerable<AnswerReportResponseDto>>(reports);
         }
     }
 }
