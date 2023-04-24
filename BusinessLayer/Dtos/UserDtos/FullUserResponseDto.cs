@@ -10,6 +10,7 @@ namespace BusinessLayer.DTOs.UserDtos
         public UserType Type { get; set; }
         public string Email { get; set; } = string.Empty;
         public string About { get; set; } = string.Empty;
+        public bool IsBlockedFromPosting { get; set; }
         public ImageResponseDto Image { get; set; }
         public ICollection<UserOverviewResponseDto> FollowingUsers { get; set; } = new List<UserOverviewResponseDto>();
         public ICollection<UserOverviewResponseDto> FollowerUsers { get; set; } = new List<UserOverviewResponseDto>();

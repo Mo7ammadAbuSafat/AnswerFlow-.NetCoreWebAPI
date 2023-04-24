@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using BusinessLayer.DTOs.AnswerDtos;
 using BusinessLayer.DTOs.QuestionDtos;
-using BusinessLayer.DTOs.QuestionReportDtos;
+using BusinessLayer.DTOs.ReportDtos;
+using BusinessLayer.DTOs.StatisticsDtos;
 using BusinessLayer.Exceptions;
 using BusinessLayer.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -569,12 +570,6 @@ namespace BusinessLayer.Services.Implementations
             await unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<QuestionReportResponseDto>> GetQuestionReportsAsync()
-        {
-            var reports = await questionReportRepository.GetQuestionReportsAsync();
-            return mapper.Map<IEnumerable<QuestionReportResponseDto>>(reports);
-        }
-
         public async Task ReportAnswerAsync(int questionId, int answerId, AnswerReportRequestDto answerReportRequestDto)
         {
             var user = await userRepository.GetUserById(answerReportRequestDto.UserId);
@@ -608,10 +603,18 @@ namespace BusinessLayer.Services.Implementations
             await unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<AnswerReportResponseDto>> GetAnswerReportsAsync()
+        public async Task<QuestionsStatisticsResponseDto> GetQuestionsStatisticsAsync()
         {
-            var reports = await answerReportRepository.GetAnswerReportsAsync();
-            return mapper.Map<IEnumerable<AnswerReportResponseDto>>(reports);
+            var questions = await questionRepository.GetAllQuestionsAsync();
+            var statistics = new QuestionsStatisticsResponseDto()
+            {
+                Count = questions.Count(),
+                OpenQuestionsCount = questions.Where(q => q.Status == QuestionStatus.Open).Count(),
+                ClosedQuestionsCount = questions.Where(q => q.Status == QuestionStatus.Closed).Count(),
+                LastMonthQuestionsCount = questions.Where(q => q.CreationDate >= DateTime.Now.AddMonths(-1)).Count(),
+            };
+            return statistics;
         }
+
     }
 }

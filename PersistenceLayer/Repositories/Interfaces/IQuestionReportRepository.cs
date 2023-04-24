@@ -8,5 +8,6 @@ namespace PersistenceLayer.Repositories.Interfaces
         void Delete(QuestionReport report);
         Task<IEnumerable<QuestionReport>> GetQuestionReportsAsync();
         void Update(QuestionReport report);
+        Task<QuestionReport> GetQuestionReportByIdAsync(int reportId);
     }
 }

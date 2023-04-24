@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BusinessLayer.DTOs.StatisticsDtos;
 using BusinessLayer.DTOs.TagDtos;
 using BusinessLayer.DTOs.UserDtos;
 using BusinessLayer.Exceptions;
@@ -6,6 +7,7 @@ using BusinessLayer.Services.Interfaces;
 using MailKit.Net.Smtp;
 using MimeKit;
 using PersistenceLayer.Entities;
+using PersistenceLayer.Enums;
 using PersistenceLayer.Repositories.Interfaces;
 using System.Security.Cryptography;
 using System.Text;
@@ -239,6 +241,12 @@ namespace BusinessLayer.Services.Implementations
             return mapper.Map<UserOverviewResponseDto>(user);
         }
 
+        public async Task<IEnumerable<UserOverviewResponseDto>> GetUsersAsync()
+        {
+            var users = await userRepository.GetUsers();
+            return mapper.Map<IEnumerable<UserOverviewResponseDto>>(users);
+        }
+
         public async Task<UserOverviewResponseDto> GetUserByEmailAsync(string email)
         {
             var user = await userRepository.GetUserByEmail(email);
@@ -341,6 +349,93 @@ namespace BusinessLayer.Services.Implementations
             }
             user.Tags.Remove(tag);
             await unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task BlockUserFromPostingAsync(int userId)
+        {
+            var user = await userRepository.GetUserById(userId);
+            if (user == null)
+            {
+                throw new BadRequestException("there is no user with this id");
+            }
+            if (user.IsBlockedFromPosting == true)
+            {
+                throw new BadRequestException("the user already  blocked");
+            }
+            if (user.Type == UserType.Expert || user.Type == UserType.Admin)
+            {
+                throw new BadRequestException("you can't block this user");
+            }
+
+            user.IsBlockedFromPosting = true;
+            await unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task UnblockUserFromPostingAsync(int userId)
+        {
+            var user = await userRepository.GetUserById(userId);
+            if (user == null)
+            {
+                throw new BadRequestException("there is no user with this id");
+            }
+            if (user.IsBlockedFromPosting == false)
+            {
+                throw new BadRequestException("the user already  unblocked");
+            }
+
+            user.IsBlockedFromPosting = false;
+            await unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task UpgradeUserToExpertAsync(int userId)
+        {
+            var user = await userRepository.GetUserById(userId);
+            if (user == null)
+            {
+                throw new BadRequestException("there is no user with this id");
+            }
+            if (user.Type == UserType.Expert)
+            {
+                throw new BadRequestException("the user already expert");
+            }
+            if (user.Type == UserType.Admin)
+            {
+                throw new BadRequestException("the user is admin");
+            }
+
+            user.Type = UserType.Expert;
+            user.IsBlockedFromPosting = false;
+            await unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task UpgradeUserToAdminAsync(int userId)
+        {
+            var user = await userRepository.GetUserById(userId);
+            if (user == null)
+            {
+                throw new BadRequestException("there is no user with this id");
+            }
+            if (user.Type == UserType.Admin)
+            {
+                throw new BadRequestException("the user is already admin");
+            }
+
+            user.Type = UserType.Admin;
+            user.IsBlockedFromPosting = false;
+            await unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<UsersStatisticsResponseDto> GetUsersStatisticsAsync()
+        {
+            var users = await userRepository.GetUsers();
+            var statistics = new UsersStatisticsResponseDto()
+            {
+                UsersCount = users.Count(),
+                ExpertUsersCount = users.Where(q => q.Type == UserType.Expert).Count(),
+                LastMonthAddedUsersCount = users.Where(q => q.CreationDate >= DateTime.Now.AddMonths(-1)).Count(),
+                LastMonthAddedExpertsCount = users.Where(q => q.CreationDate >= DateTime.Now.AddMonths(-1) && q.Type == UserType.Expert).Count(),
+            };
+            return statistics;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PersistenceLayer.Entities;
+using PersistenceLayer.Enums;
 
 namespace PersistenceLayer.DbContexts
 {
@@ -90,6 +91,7 @@ namespace PersistenceLayer.DbContexts
             modelBuilder.Entity<User>().Property(u => u.ResetPasswordCode).IsRequired(false);
             modelBuilder.Entity<User>().Property(u => u.ResetPasswordCodeExpiresDate).IsRequired(false);
             modelBuilder.Entity<User>().Property(u => u.ImageId).IsRequired(false);
+            modelBuilder.Entity<User>().Property(p => p.Type).HasDefaultValue(UserType.NormalUser);
             modelBuilder.Entity<User>().Property(u => u.Username).HasColumnType("varchar(40)");
             modelBuilder.Entity<User>().Property(u => u.Email).HasColumnType("varchar(100)");
             modelBuilder.Entity<User>().Property(u => u.VerificationCode).HasColumnType("varchar(20)");
@@ -98,6 +100,9 @@ namespace PersistenceLayer.DbContexts
 
 
             modelBuilder.Entity<Tag>().Property(t => t.SourceLink).IsRequired(false);
+
+            modelBuilder.Entity<AnswerReport>().Property(p => p.Status).HasDefaultValue(ReportStatus.Open);
+            modelBuilder.Entity<QuestionReport>().Property(p => p.Status).HasDefaultValue(ReportStatus.Open);
 
 
         }

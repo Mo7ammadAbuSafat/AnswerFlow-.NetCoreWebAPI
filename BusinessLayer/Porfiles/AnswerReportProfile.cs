@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BusinessLayer.DTOs.QuestionReportDtos;
+using BusinessLayer.DTOs.ReportDtos;
 using PersistenceLayer.Entities;
 
 namespace BusinessLayer.Porfiles
@@ -9,6 +9,7 @@ namespace BusinessLayer.Porfiles
         public AnswerReportProfile()
         {
             CreateMap<AnswerReport, AnswerReportResponseDto>();
+            CreateMap<AnswerReport, ReportResponseDto>();
         }
     }
 }

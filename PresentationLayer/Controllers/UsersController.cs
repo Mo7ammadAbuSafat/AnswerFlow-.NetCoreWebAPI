@@ -1,4 +1,5 @@
-﻿using BusinessLayer.DTOs.UserDtos;
+﻿using BusinessLayer.DTOs.StatisticsDtos;
+using BusinessLayer.DTOs.UserDtos;
 using BusinessLayer.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +15,13 @@ namespace PresentationLayer.Controllers
             this.userServices = userServices;
         }
 
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await userServices.GetUsersAsync();
+            return Ok(users);
+        }
 
         [HttpPost("registration")]
         public async Task<IActionResult> RegisterUser(UserRegistrationRequestDto userRegistration)
@@ -148,6 +156,41 @@ namespace PresentationLayer.Controllers
         {
             var tags = await userServices.GetFollowingTagsForUserByIdAsync(userId);
             return Ok(tags);
+        }
+
+        [HttpPut("{userId}/block")]
+        public async Task<IActionResult> BlockUserFromPosting(int userId)
+        {
+            await userServices.BlockUserFromPostingAsync(userId);
+            return Ok();
+        }
+
+        [HttpPut("{userId}/unblock")]
+        public async Task<IActionResult> UnblockUserFromPosting(int userId)
+        {
+            await userServices.UnblockUserFromPostingAsync(userId);
+            return Ok();
+        }
+
+        [HttpPut("{userId}/upgrade-to-expert")]
+        public async Task<IActionResult> UpgradeUserToExpert(int userId)
+        {
+            await userServices.UpgradeUserToExpertAsync(userId);
+            return Ok();
+        }
+
+        [HttpPut("{userId}/upgrade-to-admin")]
+        public async Task<IActionResult> UpgradeUserToAdmin(int userId)
+        {
+            await userServices.UpgradeUserToAdminAsync(userId);
+            return Ok();
+        }
+
+        [HttpGet("statistics")]
+        public async Task<ActionResult<UsersStatisticsResponseDto>> GetUsersStatistics()
+        {
+            var statistics = await userServices.GetUsersStatisticsAsync();
+            return Ok(statistics);
         }
     }
 }

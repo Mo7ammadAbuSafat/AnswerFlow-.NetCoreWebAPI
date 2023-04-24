@@ -35,7 +35,17 @@ namespace PersistenceLayer.Repositories.Implementations
                 .Include(r => r.User)
                     .ThenInclude(u => u.Image)
                 .Include(r => r.Question)
+                .Include(r => r.Question.Tags)
+                .Include(u => u.User)
+                .Include(u => u.User.Image)
                 .ToListAsync();
+        }
+
+        public async Task<QuestionReport> GetQuestionReportByIdAsync(int reportId)
+        {
+            return await context.QuestionReports
+                .Where(a => a.Id == reportId)
+                .FirstOrDefaultAsync();
         }
 
     }

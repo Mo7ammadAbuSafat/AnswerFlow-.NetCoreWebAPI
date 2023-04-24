@@ -5,7 +5,7 @@ namespace PersistenceLayer.Entities
     public class User
     {
         public int Id { get; set; }
-        public UserType Type { get; set; }
+        public UserType Type { get; set; } = UserType.NormalUser;
         public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public byte[] PasswordHash { get; set; } = new byte[32];
@@ -18,6 +18,7 @@ namespace PersistenceLayer.Entities
         public DateTime CreationDate { get; set; }
         public int? ImageId { get; set; }
         public Image Image { get; set; }
+        public bool IsBlockedFromPosting { get; set; } = false;
         public ICollection<User> FollowingUsers { get; set; } = new List<User>();
         public ICollection<User> FollowerUsers { get; set; } = new List<User>();
         public ICollection<Question> Questions { get; set; } = new List<Question>();
