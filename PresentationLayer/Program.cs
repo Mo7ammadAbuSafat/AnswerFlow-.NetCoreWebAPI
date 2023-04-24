@@ -18,6 +18,7 @@ builder.Services.AddScoped<IAnswerReportRepository, AnswerReportRepository>();
 builder.Services.AddScoped<ITagServices, TagServices>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IQuestionServices, QuestionServices>();
+builder.Services.AddScoped<IReportServices, ReportServices>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();

@@ -33,6 +33,14 @@ namespace PresentationLayer.Repositories.Implementations
             return await context.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<User>> GetUsers()
+        {
+            return await context.Users
+               .Include(c => c.Image)
+               .OrderBy(c => c.Username)
+               .ToListAsync();
+        }
+
         public async Task<User> GetUserById(int userId)
         {
             return await context.Users

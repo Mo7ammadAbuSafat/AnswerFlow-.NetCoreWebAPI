@@ -13,5 +13,6 @@ namespace PersistenceLayer.Repositories.Interfaces
         Task<Question> GetQuestionByIdAsync(int questionId);
         Task<IEnumerable<Question>> GetQuestionsAnsweredByUserByIdAsync(int userId);
         Task<IEnumerable<Question>> GetQuestionsPostedByUserByIdAsync(int userId);
+
     }
 }

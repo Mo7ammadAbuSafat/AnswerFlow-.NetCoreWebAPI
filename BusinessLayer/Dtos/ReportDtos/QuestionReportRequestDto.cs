@@ -1,4 +1,4 @@
-﻿namespace BusinessLayer.DTOs.QuestionReportDtos
+﻿namespace BusinessLayer.DTOs.ReportDtos
 {
     public class QuestionReportRequestDto
     {

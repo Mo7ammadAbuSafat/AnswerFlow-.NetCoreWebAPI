@@ -2,8 +2,8 @@
 {
     public enum UserType
     {
-        Admin = 1,
+        Admin = 3,
         Expert = 2,
-        NormalUser = 3
+        NormalUser = 1
     }
 }

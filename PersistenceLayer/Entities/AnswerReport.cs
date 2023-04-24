@@ -1,4 +1,6 @@
-﻿namespace PersistenceLayer.Entities
+﻿using PersistenceLayer.Enums;
+
+namespace PersistenceLayer.Entities
 {
     public class AnswerReport
     {
@@ -9,5 +11,6 @@
         public Answer Answer { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
+        public ReportStatus Status { get; set; }
     }
 }

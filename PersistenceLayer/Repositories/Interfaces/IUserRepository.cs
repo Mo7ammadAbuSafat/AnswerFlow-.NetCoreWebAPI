@@ -6,6 +6,7 @@ namespace PersistenceLayer.Repositories.Interfaces
     {
         Task AddAsync(User user);
         void Delete(User user);
+        Task<IEnumerable<User>> GetUsers();
         Task<User> GetUserById(int userId);
         Task<int> SaveChangesAsync();
         void Update(User user);

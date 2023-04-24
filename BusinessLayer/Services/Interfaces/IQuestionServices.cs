@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.DTOs.AnswerDtos;
 using BusinessLayer.DTOs.QuestionDtos;
-using BusinessLayer.DTOs.QuestionReportDtos;
+using BusinessLayer.DTOs.ReportDtos;
+using BusinessLayer.DTOs.StatisticsDtos;
 using PersistenceLayer.Enums;
 
 namespace BusinessLayer.Services.Interfaces
@@ -45,8 +46,7 @@ namespace BusinessLayer.Services.Interfaces
         Task DeleteSavedQuestionAsync(int userId, int questionId);
         Task ApproveAnswerAsync(int questionId, int answerId);
         Task ReportQuestionAsync(int questionId, QuestionReportRequestDto questionReportRequestDto);
-        Task<IEnumerable<QuestionReportResponseDto>> GetQuestionReportsAsync();
         Task ReportAnswerAsync(int questionId, int answerId, AnswerReportRequestDto answerReportRequestDto);
-        Task<IEnumerable<AnswerReportResponseDto>> GetAnswerReportsAsync();
+        Task<QuestionsStatisticsResponseDto> GetQuestionsStatisticsAsync();
     }
 }

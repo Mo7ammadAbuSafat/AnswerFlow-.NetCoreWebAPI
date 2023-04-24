@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.DTOs.AnswerDtos;
 using BusinessLayer.DTOs.QuestionDtos;
-using BusinessLayer.DTOs.QuestionReportDtos;
+using BusinessLayer.DTOs.ReportDtos;
+using BusinessLayer.DTOs.StatisticsDtos;
 using BusinessLayer.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using PersistenceLayer.Enums;
@@ -188,13 +189,6 @@ namespace PresentationLayer.Controllers
             return Ok();
         }
 
-        [HttpGet("reports")]
-        public async Task<ActionResult<IEnumerable<QuestionReportResponseDto>>> GetQuestionReports()
-        {
-            var reports = await questionServices.GetQuestionReportsAsync();
-            return Ok(reports);
-        }
-
         [HttpPost("{questionId}/reports")]
         public async Task<IActionResult> ReportQuestion([FromRoute] int questionId, QuestionReportRequestDto questionReportRequestDto)
         {
@@ -202,18 +196,18 @@ namespace PresentationLayer.Controllers
             return Ok();
         }
 
-        [HttpGet("answers/reports")]
-        public async Task<ActionResult<IEnumerable<AnswerReportResponseDto>>> GetAnswerReports()
-        {
-            var reports = await questionServices.GetAnswerReportsAsync();
-            return Ok(reports);
-        }
-
         [HttpPost("{questionId}/answers/{answerId}/reports")]
         public async Task<IActionResult> ReportAnswer([FromRoute] int questionId, [FromRoute] int answerId, AnswerReportRequestDto answerReportRequestDto)
         {
             await questionServices.ReportAnswerAsync(questionId, answerId, answerReportRequestDto);
             return Ok();
+        }
+
+        [HttpGet("statistics")]
+        public async Task<ActionResult<QuestionsStatisticsResponseDto>> GetQuestionsStatistics()
+        {
+            var statistics = await questionServices.GetQuestionsStatisticsAsync();
+            return Ok(statistics);
         }
     }
 }

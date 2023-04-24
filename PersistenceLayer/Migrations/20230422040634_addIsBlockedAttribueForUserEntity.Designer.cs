@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PersistenceLayer.DbContexts;
 
@@ -11,9 +12,11 @@ using PersistenceLayer.DbContexts;
 namespace PersistenceLayer.Migrations
 {
     [DbContext(typeof(AnswerFlowContext))]
-    partial class AnswerFlowContextModelSnapshot : ModelSnapshot
+    [Migration("20230422040634_addIsBlockedAttribueForUserEntity")]
+    partial class addIsBlockedAttribueForUserEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,11 +75,6 @@ namespace PersistenceLayer.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -222,11 +220,6 @@ namespace PersistenceLayer.Migrations
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -327,9 +320,7 @@ namespace PersistenceLayer.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Type")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(1);
+                        .HasColumnType("int");
 
                     b.Property<string>("Username")
                         .IsRequired()
