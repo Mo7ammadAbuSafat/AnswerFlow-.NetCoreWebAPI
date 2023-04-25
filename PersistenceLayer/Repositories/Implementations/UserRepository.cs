@@ -48,6 +48,7 @@ namespace PresentationLayer.Repositories.Implementations
                 .Include(c => c.Image)
                 .Include(c => c.SavedQuestions)
                 .Include(c => c.Tags)
+                .Include(c => c.FollowingUsers)
                 .FirstOrDefaultAsync();
         }
 
@@ -103,5 +104,13 @@ namespace PresentationLayer.Repositories.Implementations
             return user?.Tags;
         }
 
+        public async Task<IEnumerable<string>> GetUserActivityCurrentYearStatistic(int userId)
+        {
+            return await context.ActivityDateView
+               .Where(a => a.UserId == userId)
+               .Select(m => m.Date.ToString("yyyy/MM/dd"))
+               .Distinct()
+               .ToListAsync();
+        }
     }
 }

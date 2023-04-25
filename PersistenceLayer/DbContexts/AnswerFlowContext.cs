@@ -16,6 +16,7 @@ namespace PersistenceLayer.DbContexts
         public DbSet<AnswerVote> AnswerVotes { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Image> Images { get; set; }
+        public DbSet<ActivityDateView> ActivityDateView { get; set; }
 
 
         public AnswerFlowContext(DbContextOptions<AnswerFlowContext> options) : base(options) { }
@@ -104,6 +105,7 @@ namespace PersistenceLayer.DbContexts
             modelBuilder.Entity<AnswerReport>().Property(p => p.Status).HasDefaultValue(ReportStatus.Open);
             modelBuilder.Entity<QuestionReport>().Property(p => p.Status).HasDefaultValue(ReportStatus.Open);
 
+            modelBuilder.Entity<ActivityDateView>().HasNoKey().ToView("ActivityDateView");
 
         }
     }

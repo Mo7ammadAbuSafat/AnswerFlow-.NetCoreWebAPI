@@ -17,13 +17,21 @@ namespace BusinessLayer.Services.Implementations
     public class UserServices : IUserServices
     {
         private readonly IUserRepository userRepository;
+        private readonly IQuestionRepository questionRepository;
+        private readonly IAnswerRepository answerRepository;
         private readonly IMapper mapper;
         private readonly ITagRepository tagRepository;
         private readonly IUnitOfWork unitOfWork;
 
-        public UserServices(IUserRepository userRepository, IMapper mapper, ITagRepository tagRepository, IUnitOfWork unitOfWork)
+        public UserServices(IUserRepository userRepository,
+            IAnswerRepository answerRepository,
+            IQuestionRepository questionRepository,
+            IMapper mapper, ITagRepository tagRepository,
+            IUnitOfWork unitOfWork)
         {
             this.userRepository = userRepository;
+            this.questionRepository = questionRepository;
+            this.answerRepository = answerRepository;
             this.mapper = mapper;
             this.tagRepository = tagRepository;
             this.unitOfWork = unitOfWork;
@@ -272,12 +280,20 @@ namespace BusinessLayer.Services.Implementations
             var user = await userRepository.GetUserById(userId);
             if (user == null)
             {
-                throw new BadRequestException($"there is no user with this id: {userId}");
+                throw new NotFoundException($"there is no user with this id: {userId}");
             }
             var followedUser = await userRepository.GetUserById(followedUserId);
             if (followedUser == null)
             {
-                throw new BadRequestException($"there is no user with this id: {followedUserId}");
+                throw new NotFoundException($"there is no user with this id: {followedUserId}");
+            }
+            if (userId == followedUserId)
+            {
+                throw new BadRequestException($"you can't follow your self");
+            }
+            if (user.FollowingUsers.Any(u => u.Id == followedUserId))
+            {
+                throw new BadRequestException($"you already followed this user");
             }
             user.FollowingUsers.Add(followedUser);
             await unitOfWork.SaveChangesAsync();
@@ -434,6 +450,32 @@ namespace BusinessLayer.Services.Implementations
                 ExpertUsersCount = users.Where(q => q.Type == UserType.Expert).Count(),
                 LastMonthAddedUsersCount = users.Where(q => q.CreationDate >= DateTime.Now.AddMonths(-1)).Count(),
                 LastMonthAddedExpertsCount = users.Where(q => q.CreationDate >= DateTime.Now.AddMonths(-1) && q.Type == UserType.Expert).Count(),
+            };
+            return statistics;
+        }
+
+        public async Task<IEnumerable<string>> GetUserActivityCurrentYearStatisticAsync(int userId)
+        {
+            var user = await userRepository.GetUserById(userId);
+            if (user == null)
+            {
+                throw new BadRequestException($"there is no user with this id: {userId}");
+            }
+
+            return await userRepository.GetUserActivityCurrentYearStatistic(userId);
+        }
+
+        public async Task<UserStatisticsResponseDto> GetUserStatisticsAsync(int userId)
+        {
+            int approvedAnswersCount = await answerRepository.ApprovedAnswersCountForUserById(userId);
+            var userQuestions = await questionRepository.GetQuestionsPostedByUserByIdAsync(userId);
+
+
+            var statistics = new UserStatisticsResponseDto()
+            {
+                ApprovedAnswersCount = approvedAnswersCount,
+                QuestionsCount = userQuestions.Count(),
+                LastMonthQuestionsCount = userQuestions.Where(q => q.CreationDate >= DateTime.Now.AddMonths(-1)).Count(),
             };
             return statistics;
         }

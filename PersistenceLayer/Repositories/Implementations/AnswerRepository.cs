@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PersistenceLayer.DbContexts;
 using PersistenceLayer.Entities;
+using PersistenceLayer.Enums;
 using PersistenceLayer.Repositories.Interfaces;
 
 namespace PersistenceLayer.Repositories.Implementations
@@ -41,6 +42,13 @@ namespace PersistenceLayer.Repositories.Implementations
                 .Include(a => a.Votes)
                 .ThenInclude(v => v.User)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<int> ApprovedAnswersCountForUserById(int userId)
+        {
+            return await context.Answers
+                .Where(a => a.UserId == userId && a.AnswerStatus == AnswerStatus.Approved)
+                .CountAsync();
         }
     }
 }
