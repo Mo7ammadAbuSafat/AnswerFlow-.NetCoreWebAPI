@@ -16,6 +16,8 @@ namespace PersistenceLayer.Repositories.Interfaces
         Task<User> GetUserByEmail(string email);
         Task<User> GetFullUserById(int userId);
         Task<IEnumerable<Tag>?> GetFollowingTagsForUserById(int userId);
+        Task<IEnumerable<string>> GetUserActivityCurrentYearStatistic(int userId);
+
 
     }
 }

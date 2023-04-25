@@ -29,5 +29,7 @@ namespace BusinessLayer.Services.Interfaces
         Task UpgradeUserToExpertAsync(int userId);
         Task UpgradeUserToAdminAsync(int userId);
         Task<UsersStatisticsResponseDto> GetUsersStatisticsAsync();
+        Task<IEnumerable<string>> GetUserActivityCurrentYearStatisticAsync(int userId);
+        Task<UserStatisticsResponseDto> GetUserStatisticsAsync(int userId);
     }
 }

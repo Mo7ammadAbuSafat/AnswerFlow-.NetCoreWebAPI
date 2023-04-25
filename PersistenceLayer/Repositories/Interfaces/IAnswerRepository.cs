@@ -9,5 +9,6 @@ namespace PersistenceLayer.Repositories.Interfaces
         Task<Answer> GetAnswerByIdAsync(int answerId);
         Task<int> SaveChangesAsync();
         void Update(Answer answer);
+        Task<int> ApprovedAnswersCountForUserById(int userId);
     }
 }

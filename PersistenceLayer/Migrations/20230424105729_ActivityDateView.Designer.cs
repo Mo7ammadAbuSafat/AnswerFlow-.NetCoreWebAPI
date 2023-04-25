@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PersistenceLayer.DbContexts;
 
@@ -11,9 +12,11 @@ using PersistenceLayer.DbContexts;
 namespace PersistenceLayer.Migrations
 {
     [DbContext(typeof(AnswerFlowContext))]
-    partial class AnswerFlowContextModelSnapshot : ModelSnapshot
+    [Migration("20230424105729_ActivityDateView")]
+    partial class ActivityDateView
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,7 +55,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Answers", (string)null);
+                    b.ToTable("Answers");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.AnswerReport", b =>
@@ -87,7 +90,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AnswerReports", (string)null);
+                    b.ToTable("AnswerReports");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.AnswerVote", b =>
@@ -116,7 +119,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AnswerVotes", (string)null);
+                    b.ToTable("AnswerVotes");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.Image", b =>
@@ -133,7 +136,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.Question", b =>
@@ -168,7 +171,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Questions", (string)null);
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.QuestionHistory", b =>
@@ -201,7 +204,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("QuestionHistories", (string)null);
+                    b.ToTable("QuestionHistories");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.QuestionReport", b =>
@@ -236,7 +239,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("QuestionReports", (string)null);
+                    b.ToTable("QuestionReports");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.QuestionVote", b =>
@@ -265,7 +268,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("QuestionVotes", (string)null);
+                    b.ToTable("QuestionVotes");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.Tag", b =>
@@ -285,7 +288,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags", (string)null);
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.User", b =>
@@ -346,7 +349,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("QuestionTag", b =>

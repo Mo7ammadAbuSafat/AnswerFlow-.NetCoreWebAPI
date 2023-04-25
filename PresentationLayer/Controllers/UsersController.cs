@@ -192,5 +192,19 @@ namespace PresentationLayer.Controllers
             var statistics = await userServices.GetUsersStatisticsAsync();
             return Ok(statistics);
         }
+
+        [HttpGet("{userId}/calendar-statistics")]
+        public async Task<ActionResult<IEnumerable<int>>> GetUserActivityCurrentYearStatistic(int userId)
+        {
+            var calendar = await userServices.GetUserActivityCurrentYearStatisticAsync(userId);
+            return Ok(calendar);
+        }
+
+        [HttpGet("{userId}/statistics")]
+        public async Task<ActionResult<UserStatisticsResponseDto>> GetUserStatistics(int userId)
+        {
+            var statistics = await userServices.GetUserStatisticsAsync(userId);
+            return Ok(statistics);
+        }
     }
 }
