@@ -63,6 +63,16 @@ namespace PresentationLayer.Controllers
             return Ok(questions);
         }
 
+        [HttpGet("users/{userId}/saved")]
+        public async Task<ActionResult<IEnumerable<QuestionsWithPaginationResponseDto>>> GetSavedQuestionsForUserById(
+            [FromQuery] int pageNumber,
+            [FromQuery] int pageSize,
+            [FromRoute] int userId)
+        {
+            var questions = await questionServices.GetSavedQuestionsForUserByIdAsync(pageNumber, pageSize, userId);
+            return Ok(questions);
+        }
+
         [HttpGet("users/{userId}")]
         public async Task<ActionResult<IEnumerable<QuestionResponseDto>>> GetQuestionsPostedByUserById(int userId)
         {

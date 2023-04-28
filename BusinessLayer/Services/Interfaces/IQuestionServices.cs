@@ -29,6 +29,11 @@ namespace BusinessLayer.Services.Interfaces
            int pageNumber,
            int pageSize,
            int userId);
+
+        Task<QuestionsWithPaginationResponseDto> GetSavedQuestionsForUserByIdAsync(
+           int pageNumber,
+           int pageSize,
+           int userId);
         Task<IEnumerable<QuestionResponseDto>> GetQuestionsPostedByUserByIdAsync(int userId);
         Task<QuestionResponseDto> AddNewQuestionAsync(QuestionToAddRequestDto questionToAddRequestDto);
         Task<QuestionResponseDto> UpdateQuestionAsync(int questionId, QuestionUpdateRequestDto questionUpdateRequestDto);

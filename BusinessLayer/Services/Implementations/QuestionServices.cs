@@ -194,6 +194,42 @@ namespace BusinessLayer.Services.Implementations
             return result;
         }
 
+        public async Task<QuestionsWithPaginationResponseDto> GetSavedQuestionsForUserByIdAsync(
+            int pageNumber,
+            int pageSize,
+            int userId)
+        {
+            var user = await userRepository.GetUserById(userId);
+            if (user == null)
+            {
+                throw new NotFoundException("No user with this id");
+            }
+
+            IQueryable<Question> questions = await questionRepository.GetIQueryableQuestions();
+            questions = questions.Where(c => c.User != null &&
+                c.QuestionSavers.Any(u => u.Id == userId));
+
+            var numOfPages = Math.Ceiling(questions.Count() / (pageSize * 1f));
+            if (pageNumber > numOfPages && numOfPages != 0)
+            {
+                throw new BadRequestException("num of pages is smaller than page number that you entered");
+            }
+
+            var finalQuestions = await questions
+                                        .Skip((pageNumber - 1) * pageSize)
+                                        .Take(pageSize)
+                                        .OrderByDescending(c => c.CreationDate)
+                                        .ToListAsync();
+            var result = new QuestionsWithPaginationResponseDto()
+            {
+                questions = mapper.Map<IEnumerable<QuestionResponseDto>>(finalQuestions),
+                currentPage = pageNumber,
+                numOfPages = (int)numOfPages
+            };
+
+            return result;
+        }
+
         public async Task<IEnumerable<QuestionResponseDto>> GetQuestionsPostedByUserByIdAsync(int userId)
         {
             var questions = await questionRepository.GetQuestionsPostedByUserByIdAsync(userId);
@@ -216,6 +252,10 @@ namespace BusinessLayer.Services.Implementations
             if (user == null)
             {
                 throw new NotFoundException("No user with this id");
+            }
+            if (user.IsBlockedFromPosting == true)
+            {
+                throw new BadRequestException("the user is blocked from posting");
             }
 
             questionToAddRequestDto.TagsNames = questionToAddRequestDto.TagsNames.Select(t => t.ToLower()).ToList();
@@ -418,6 +458,10 @@ namespace BusinessLayer.Services.Implementations
             if (user == null)
             {
                 throw new NotFoundException("No user with this id");
+            }
+            if (user.IsBlockedFromPosting == true)
+            {
+                throw new BadRequestException("the user is blocked from posting");
             }
             var question = await questionRepository.GetQuestionByIdAsync(questionId);
             if (question == null)
