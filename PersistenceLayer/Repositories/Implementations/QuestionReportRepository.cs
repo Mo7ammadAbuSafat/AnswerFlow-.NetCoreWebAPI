@@ -13,27 +13,11 @@ namespace PersistenceLayer.Repositories.Implementations
             this.context = context;
         }
 
-
-        public async Task AddAsync(QuestionReport report)
-        {
-            await context.QuestionReports.AddAsync(report);
-        }
-
-        public void Delete(QuestionReport report)
-        {
-            context.QuestionReports.Remove(report);
-        }
-
-        public void Update(QuestionReport report)
-        {
-            context.QuestionReports.Update(report);
-        }
-
         public async Task<IEnumerable<QuestionReport>> GetQuestionReportsAsync()
         {
             return await context.QuestionReports
                 .Include(r => r.User)
-                    .ThenInclude(u => u.Image)
+                .Include(r => r.User.Image)
                 .Include(r => r.Question)
                 .Include(r => r.Question.Tags)
                 .Include(u => u.User)

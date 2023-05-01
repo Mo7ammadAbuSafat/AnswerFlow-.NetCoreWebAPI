@@ -8,7 +8,7 @@ namespace BusinessLayer.Porfiles
     {
         public QuestionVoteProfile()
         {
-            CreateMap<QuestionVote, QuestionVoteResponseDto>();
+            CreateMap<QuestionVote, VoteResponseDto>();
         }
     }
 }

@@ -23,16 +23,6 @@ namespace PresentationLayer.Repositories.Implementations
             context.Users.Remove(user);
         }
 
-        public void Update(User user)
-        {
-            context.Users.Update(user);
-        }
-
-        public async Task<int> SaveChangesAsync()
-        {
-            return await context.SaveChangesAsync();
-        }
-
         public async Task<IEnumerable<User>> GetUsers()
         {
             return await context.Users
@@ -67,20 +57,19 @@ namespace PresentationLayer.Repositories.Implementations
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<User>?> GetFollowingUsersForUserById(int userId)
+        public async Task<IEnumerable<User>> GetFollowingUsersForUserById(int userId)
         {
-            var user = await context.Users
+            return (IEnumerable<User>)await context.Users
                  .Where(c => c.Id == userId)
-                 .Include(u => u.FollowingUsers)
-                 .FirstOrDefaultAsync();
-            return user?.FollowingUsers;
+                 .Select(c => c.FollowingUsers)
+                 .ToListAsync();
+
         }
 
         public async Task<IEnumerable<User>> GetFollowerUsersForUserById(int userId)
         {
             return (IEnumerable<User>)await context.Users
                 .Where(c => c.Id == userId)
-                .Include(u => u.FollowerUsers)
                 .Select(c => c.FollowerUsers)
                 .ToListAsync();
         }
@@ -92,16 +81,18 @@ namespace PresentationLayer.Repositories.Implementations
 
         public async Task<User> GetUserByEmail(string email)
         {
-            return await context.Users.Where(u => u.Email == email).Include(c => c.Image).FirstOrDefaultAsync();
+            return await context.Users
+                .Where(u => u.Email == email)
+                .Include(c => c.Image)
+                .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Tag>?> GetFollowingTagsForUserById(int userId)
+        public async Task<IEnumerable<Tag>> GetFollowingTagsForUserById(int userId)
         {
-            var user = await context.Users
+            return (IEnumerable<Tag>)await context.Users
                  .Where(c => c.Id == userId)
-                 .Include(u => u.Tags)
-                 .FirstOrDefaultAsync();
-            return user?.Tags;
+                 .Select(c => c.Tags)
+                 .ToListAsync();
         }
 
         public async Task<IEnumerable<string>> GetUserActivityCurrentYearStatistic(int userId)

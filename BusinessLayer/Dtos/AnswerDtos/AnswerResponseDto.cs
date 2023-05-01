@@ -12,7 +12,7 @@ namespace BusinessLayer.DTOs.AnswerDtos
         public AnswerStatus AnswerStatus { get; set; }
         public int QuestionId { get; set; }
         public UserOverviewResponseDto User { get; set; }
-        public ICollection<AnswerVoteResponseDto> Votes { get; set; }
+        public ICollection<VoteResponseDto> Votes { get; set; }
         public int FinalVotesValue
         {
             get
