@@ -73,7 +73,7 @@ namespace BusinessLayer.Services.UserAccountServices.Implementations
             return await userInformationServices.GetFullUserByIdAsync(userId);
         }
 
-        public async Task<UserOverviewResponseDto> LoginUserAsync(UserLoginRequestDto userLogin)
+        public async Task<string> LoginUserAsync(UserLoginRequestDto userLogin)
         {
             return await userLoginServices.LoginUserAsync(userLogin);
         }

@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Services.FollowingServices.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PresentationLayer.Controllers
@@ -21,6 +22,7 @@ namespace PresentationLayer.Controllers
             return Ok(tags);
         }
 
+        [Authorize]
         [HttpPost("{tagId}")]
         public async Task<IActionResult> FollowTag(int userId, int tagId)
         {
@@ -28,7 +30,7 @@ namespace PresentationLayer.Controllers
             return Ok("successful");
         }
 
-
+        [Authorize]
         [HttpDelete("{tagId}")]
         public async Task<IActionResult> unfollowTag(int userId, int tagId)
         {

@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.DTOs.AnswerDtos;
 using BusinessLayer.Services.AnswerServices.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PresentationLayer.Controllers
@@ -22,6 +23,7 @@ namespace PresentationLayer.Controllers
             return Ok(answer);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<AnswerResponseDto>> AddNewAnswer(int questionId, [FromBody] AnswerToAddRequestDto answerToAddRequestDto)
         {
@@ -29,6 +31,7 @@ namespace PresentationLayer.Controllers
             return Ok(answer);
         }
 
+        [Authorize]
         [HttpPut("{answerId}")]
         public async Task<ActionResult<AnswerResponseDto>> UpdateAnswer(int questionId, int answerId, [FromBody] AnswerUpdateRequestDto answerUpdateRequestDto)
         {
@@ -36,6 +39,7 @@ namespace PresentationLayer.Controllers
             return Ok(answer);
         }
 
+        [Authorize]
         [HttpDelete("{answerId}")]
         public async Task<IActionResult> DeleteAnswer(int questionId, int answerId)
         {
@@ -43,6 +47,7 @@ namespace PresentationLayer.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Admin,Expert")]
         [HttpPut("{answerId}/approve")]
         public async Task<IActionResult> ApproveAnswer(int questionId, int answerId)
         {

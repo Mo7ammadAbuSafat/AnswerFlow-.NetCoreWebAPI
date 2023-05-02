@@ -16,12 +16,17 @@ using BusinessLayer.Services.UserAccountServices.Implementations;
 using BusinessLayer.Services.UserAccountServices.Interfaces;
 using BusinessLayer.Services.VoteServices.Implementations;
 using BusinessLayer.Services.VoteServices.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using PersistenceLayer.DbContexts;
 using PersistenceLayer.Repositories.Implementations;
 using PersistenceLayer.Repositories.Interfaces;
 using PresentationLayer;
 using PresentationLayer.Repositories.Implementations;
+using Swashbuckle.AspNetCore.Filters;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,8 +89,8 @@ builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 
 builder.Services.AddCors(c =>
 {
-    c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().
-     AllowAnyHeader());
+    c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod()
+    .AllowAnyHeader());
 });
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -98,7 +103,33 @@ builder.Services.AddControllers(options =>
 .AddXmlDataContractSerializerFormatters();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 
 var app = builder.Build();
 
@@ -115,6 +146,8 @@ app.UseCors("AllowOrigin");
 app.UseHttpsRedirection();
 
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
