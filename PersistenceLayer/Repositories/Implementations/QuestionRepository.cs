@@ -24,16 +24,6 @@ namespace PersistenceLayer.Repositories.Implementations
             context.Questions.Remove(question);
         }
 
-        public void Update(Question question)
-        {
-            context.Questions.Update(question);
-        }
-
-        public async Task<int> SaveChangesAsync()
-        {
-            return await context.SaveChangesAsync();
-        }
-
         public async Task<IEnumerable<Question>> GetAllQuestionsAsync()
         {
             return await context.Questions
@@ -81,35 +71,5 @@ namespace PersistenceLayer.Repositories.Implementations
                 .Include(c => c.EditHistory)
                 .FirstOrDefaultAsync();
         }
-
-        public async Task<IEnumerable<Question>> GetQuestionsPostedByUserByIdAsync(int userId)
-        {
-            return await context.Questions
-                .Where(c => c.UserId == userId)
-                .Include(c => c.User)
-                .Include(c => c.User.Image)
-                .Include(c => c.Tags)
-                .Include(c => c.Votes)
-                .ThenInclude(v => v.User)
-                .Include(c => c.Answers)
-                .Include(c => c.QuestionSavers)
-                .Include(c => c.EditHistory.OrderByDescending(e => e.EditDate))
-                .OrderByDescending(c => c.CreationDate)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Question>> GetQuestionsAnsweredByUserByIdAsync(int userId)
-        {
-            return await context.Questions
-                .Where(c => c.Answers.Any(a => a.UserId == userId))
-                .Include(c => c.User)
-                .Include(c => c.User.Image)
-                .Include(c => c.Tags)
-                .Include(c => c.Votes)
-                .Include(c => c.EditHistory)
-                .OrderByDescending(c => c.CreationDate)
-                .ToListAsync();
-        }
-
     }
 }

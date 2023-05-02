@@ -1,6 +1,7 @@
-﻿using BusinessLayer.DTOs.StatisticsDtos;
+﻿using BusinessLayer.DTOs.QuestionDtos;
+using BusinessLayer.DTOs.StatisticsDtos;
 using BusinessLayer.DTOs.UserDtos;
-using BusinessLayer.Services.Interfaces;
+using BusinessLayer.Services.UserAccountServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PresentationLayer.Controllers
@@ -9,202 +10,143 @@ namespace PresentationLayer.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserServices userServices;
-        public UsersController(IUserServices userServices)
+        private readonly IUserServicesFacade userServicesFacade;
+
+        public UsersController(IUserServicesFacade userServicesFacade)
         {
-            this.userServices = userServices;
-        }
-
-
-        [HttpGet("all")]
-        public async Task<IActionResult> GetUsers()
-        {
-            var users = await userServices.GetUsersAsync();
-            return Ok(users);
-        }
-
-        [HttpPost("registration")]
-        public async Task<IActionResult> RegisterUser(UserRegistrationRequestDto userRegistration)
-        {
-            var user = await userServices.RegisterUserAsync(userRegistration);
-            return Ok(user);
-        }
-
-
-        [HttpPost("login")]
-        public async Task<IActionResult> LoginUser(UserLoginRequestDto userLogin)
-        {
-            var user = await userServices.LoginUserAsync(userLogin);
-            return Ok(user);
-        }
-
-
-        [HttpPost("{userId}/verifying-email")]
-        public async Task<IActionResult> VerifyUserEmail([FromRoute] int userId, [FromQuery] string code)
-
-        {
-            var user = await userServices.VerifyEmailAsync(userId, code);
-            return Ok(user);
-        }
-
-
-        [HttpPost("{userId}/verification-email-code")]
-        public async Task<IActionResult> ResendEmailVerificationCode([FromRoute] int userId)
-
-        {
-            await userServices.ResendVerificationCodeAsync(userId);
-            return Ok("success");
-        }
-
-
-        [HttpPost("reset-password-code")]
-        public async Task<IActionResult> SendResetPasswordCode([FromQuery] string email)
-
-        {
-            var user = await userServices.SendResetPasswordCodeAsync(email);
-            return Ok(user);
-        }
-
-
-        [HttpPost("{userId}/resend-reset-password-code")]
-        public async Task<IActionResult> ResendResetPasswordCode([FromRoute] int userId)
-        {
-            await userServices.ResendResetPasswordCodeAsync(userId);
-            return Ok("success");
-        }
-
-
-        [HttpPut("{userId}/reset-password-by-code")]
-        public async Task<IActionResult> ResetPasswordByCodeSendedToEmail([FromRoute] int userId, [FromBody] ResetPasswordWithCodeRequestDto resetPasswordDto)
-        {
-            await userServices.ResetPasswordByCodeSendedToEmailAsync(userId, resetPasswordDto);
-            return Ok("success");
-        }
-
-
-        [HttpPut("{userId}/reset-password-by-old-password")]
-        public async Task<IActionResult> ResetPasswordByOldPassword([FromRoute] int userId, [FromBody] ResetPasswordWithOldPasswordRequestDto resetPasswordDto)
-        {
-            await userServices.ResetPasswordByOldPasswordAsync(userId, resetPasswordDto);
-            return Ok("success");
-        }
-
-
-        [HttpPut("{userId}/user-information")]
-        public async Task<IActionResult> UpdateUserInformation([FromRoute] int userId, [FromBody] UserInformationToUpdateRequestDto userInformationDto)
-        {
-            var user = await userServices.UpdateUserInformationAsync(userId, userInformationDto);
-            return Ok(user);
+            this.userServicesFacade = userServicesFacade;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
+        public async Task<IActionResult> GetUsers()
         {
-            var user = await userServices.GetUserByEmailAsync(email);
-            return Ok(user);
+            var users = await userServicesFacade.GetUsersAsync();
+            return Ok(users);
         }
 
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetFullUserById(int userId)
         {
-            var user = await userServices.GetFullUserByIdAsync(userId);
+            var user = await userServicesFacade.GetFullUserByIdAsync(userId);
             return Ok(user);
         }
 
-        [HttpPost("{userId}/following/{followedUserId}")]
-        public async Task<IActionResult> FollowUser(int userId, int followedUserId)
+        [HttpPost("registration")]
+        public async Task<IActionResult> RegisterUser(UserRegistrationRequestDto userRegistration)
         {
-            await userServices.FollowUserAsync(userId, followedUserId);
-            return Ok("successful");
+            var user = await userServicesFacade.RegisterUserAsync(userRegistration);
+            return Ok(user);
         }
 
-
-        [HttpDelete("{userId}/following/{followedUserId}")]
-        public async Task<IActionResult> UnfollowUser(int userId, int followedUserId)
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginUser(UserLoginRequestDto userLogin)
         {
-            await userServices.UnfollowUserAsync(userId, followedUserId);
-            return Ok("successful");
+            var user = await userServicesFacade.LoginUserAsync(userLogin);
+            return Ok(user);
         }
 
+        [HttpPost("verifying-email")]
+        public async Task<IActionResult> VerifyUserEmail([FromRoute] int userId, [FromQuery] string code)
 
-        [HttpGet("{userId}/following")]
-        public async Task<IActionResult> GetFollowingUsersForUserById(int userId)
         {
-            var users = await userServices.GetFollowingUsersForUserByIdAsync(userId);
-            return Ok(users);
+            var user = await userServicesFacade.VerifyEmailAsync(userId, code);
+            return Ok(user);
         }
 
+        [HttpPost("verification-email-code")]
+        public async Task<IActionResult> ResendEmailVerificationCode([FromRoute] int userId)
 
-        [HttpPost("{userId}/tags/{tagId}/following")]
-        public async Task<IActionResult> FollowTag(int userId, int tagId)
         {
-            await userServices.FollowTagAsync(userId, tagId);
-            return Ok("successful");
+            await userServicesFacade.ResendVerificationCodeAsync(userId);
+            return Ok("success");
         }
 
+        [HttpPost("reset-password-code")]
+        public async Task<IActionResult> SendResetPasswordCode([FromQuery] string email)
 
-        [HttpDelete("{userId}/tags/{tagId}/following")]
-        public async Task<IActionResult> unfollowTag(int userId, int tagId)
         {
-            await userServices.UnfollowTagAsync(userId, tagId);
-            return Ok("successful");
+            var user = await userServicesFacade.SendResetPasswordCodeAsync(email);
+            return Ok(user);
         }
 
-
-        [HttpGet("{userId}/tags/following")]
-        public async Task<IActionResult> GetFollowingTagsForUserById(int userId)
+        [HttpPut("reset-password")]
+        public async Task<IActionResult> ResetPasswordByCodeSendedToEmail([FromRoute] int userId, [FromBody] ResetPasswordWithCodeRequestDto resetPasswordDto)
         {
-            var tags = await userServices.GetFollowingTagsForUserByIdAsync(userId);
-            return Ok(tags);
+            await userServicesFacade.ResetPasswordByCodeSendedToEmailAsync(userId, resetPasswordDto);
+            return Ok("success");
         }
 
-        [HttpPut("{userId}/block")]
-        public async Task<IActionResult> BlockUserFromPosting(int userId)
+        [HttpPut("{userId}/change-password")]
+        public async Task<IActionResult> ChangePassword([FromRoute] int userId, [FromBody] ChangePasswordRequestDto resetPasswordDto)
         {
-            await userServices.BlockUserFromPostingAsync(userId);
-            return Ok();
+            await userServicesFacade.ChangePasswordAsync(userId, resetPasswordDto);
+            return Ok("success");
         }
 
-        [HttpPut("{userId}/unblock")]
-        public async Task<IActionResult> UnblockUserFromPosting(int userId)
-        {
-            await userServices.UnblockUserFromPostingAsync(userId);
-            return Ok();
-        }
+        //[HttpPut("{userId}/user-information")]
+        //public async Task<IActionResult> UpdateUserInformation([FromRoute] int userId, [FromBody] UserInformationToUpdateRequestDto userInformationDto)
+        //{
+        //    var user = await userServices.UpdateUserInformationAsync(userId, userInformationDto);
+        //    return Ok(user);
+        //}
 
-        [HttpPut("{userId}/upgrade-to-expert")]
-        public async Task<IActionResult> UpgradeUserToExpert(int userId)
-        {
-            await userServices.UpgradeUserToExpertAsync(userId);
-            return Ok();
-        }
+        //[HttpPut("{userId}/block")]
+        //public async Task<IActionResult> BlockUserFromPosting(int userId)
+        //{
+        //    await userServices.BlockUserFromPostingAsync(userId);
+        //    return Ok();
+        //}
 
-        [HttpPut("{userId}/upgrade-to-admin")]
-        public async Task<IActionResult> UpgradeUserToAdmin(int userId)
-        {
-            await userServices.UpgradeUserToAdminAsync(userId);
-            return Ok();
-        }
+        //[HttpPut("{userId}/unblock")]
+        //public async Task<IActionResult> UnblockUserFromPosting(int userId)
+        //{
+        //    await userServices.UnblockUserFromPostingAsync(userId);
+        //    return Ok();
+        //}
+
+        //[HttpPut("{userId}/upgrade-to-expert")]
+        //public async Task<IActionResult> UpgradeUserToExpert(int userId)
+        //{
+        //    await userServices.UpgradeUserToExpertAsync(userId);
+        //    return Ok();
+        //}
+
+        //[HttpPut("{userId}/upgrade-to-admin")]
+        //public async Task<IActionResult> UpgradeUserToAdmin(int userId)
+        //{
+        //    await userServices.UpgradeUserToAdminAsync(userId);
+        //    return Ok();
+        //}
 
         [HttpGet("statistics")]
         public async Task<ActionResult<UsersStatisticsResponseDto>> GetUsersStatistics()
         {
-            var statistics = await userServices.GetUsersStatisticsAsync();
+            var statistics = await userServicesFacade.GetUsersStatisticsAsync();
             return Ok(statistics);
         }
 
         [HttpGet("{userId}/calendar-statistics")]
         public async Task<ActionResult<IEnumerable<int>>> GetUserActivityCurrentYearStatistic(int userId)
         {
-            var calendar = await userServices.GetUserActivityCurrentYearStatisticAsync(userId);
+            var calendar = await userServicesFacade.GetUserActivityCurrentYearStatisticAsync(userId);
             return Ok(calendar);
         }
 
         [HttpGet("{userId}/statistics")]
         public async Task<ActionResult<UserStatisticsResponseDto>> GetUserStatistics(int userId)
         {
-            var statistics = await userServices.GetUserStatisticsAsync(userId);
+            var statistics = await userServicesFacade.GetUserStatisticsAsync(userId);
             return Ok(statistics);
+        }
+
+        [HttpGet("{userId}/feed")]
+        public async Task<ActionResult<IEnumerable<QuestionsWithPaginationResponseDto>>> GetFollowingQuestionsForUserById(
+            [FromQuery] int pageNumber,
+            [FromQuery] int pageSize,
+            [FromRoute] int userId)
+        {
+            var questions = await userServicesFacade.GetFollowingQuestionsForUserByIdAsync(pageNumber, pageSize, userId);
+            return Ok(questions);
         }
     }
 }

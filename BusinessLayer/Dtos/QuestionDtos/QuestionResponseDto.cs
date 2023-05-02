@@ -15,7 +15,7 @@ namespace BusinessLayer.DTOs.QuestionDtos
         public DateTime CreationDate { get; set; }
         public ICollection<TagResponseDto> Tags { get; set; }
         public ICollection<UserOverviewResponseDto> QuestionSavers { get; set; }
-        public ICollection<QuestionVoteResponseDto> Votes { get; set; }
+        public ICollection<VoteResponseDto> Votes { get; set; }
         public int FinalVotesValue
         {
             get

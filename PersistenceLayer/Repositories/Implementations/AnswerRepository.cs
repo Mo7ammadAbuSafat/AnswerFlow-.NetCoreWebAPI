@@ -14,33 +14,21 @@ namespace PersistenceLayer.Repositories.Implementations
             this.context = context;
         }
 
-
-        public async Task AddAsync(Answer answer)
-        {
-            await context.Answers.AddAsync(answer);
-        }
-
         public void Delete(Answer answer)
         {
             context.Answers.Remove(answer);
         }
 
-        public void Update(Answer answer)
+        public async Task<IEnumerable<Answer>> GetAnswersForQuestionAsync(int questionId)
         {
-            context.Answers.Update(answer);
+            return await context.Answers.Where(a => a.QuestionId == questionId).ToListAsync();
         }
-
-        public async Task<int> SaveChangesAsync()
-        {
-            return await context.SaveChangesAsync();
-        }
-
         public async Task<Answer> GetAnswerByIdAsync(int answerId)
         {
             return await context.Answers
                 .Where(c => c.Id == answerId)
                 .Include(a => a.Votes)
-                .ThenInclude(v => v.User)
+                    .ThenInclude(v => v.User)
                 .FirstOrDefaultAsync();
         }
 

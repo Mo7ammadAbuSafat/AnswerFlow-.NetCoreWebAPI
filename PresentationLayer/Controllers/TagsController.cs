@@ -1,5 +1,5 @@
 ﻿using BusinessLayer.DTOs.TagDtos;
-using BusinessLayer.Services.Interfaces;
+using BusinessLayer.Services.TagServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PresentationLayer.Controllers
