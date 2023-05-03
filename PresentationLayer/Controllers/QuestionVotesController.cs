@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.DTOs.VoteDtos;
 using BusinessLayer.Services.VoteServices.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PresentationLayer.Controllers
@@ -21,6 +22,7 @@ namespace PresentationLayer.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> VoteForAnQuestion(int questionId, VoteRequestDto voteRequestDto)
         {
@@ -28,6 +30,7 @@ namespace PresentationLayer.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpPut("{voteId}")]
         public async Task<IActionResult> EditVoteForQuestion(int questionId, int voteId, VoteRequestDto voteRequestDto)
         {
@@ -35,6 +38,7 @@ namespace PresentationLayer.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpDelete("{voteId}")]
         public async Task<IActionResult> DeleteVoteFromQuestion(int questionId, int voteId, int userId)
         {

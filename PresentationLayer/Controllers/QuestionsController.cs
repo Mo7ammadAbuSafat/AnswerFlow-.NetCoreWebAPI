@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.DTOs.QuestionDtos;
 using BusinessLayer.DTOs.StatisticsDtos;
 using BusinessLayer.Services.QuestionServices.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersistenceLayer.Enums;
 
@@ -40,6 +41,7 @@ namespace PresentationLayer.Controllers
             return Ok(questions);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<QuestionResponseDto>> AddNewQuestion([FromBody] QuestionToAddRequestDto questionToAddRequestDto)
         {
@@ -54,6 +56,7 @@ namespace PresentationLayer.Controllers
             return Ok(question);
         }
 
+        [Authorize]
         [HttpPut("{questionId}")]
         public async Task<ActionResult<QuestionResponseDto>> UpdateQuestion([FromRoute] int questionId, [FromBody] QuestionUpdateRequestDto questionUpdateRequestDto)
         {
@@ -61,6 +64,7 @@ namespace PresentationLayer.Controllers
             return Ok(question);
         }
 
+        [Authorize(Roles = "Admin,Expert")]
         [HttpPut("{questionId}/tags")]
         public async Task<ActionResult<QuestionResponseDto>> UpdateQuestionTags([FromRoute] int questionId, [FromBody] QuestionTagsUpdateRequestDto questionTagsUpdateRequestDto)
         {
@@ -68,6 +72,7 @@ namespace PresentationLayer.Controllers
             return Ok(question);
         }
 
+        [Authorize]
         [HttpDelete("{questionId}")]
         public async Task<IActionResult> DeleteQuestion([FromRoute] int questionId)
         {
@@ -75,6 +80,7 @@ namespace PresentationLayer.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("statistics")]
         public async Task<ActionResult<QuestionsStatisticsResponseDto>> GetQuestionsStatistics()
         {

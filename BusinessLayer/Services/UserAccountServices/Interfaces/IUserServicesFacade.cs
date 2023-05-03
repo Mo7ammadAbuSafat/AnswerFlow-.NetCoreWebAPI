@@ -14,7 +14,7 @@ namespace BusinessLayer.Services.UserAccountServices.Interfaces
         Task<IEnumerable<UserOverviewResponseDto>> GetUsersAsync();
         Task<UsersStatisticsResponseDto> GetUsersStatisticsAsync();
         Task<UserStatisticsResponseDto> GetUserStatisticsAsync(int userId);
-        Task<UserOverviewResponseDto> LoginUserAsync(UserLoginRequestDto userLogin);
+        Task<string> LoginUserAsync(UserLoginRequestDto userLogin);
         Task<UserOverviewResponseDto> RegisterUserAsync(UserRegistrationRequestDto userRegistration);
         Task ResendVerificationCodeAsync(int userId);
         Task ResetPasswordByCodeSendedToEmailAsync(int userId, ResetPasswordWithCodeRequestDto resetPasswordDto);

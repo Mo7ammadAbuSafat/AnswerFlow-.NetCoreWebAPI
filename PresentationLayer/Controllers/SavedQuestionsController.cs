@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.DTOs.QuestionDtos;
 using BusinessLayer.Services.SaveQuestionServices.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PresentationLayer.Controllers
@@ -15,6 +16,7 @@ namespace PresentationLayer.Controllers
             this.savedQuestionServices = savedQuestionServices;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<QuestionsWithPaginationResponseDto>>> GetSavedQuestionsForUserById(
             [FromQuery] int pageNumber,
@@ -25,6 +27,7 @@ namespace PresentationLayer.Controllers
             return Ok(questions);
         }
 
+        [Authorize]
         [HttpPost("{questionId}")]
         public async Task<IActionResult> SaveQuestion(int userId, int questionId)
         {
@@ -32,6 +35,7 @@ namespace PresentationLayer.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpDelete("{questionId}")]
         public async Task<IActionResult> DeleteSavedQuestion(int userId, int questionId)
         {

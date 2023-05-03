@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Services.FollowingServices.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PresentationLayer.Controllers
@@ -21,6 +22,7 @@ namespace PresentationLayer.Controllers
             return Ok(users);
         }
 
+        [Authorize]
         [HttpPost("{followedUserId}")]
         public async Task<IActionResult> FollowUser(int userId, int followedUserId)
         {
@@ -28,7 +30,7 @@ namespace PresentationLayer.Controllers
             return Ok("successful");
         }
 
-
+        [Authorize]
         [HttpDelete("{followedUserId}")]
         public async Task<IActionResult> UnfollowUser(int userId, int followedUserId)
         {

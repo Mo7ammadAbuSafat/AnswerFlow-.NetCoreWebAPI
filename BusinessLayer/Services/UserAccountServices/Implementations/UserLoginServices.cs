@@ -4,7 +4,11 @@ using BusinessLayer.ExceptionMessages;
 using BusinessLayer.Exceptions;
 using BusinessLayer.Services.GeneralServices;
 using BusinessLayer.Services.UserAccountServices.Interfaces;
+using Microsoft.IdentityModel.Tokens;
+using PersistenceLayer.Entities;
 using PersistenceLayer.Repositories.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace BusinessLayer.Services.UserAccountServices.Implementations
 {
@@ -19,7 +23,7 @@ namespace BusinessLayer.Services.UserAccountServices.Implementations
             this.mapper = mapper;
         }
 
-        public async Task<UserOverviewResponseDto> LoginUserAsync(UserLoginRequestDto userLogin)
+        public async Task<string> LoginUserAsync(UserLoginRequestDto userLogin)
         {
             var user = await userRepository.GetUserByEmail(userLogin.Email);
             if (user == null)
@@ -34,7 +38,32 @@ namespace BusinessLayer.Services.UserAccountServices.Implementations
             {
                 throw new BadRequestException(UserExceptionMessages.MustVerifyEmail);
             }
-            return mapper.Map<UserOverviewResponseDto>(user);
+            var token = CreateToken(user);
+            return token;
+        }
+
+        private string CreateToken(User user)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Type.ToString())
+            };
+
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+                Configration.config.GetSection("AppSettings:Token").Value));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds);
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
         }
     }
 }

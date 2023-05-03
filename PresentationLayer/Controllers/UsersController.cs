@@ -2,6 +2,7 @@
 using BusinessLayer.DTOs.StatisticsDtos;
 using BusinessLayer.DTOs.UserDtos;
 using BusinessLayer.Services.UserAccountServices.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PresentationLayer.Controllers
@@ -41,8 +42,8 @@ namespace PresentationLayer.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> LoginUser(UserLoginRequestDto userLogin)
         {
-            var user = await userServicesFacade.LoginUserAsync(userLogin);
-            return Ok(user);
+            var token = await userServicesFacade.LoginUserAsync(userLogin);
+            return Ok(token);
         }
 
         [HttpPost("verifying-email")]
@@ -76,6 +77,7 @@ namespace PresentationLayer.Controllers
             return Ok("success");
         }
 
+        [Authorize]
         [HttpPut("{userId}/change-password")]
         public async Task<IActionResult> ChangePassword([FromRoute] int userId, [FromBody] ChangePasswordRequestDto resetPasswordDto)
         {
@@ -118,6 +120,7 @@ namespace PresentationLayer.Controllers
         //    return Ok();
         //}
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("statistics")]
         public async Task<ActionResult<UsersStatisticsResponseDto>> GetUsersStatistics()
         {
@@ -139,6 +142,7 @@ namespace PresentationLayer.Controllers
             return Ok(statistics);
         }
 
+        [Authorize]
         [HttpGet("{userId}/feed")]
         public async Task<ActionResult<IEnumerable<QuestionsWithPaginationResponseDto>>> GetFollowingQuestionsForUserById(
             [FromQuery] int pageNumber,

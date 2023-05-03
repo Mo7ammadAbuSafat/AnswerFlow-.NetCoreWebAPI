@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.DTOs.ReportDtos;
 using BusinessLayer.Services.ReportServices.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PresentationLayer.Controllers
@@ -14,6 +15,7 @@ namespace PresentationLayer.Controllers
             this.questionReportServices = questionReportServices;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<QuestionReportResponseDto>>> GetQuestionReports()
         {
@@ -21,6 +23,7 @@ namespace PresentationLayer.Controllers
             return Ok(reports);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ReportQuestion(QuestionReportRequestDto questionReportRequestDto)
         {
@@ -28,6 +31,7 @@ namespace PresentationLayer.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{reportId}")]
         public async Task<IActionResult> CloseQuestionReport(int reportId)
         {
