@@ -2,22 +2,22 @@
 using BusinessLayer.DTOs.UserDtos;
 using BusinessLayer.ExceptionMessages;
 using BusinessLayer.Exceptions;
+using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.GeneralServices;
-using BusinessLayer.Services.UserAccountServices.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using PersistenceLayer.Entities;
 using PersistenceLayer.Repositories.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace BusinessLayer.Services.UserAccountServices.Implementations
+namespace BusinessLayer.Services.AuthenticationServices.Implementations
 {
-    public class UserLoginServices : IUserLoginServices
+    public class LoginServices : ILoginServices
     {
         private readonly IUserRepository userRepository;
         private readonly IMapper mapper;
 
-        public UserLoginServices(IUserRepository userRepository, IMapper mapper)
+        public LoginServices(IUserRepository userRepository, IMapper mapper)
         {
             this.userRepository = userRepository;
             this.mapper = mapper;

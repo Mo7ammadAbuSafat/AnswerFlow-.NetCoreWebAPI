@@ -1,9 +1,9 @@
 ﻿using BusinessLayer.DTOs.StatisticsDtos;
-using BusinessLayer.Services.QuestionServices.Interfaces;
+using BusinessLayer.Services.StatisticsServices.Interfaces;
 using PersistenceLayer.Enums;
 using PersistenceLayer.Repositories.Interfaces;
 
-namespace BusinessLayer.Services.QuestionServices.Implementations
+namespace BusinessLayer.Services.StatisticsServices.Implementations
 {
     public class QuestionStatisticsServices : IQuestionStatisticsServices
     {

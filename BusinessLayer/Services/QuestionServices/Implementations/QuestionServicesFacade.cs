@@ -1,5 +1,4 @@
 ﻿using BusinessLayer.DTOs.QuestionDtos;
-using BusinessLayer.DTOs.StatisticsDtos;
 using BusinessLayer.Services.QuestionServices.Interfaces;
 using PersistenceLayer.Enums;
 
@@ -9,18 +8,15 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
     {
         private readonly IAddAndDeleteQuestionServices addAndDeleteQuestionServices;
         private readonly IUpdateQuestionServices updateQuestionServices;
-        private readonly IQuestionStatisticsServices questionStatisticsServices;
         private readonly IQuestionRetrievalServices questionRetrievalServices;
 
 
         public QuestionServicesFacade(
             IAddAndDeleteQuestionServices addAndDeleteQuestionServices,
             IUpdateQuestionServices updateQuestionServices,
-            IQuestionStatisticsServices questionStatisticsServices,
             IQuestionRetrievalServices questionRetrievalServices)
         {
             this.updateQuestionServices = updateQuestionServices;
-            this.questionStatisticsServices = questionStatisticsServices;
             this.addAndDeleteQuestionServices = addAndDeleteQuestionServices;
             this.questionRetrievalServices = questionRetrievalServices;
         }
@@ -59,11 +55,6 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
         public async Task<QuestionResponseDto> GetQuestionByIdAsync(int questionId)
         {
             return await questionRetrievalServices.GetQuestionByIdAsync(questionId);
-        }
-
-        public async Task<QuestionsStatisticsResponseDto> GetQuestionsStatisticsAsync()
-        {
-            return await questionStatisticsServices.GetQuestionsStatisticsAsync();
         }
 
         public async Task<QuestionResponseDto> UpdateQuestionAsync(int questionId, QuestionUpdateRequestDto questionUpdateRequestDto)

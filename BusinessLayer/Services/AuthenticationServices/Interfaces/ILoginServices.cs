@@ -1,8 +1,8 @@
 ﻿using BusinessLayer.DTOs.UserDtos;
 
-namespace BusinessLayer.Services.UserAccountServices.Interfaces
+namespace BusinessLayer.Services.AuthenticationServices.Interfaces
 {
-    public interface IUserLoginServices
+    public interface ILoginServices
     {
         Task<string> LoginUserAsync(UserLoginRequestDto userLogin);
     }

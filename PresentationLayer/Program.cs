@@ -1,5 +1,7 @@
 using BusinessLayer.Services.AnswerServices.Implementations;
 using BusinessLayer.Services.AnswerServices.Interfaces;
+using BusinessLayer.Services.AuthenticationServices.Implementations;
+using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.BasedRepositoryServices.Implementations;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
 using BusinessLayer.Services.FollowingServices.Implementations;
@@ -10,6 +12,8 @@ using BusinessLayer.Services.ReportServices.Implementations;
 using BusinessLayer.Services.ReportServices.Interfaces;
 using BusinessLayer.Services.SaveQuestionServices.Implementations;
 using BusinessLayer.Services.SaveQuestionServices.Interfaces;
+using BusinessLayer.Services.StatisticsServices.Implementations;
+using BusinessLayer.Services.StatisticsServices.Interfaces;
 using BusinessLayer.Services.TagServices.Implementations;
 using BusinessLayer.Services.TagServices.Interfaces;
 using BusinessLayer.Services.UserAccountServices.Implementations;
@@ -39,7 +43,6 @@ builder.Services.AddScoped<IAnswerServices, AnswerServices>();
 //ReportServices
 builder.Services.AddScoped<IAnswerReportServices, AnswerReportServices>();
 builder.Services.AddScoped<IQuestionReportServices, QuestionReportServices>();
-builder.Services.AddScoped<IReportStatisticsServices, ReportStatisticsServices>();
 builder.Services.AddScoped<IDualReportDataServices, DualReportDataServices>();
 
 //FollowingServices
@@ -50,7 +53,6 @@ builder.Services.AddScoped<IFollowingUsersServices, FollowingUsersServices>();
 //QuestionServices
 builder.Services.AddScoped<IAddAndDeleteQuestionServices, AddAndDeleteQuestionServices>();
 builder.Services.AddScoped<IQuestionRetrievalServices, QuestionRetrievalServices>();
-builder.Services.AddScoped<IQuestionStatisticsServices, QuestionStatisticsServices>();
 builder.Services.AddScoped<IUpdateQuestionServices, UpdateQuestionServices>();
 builder.Services.AddScoped<IQuestionServicesFacade, QuestionServicesFacade>();
 builder.Services.AddScoped<IKeywordExtractorServices, KeywordExtractorServices>();
@@ -65,15 +67,23 @@ builder.Services.AddScoped<ITagServices, TagServices>();
 builder.Services.AddScoped<IQuestionVoteServices, QuestionVoteServices>();
 builder.Services.AddScoped<IAnswerVoteServices, AnswerVoteServices>();
 
+//AuthenticationServices
+builder.Services.AddScoped<IAuthenticationServicesFacade, AuthenticationServicesFacade>();
+builder.Services.AddScoped<ILoginServices, LoginServices>();
+builder.Services.AddScoped<IRegistrationServices, RegistrationServices>();
+builder.Services.AddScoped<IUserPasswordServices, UserPasswordServices>();
+
 //UserServices
 builder.Services.AddScoped<IUserInformationServices, UserInformationServices>();
-builder.Services.AddScoped<IUserStatisticsServices, UserStatisticsServices>();
 builder.Services.AddScoped<IUserPermissionsServices, UserPermissionsServices>();
 builder.Services.AddScoped<IUserRolesServices, UserRolesServices>();
-builder.Services.AddScoped<IUserLoginServices, UserLoginServices>();
-builder.Services.AddScoped<IUserRegistrationServices, UserRegistrationServices>();
-builder.Services.AddScoped<IUserPasswordServices, UserPasswordServices>();
 builder.Services.AddScoped<IUserServicesFacade, UserServicesFacade>();
+
+//StatisticsServices
+builder.Services.AddScoped<IStatisticsServicesFacade, StatisticsServicesFacade>();
+builder.Services.AddScoped<IUserStatisticsServices, UserStatisticsServices>();
+builder.Services.AddScoped<IQuestionStatisticsServices, QuestionStatisticsServices>();
+builder.Services.AddScoped<IReportStatisticsServices, ReportStatisticsServices>();
 
 //Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();

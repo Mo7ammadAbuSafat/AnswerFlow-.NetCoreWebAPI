@@ -1,5 +1,4 @@
 ﻿using BusinessLayer.DTOs.ReportDtos;
-using BusinessLayer.DTOs.StatisticsDtos;
 using BusinessLayer.Services.ReportServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +10,8 @@ namespace PresentationLayer.Controllers
     public class ReportsController : ControllerBase
     {
         private readonly IDualReportDataServices dualReportDataServices;
-        private readonly IReportStatisticsServices reportStatisticsServices;
-        public ReportsController(IDualReportDataServices dualReportDataServices, IReportStatisticsServices reportStatisticsServices)
+        public ReportsController(IDualReportDataServices dualReportDataServices)
         {
-            this.reportStatisticsServices = reportStatisticsServices;
             this.dualReportDataServices = dualReportDataServices;
         }
 
@@ -26,12 +23,5 @@ namespace PresentationLayer.Controllers
             return Ok(reports);
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpGet("statistics")]
-        public async Task<ActionResult<ReportsStatisticsResponseDto>> GetReportsStatistics()
-        {
-            var statistics = await reportStatisticsServices.GetReportsStatisticsAsync();
-            return Ok(statistics);
-        }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using BusinessLayer.DTOs.QuestionDtos;
-using BusinessLayer.DTOs.StatisticsDtos;
 using BusinessLayer.Services.QuestionServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -82,12 +81,6 @@ namespace PresentationLayer.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpGet("statistics")]
-        public async Task<ActionResult<QuestionsStatisticsResponseDto>> GetQuestionsStatistics()
-        {
-            var statistics = await questionServicesFacade.GetQuestionsStatisticsAsync();
-            return Ok(statistics);
-        }
+
     }
 }

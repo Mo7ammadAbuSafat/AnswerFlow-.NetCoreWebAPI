@@ -2,12 +2,12 @@
 using BusinessLayer.DTOs.UserDtos;
 using BusinessLayer.ExceptionMessages;
 using BusinessLayer.Exceptions;
+using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
 using BusinessLayer.Services.GeneralServices;
-using BusinessLayer.Services.UserAccountServices.Interfaces;
 using PersistenceLayer.Repositories.Interfaces;
 
-namespace BusinessLayer.Services.UserAccountServices.Implementations
+namespace BusinessLayer.Services.AuthenticationServices.Implementations
 {
     public class UserPasswordServices : IUserPasswordServices
     {

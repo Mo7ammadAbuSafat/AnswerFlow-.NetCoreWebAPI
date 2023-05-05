@@ -1,5 +1,4 @@
 ﻿using BusinessLayer.DTOs.QuestionDtos;
-using BusinessLayer.DTOs.StatisticsDtos;
 using PersistenceLayer.Enums;
 
 namespace BusinessLayer.Services.QuestionServices.Interfaces
@@ -18,7 +17,6 @@ namespace BusinessLayer.Services.QuestionServices.Interfaces
             ICollection<string>? tagNames = null,
             string? searchText = null);
         Task<QuestionResponseDto> GetQuestionByIdAsync(int questionId);
-        Task<QuestionsStatisticsResponseDto> GetQuestionsStatisticsAsync();
         Task<QuestionResponseDto> UpdateQuestionAsync(int questionId, QuestionUpdateRequestDto questionUpdateRequestDto);
         Task<QuestionResponseDto> UpdateQuestionTagsAsync(int questionId, QuestionTagsUpdateRequestDto questionTagsUpdateRequestDto);
     }

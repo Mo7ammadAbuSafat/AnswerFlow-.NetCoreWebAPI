@@ -1,8 +1,8 @@
 ﻿using BusinessLayer.DTOs.UserDtos;
 
-namespace BusinessLayer.Services.UserAccountServices.Interfaces
+namespace BusinessLayer.Services.AuthenticationServices.Interfaces
 {
-    public interface IUserRegistrationServices
+    public interface IRegistrationServices
     {
         Task<UserOverviewResponseDto> RegisterUserAsync(UserRegistrationRequestDto userRegistration);
         Task ResendVerificationCodeAsync(int userId);

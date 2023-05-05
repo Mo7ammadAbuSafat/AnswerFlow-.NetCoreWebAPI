@@ -1,6 +1,6 @@
 ﻿using BusinessLayer.DTOs.UserDtos;
 
-namespace BusinessLayer.Services.UserAccountServices.Interfaces
+namespace BusinessLayer.Services.AuthenticationServices.Interfaces
 {
     public interface IUserPasswordServices
     {
