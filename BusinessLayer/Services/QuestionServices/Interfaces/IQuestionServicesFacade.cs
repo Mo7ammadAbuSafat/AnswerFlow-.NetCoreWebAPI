@@ -8,7 +8,15 @@ namespace BusinessLayer.Services.QuestionServices.Interfaces
     {
         Task<QuestionResponseDto> AddNewQuestionAsync(QuestionToAddRequestDto questionToAddRequestDto);
         Task DeleteQuestionAsync(int questionId);
-        Task<QuestionsWithPaginationResponseDto> GetFilteredQuestionsWithPaginationAsync(int pageNumber, int pageSize, int? userId = null, string? sortBy = null, DateTime? dateTime = null, QuestionStatus? questionStatus = null, ICollection<string>? tagNames = null);
+        Task<QuestionsWithPaginationResponseDto> GetQuestionsWithPaginationAsync(
+            int pageNumber,
+            int pageSize,
+            int? userId = null,
+            string? sortBy = null,
+            DateTime? dateTime = null,
+            QuestionStatus? questionStatus = null,
+            ICollection<string>? tagNames = null,
+            string? searchText = null);
         Task<QuestionResponseDto> GetQuestionByIdAsync(int questionId);
         Task<QuestionsStatisticsResponseDto> GetQuestionsStatisticsAsync();
         Task<QuestionResponseDto> UpdateQuestionAsync(int questionId, QuestionUpdateRequestDto questionUpdateRequestDto);

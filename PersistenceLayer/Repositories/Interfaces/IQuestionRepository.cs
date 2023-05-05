@@ -10,5 +10,6 @@ namespace PersistenceLayer.Repositories.Interfaces
         Task<IQueryable<Question>> GetIQueryableQuestions();
         Task<Question> GetQuestionByIdAsync(int questionId);
 
+        Task<IQueryable<Question>> GetIQueryableQuestionsByKeywordsAsync(ICollection<string> keywordNames);
     }
 }

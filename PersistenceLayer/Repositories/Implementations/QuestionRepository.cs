@@ -71,5 +71,27 @@ namespace PersistenceLayer.Repositories.Implementations
                 .Include(c => c.EditHistory)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<IQueryable<Question>> GetIQueryableQuestionsByKeywordsAsync(ICollection<string> keywordNames)
+        {
+            return await Task.FromResult(context.Keywords
+                .Where(x => keywordNames.Any(k => k.Equals(x.name)))
+                .GroupBy(r => r.QuestionId)
+                .Select(group => new { Id = group.Key, Count = group.Count() })
+                .Join(context.Questions, x => x.Id, y => y.Id, (x, y) => new
+                {
+                    count = x.Count,
+                    question = y,
+                })
+                .OrderByDescending(x => x.count)
+                .Select(x => x.question)
+                .Include(c => c.User)
+                .Include(c => c.User.Image)
+                .Include(c => c.Tags)
+                .Include(c => c.Votes)
+                .ThenInclude(v => v.User)
+                .Include(c => c.Answers)
+                .Include(c => c.QuestionSavers));
+        }
     }
 }

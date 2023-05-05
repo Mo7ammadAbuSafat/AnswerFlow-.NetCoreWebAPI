@@ -53,6 +53,7 @@ builder.Services.AddScoped<IQuestionRetrievalServices, QuestionRetrievalServices
 builder.Services.AddScoped<IQuestionStatisticsServices, QuestionStatisticsServices>();
 builder.Services.AddScoped<IUpdateQuestionServices, UpdateQuestionServices>();
 builder.Services.AddScoped<IQuestionServicesFacade, QuestionServicesFacade>();
+builder.Services.AddScoped<IKeywordExtractorServices, KeywordExtractorServices>();
 
 //SavedQuestionsServices
 builder.Services.AddScoped<ISavedQuestionServices, SavedQuestionServices>();
@@ -84,6 +85,7 @@ builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
+builder.Services.AddHttpClient();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 

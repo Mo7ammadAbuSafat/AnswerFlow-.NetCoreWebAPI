@@ -16,19 +16,23 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
         private readonly IQuestionRepository questionRepository;
         private readonly IMapper mapper;
         private readonly IBasedRepositoryServices basedRepositoryServices;
+        private readonly IKeywordExtractorServices keywordExtractorServices;
+
 
         public AddAndDeleteQuestionServices(
             ITagRepository tagRepository,
             IUnitOfWork unitOfWork,
             IQuestionRepository questionRepository,
             IMapper mapper,
-            IBasedRepositoryServices basedRepositoryServices)
+            IBasedRepositoryServices basedRepositoryServices,
+            IKeywordExtractorServices keywordExtractorServices)
         {
             this.tagRepository = tagRepository;
             this.unitOfWork = unitOfWork;
             this.questionRepository = questionRepository;
             this.mapper = mapper;
             this.basedRepositoryServices = basedRepositoryServices;
+            this.keywordExtractorServices = keywordExtractorServices;
         }
 
         public async Task<QuestionResponseDto> AddNewQuestionAsync(QuestionToAddRequestDto questionToAddRequestDto)
@@ -40,6 +44,7 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
             }
             questionToAddRequestDto.TagsNames = questionToAddRequestDto.TagsNames.Select(t => t.ToLower()).ToList();
             var tags = await tagRepository.GetTagsByNamesAsync(questionToAddRequestDto.TagsNames);
+            var keywords = await keywordExtractorServices.GetKeywordsAsync(questionToAddRequestDto.Title + " " + questionToAddRequestDto.Body);
             var question = new Question()
             {
                 Title = questionToAddRequestDto.Title,
@@ -47,7 +52,9 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
                 Tags = tags,
                 CreationDate = DateTime.Now,
                 UserId = user.Id,
+                Keywords = keywords
             };
+
             await questionRepository.AddAsync(question);
             await unitOfWork.SaveChangesAsync();
             return mapper.Map<QuestionResponseDto>(question);

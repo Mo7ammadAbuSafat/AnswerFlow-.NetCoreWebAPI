@@ -12,6 +12,7 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
         private readonly IQuestionStatisticsServices questionStatisticsServices;
         private readonly IQuestionRetrievalServices questionRetrievalServices;
 
+
         public QuestionServicesFacade(
             IAddAndDeleteQuestionServices addAndDeleteQuestionServices,
             IUpdateQuestionServices updateQuestionServices,
@@ -34,23 +35,25 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
             await addAndDeleteQuestionServices.DeleteQuestionAsync(questionId);
         }
 
-        public async Task<QuestionsWithPaginationResponseDto> GetFilteredQuestionsWithPaginationAsync
+        public async Task<QuestionsWithPaginationResponseDto> GetQuestionsWithPaginationAsync
             (int pageNumber,
             int pageSize,
             int? userId = null,
             string? sortBy = null,
             DateTime? dateTime = null,
             QuestionStatus? questionStatus = null,
-            ICollection<string>? tagNames = null)
+            ICollection<string>? tagNames = null,
+            string? searchText = null)
         {
-            return await questionRetrievalServices.GetFilteredQuestionsWithPaginationAsync
+            return await questionRetrievalServices.GetQuestionsWithPaginationAsync
                 (pageNumber,
                  pageSize,
                  userId,
                  sortBy,
                  dateTime,
                  questionStatus,
-                 tagNames);
+                 tagNames,
+                 searchText);
         }
 
         public async Task<QuestionResponseDto> GetQuestionByIdAsync(int questionId)

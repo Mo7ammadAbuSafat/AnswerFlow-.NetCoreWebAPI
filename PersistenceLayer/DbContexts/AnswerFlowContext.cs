@@ -17,6 +17,7 @@ namespace PersistenceLayer.DbContexts
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<ActivityDateView> ActivityDateView { get; set; }
+        public DbSet<Keyword> Keywords { get; set; }
 
 
         public AnswerFlowContext(DbContextOptions<AnswerFlowContext> options) : base(options) { }
@@ -86,6 +87,13 @@ namespace PersistenceLayer.DbContexts
                     .WithMany(g => g.AnswerReports)
                     .HasForeignKey(s => s.UserId);
 
+            modelBuilder.Entity<Keyword>()
+                    .HasOne(s => s.Question)
+                    .WithMany(g => g.Keywords)
+                    .HasForeignKey(s => s.QuestionId);
+
+            modelBuilder.Entity<Keyword>()
+                    .HasIndex(e => e.name);
 
             modelBuilder.Entity<User>().Property(u => u.About).IsRequired(false);
             modelBuilder.Entity<User>().Property(u => u.VerifiedDate).IsRequired(false);

@@ -26,17 +26,19 @@ namespace PresentationLayer.Controllers
             [FromQuery] string? sortBy = null,
             [FromQuery] DateTime? dateTime = null,
             [FromQuery] QuestionStatus? questionStatus = null,
-            [FromQuery(Name = "tagNames[]")] ICollection<string>? tagNames = null
+            [FromQuery(Name = "tagNames[]")] ICollection<string>? tagNames = null,
+            [FromQuery] string? searchText = null
             )
         {
-            var questions = await questionServicesFacade.GetFilteredQuestionsWithPaginationAsync
+            var questions = await questionServicesFacade.GetQuestionsWithPaginationAsync
                 (pageNumber,
                 pageSize,
                 userId,
                 sortBy,
                 dateTime,
                 questionStatus,
-                tagNames);
+                tagNames,
+                searchText);
 
             return Ok(questions);
         }
