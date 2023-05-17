@@ -41,12 +41,13 @@ namespace PresentationLayer.Controllers
             return Ok("success");
         }
 
-        //[HttpPut("{userId}/user-information")]
-        //public async Task<IActionResult> UpdateUserInformation([FromRoute] int userId, [FromBody] UserInformationToUpdateRequestDto userInformationDto)
-        //{
-        //    var user = await userServices.UpdateUserInformationAsync(userId, userInformationDto);
-        //    return Ok(user);
-        //}
+        [Authorize]
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> UpdateUserInformation([FromRoute] int userId, [FromBody] UserInformationToUpdateRequestDto userInformationDto)
+        {
+            var user = await userServicesFacade.UpdateUserInformationAsync(userId, userInformationDto);
+            return Ok(user);
+        }
 
         //[HttpPut("{userId}/block")]
         //public async Task<IActionResult> BlockUserFromPosting(int userId)

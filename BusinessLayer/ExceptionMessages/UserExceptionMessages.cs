@@ -7,13 +7,15 @@
 
         public static string NotFoundUserByEmail = "no user with this email";
 
-        public static string InvalidCode = "the code you entered is not valid";
+        public static string EmailAlreadyExsist = "this email is already exist";
+
+        public static string InvalidCode = "invalid code";
 
         public static string IncorrectPassword = "password is not correct";
 
         public static string MustVerifyEmail = "you must verify your email";
 
-        public static string ExpiredCode = "expired Code, we sent another one";
+        public static string ExpiredCode = "expired code, we sent another one";
 
         public static string CanNotFollowYourSelf = "you can't follow your self";
 

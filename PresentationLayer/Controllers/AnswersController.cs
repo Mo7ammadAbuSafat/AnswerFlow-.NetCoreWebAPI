@@ -25,17 +25,17 @@ namespace PresentationLayer.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<AnswerResponseDto>> AddNewAnswer(int questionId, [FromBody] AnswerToAddRequestDto answerToAddRequestDto)
+        public async Task<ActionResult<AnswerResponseDto>> AddNewAnswer(int questionId, [FromBody] AnswerRequestDto answerRequestDto)
         {
-            var answer = await answerServices.AddNewAnswerAsync(questionId, answerToAddRequestDto);
+            var answer = await answerServices.AddNewAnswerAsync(questionId, answerRequestDto);
             return Ok(answer);
         }
 
         [Authorize]
         [HttpPut("{answerId}")]
-        public async Task<ActionResult<AnswerResponseDto>> UpdateAnswer(int questionId, int answerId, [FromBody] AnswerUpdateRequestDto answerUpdateRequestDto)
+        public async Task<ActionResult<AnswerResponseDto>> UpdateAnswer(int questionId, int answerId, [FromBody] AnswerRequestDto answerRequestDto)
         {
-            var answer = await answerServices.UpdateAnswerAsync(questionId, answerId, answerUpdateRequestDto);
+            var answer = await answerServices.UpdateAnswerAsync(questionId, answerId, answerRequestDto);
             return Ok(answer);
         }
 

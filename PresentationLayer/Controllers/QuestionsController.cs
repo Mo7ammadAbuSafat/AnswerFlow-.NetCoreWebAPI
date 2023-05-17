@@ -44,7 +44,7 @@ namespace PresentationLayer.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<QuestionResponseDto>> AddNewQuestion([FromBody] QuestionToAddRequestDto questionToAddRequestDto)
+        public async Task<ActionResult<QuestionResponseDto>> AddNewQuestion([FromBody] QuestionRequestDto questionToAddRequestDto)
         {
             var question = await questionServicesFacade.AddNewQuestionAsync(questionToAddRequestDto);
             return Ok(question);
@@ -59,7 +59,7 @@ namespace PresentationLayer.Controllers
 
         [Authorize]
         [HttpPut("{questionId}")]
-        public async Task<ActionResult<QuestionResponseDto>> UpdateQuestion([FromRoute] int questionId, [FromBody] QuestionUpdateRequestDto questionUpdateRequestDto)
+        public async Task<ActionResult<QuestionResponseDto>> UpdateQuestion([FromRoute] int questionId, [FromBody] QuestionRequestDto questionUpdateRequestDto)
         {
             var question = await questionServicesFacade.UpdateQuestionAsync(questionId, questionUpdateRequestDto);
             return Ok(question);

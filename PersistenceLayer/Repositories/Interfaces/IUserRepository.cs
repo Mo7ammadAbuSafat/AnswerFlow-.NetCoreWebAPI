@@ -8,7 +8,7 @@ namespace PersistenceLayer.Repositories.Interfaces
         bool CheckIfEmailExists(string email);
         void Delete(User user);
         Task<IEnumerable<User>> GetFollowerUsersForUserById(int userId);
-        Task<IEnumerable<Tag>?> GetFollowingTagsForUserById(int userId);
+        Task<IEnumerable<Tag>> GetFollowingTagsForUserById(int userId);
         Task<IEnumerable<User>> GetFollowingUsersForUserById(int userId);
         Task<User> GetFullUserById(int userId);
         Task<IEnumerable<string>> GetUserActivityCurrentYearStatistic(int userId);

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿using BusinessLayer.DTOs.AuthenticationDtos;
 using BusinessLayer.DTOs.UserDtos;
 using BusinessLayer.ExceptionMessages;
 using BusinessLayer.Exceptions;
@@ -13,18 +13,22 @@ namespace BusinessLayer.Services.AuthenticationServices.Implementations
     {
         private readonly IUserRepository userRepository;
         private readonly IUnitOfWork unitOfWork;
-        private readonly IMapper mapper;
         private readonly IBasedRepositoryServices basedRepositoryServices;
+        private readonly IAuthenticatedUserServices authenticatedUserServices;
 
-        public UserPasswordServices(IUserRepository userRepository, IUnitOfWork unitOfWork, IMapper mapper, IBasedRepositoryServices basedRepositoryServices)
+        public UserPasswordServices(
+            IUserRepository userRepository,
+            IUnitOfWork unitOfWork,
+            IBasedRepositoryServices basedRepositoryServices,
+            IAuthenticatedUserServices authenticatedUserServices)
         {
             this.userRepository = userRepository;
             this.unitOfWork = unitOfWork;
-            this.mapper = mapper;
             this.basedRepositoryServices = basedRepositoryServices;
+            this.authenticatedUserServices = authenticatedUserServices;
         }
 
-        public async Task<UserOverviewResponseDto> SendResetPasswordCodeAsync(string email)
+        public async Task SendResetPasswordCodeAsync(string email)
         {
             var user = await userRepository.GetUserByEmail(email);
             if (user == null)
@@ -36,12 +40,11 @@ namespace BusinessLayer.Services.AuthenticationServices.Implementations
             await unitOfWork.SaveChangesAsync();
             var emailMessage = EmailMessageGenerator.GenerateEmailMessageForResetPasswordCode(user.ResetPasswordCode);
             EmailSender.SendEmailWithCode(email, emailMessage);
-            return mapper.Map<UserOverviewResponseDto>(user);
         }
 
-        public async Task ResetPasswordByCodeSendedToEmailAsync(int userId, ResetPasswordWithCodeRequestDto resetPasswordDto)
+        public async Task ResetPasswordAsync(ResetPasswordRequestDto resetPasswordDto)
         {
-            var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
+            var user = await basedRepositoryServices.GetNonNullUserByEmailAsync(resetPasswordDto.Email);
             if (user.ResetPasswordCode != resetPasswordDto.Code)
             {
                 throw new BadRequestException(UserExceptionMessages.InvalidCode);
@@ -60,6 +63,11 @@ namespace BusinessLayer.Services.AuthenticationServices.Implementations
 
         public async Task ChangePasswordAsync(int userId, ChangePasswordRequestDto changePasswordDto)
         {
+            var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserId();
+            if (authenticatedUserId != userId)
+            {
+                throw new UnauthorizedException();
+            }
             var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
             if (!PasswordHasher.VerifyPassword(changePasswordDto.OldPassword, user.PasswordHash, user.PasswordSalt))
             {

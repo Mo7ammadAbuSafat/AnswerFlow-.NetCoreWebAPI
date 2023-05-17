@@ -89,9 +89,8 @@ namespace PresentationLayer.Repositories.Implementations
 
         public async Task<IEnumerable<Tag>> GetFollowingTagsForUserById(int userId)
         {
-            return (IEnumerable<Tag>)await context.Users
-                 .Where(c => c.Id == userId)
-                 .Select(c => c.Tags)
+            return await context.Tags
+                 .Where(t => t.Users.Any(u => u.Id == userId))
                  .ToListAsync();
         }
 

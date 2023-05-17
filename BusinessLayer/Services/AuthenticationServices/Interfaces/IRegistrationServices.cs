@@ -5,7 +5,7 @@ namespace BusinessLayer.Services.AuthenticationServices.Interfaces
     public interface IRegistrationServices
     {
         Task<UserOverviewResponseDto> RegisterUserAsync(UserRegistrationRequestDto userRegistration);
-        Task ResendVerificationCodeAsync(int userId);
-        Task<UserOverviewResponseDto> VerifyEmailAsync(int userId, string code);
+        Task ResendVerificationCodeAsync(string email);
+        Task<string> VerifyEmailAsync(string email, string code);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using BusinessLayer.DTOs.QuestionDtos;
+using BusinessLayer.Exceptions;
+using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
 using BusinessLayer.Services.QuestionServices.Interfaces;
 using PersistenceLayer.Entities;
@@ -14,22 +16,30 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
         private readonly IUnitOfWork unitOfWork;
         private readonly IBasedRepositoryServices basedRepositoryServices;
         private readonly IMapper mapper;
+        private readonly IAuthenticatedUserServices authenticatedUserServices;
 
         public UpdateQuestionServices(
             ITagRepository tagRepository,
             IUnitOfWork unitOfWork,
             IBasedRepositoryServices basedRepositoryServices,
-            IMapper mapper)
+            IMapper mapper,
+            IAuthenticatedUserServices authenticatedUserServices)
         {
             this.tagRepository = tagRepository;
             this.unitOfWork = unitOfWork;
             this.basedRepositoryServices = basedRepositoryServices;
             this.mapper = mapper;
+            this.authenticatedUserServices = authenticatedUserServices;
         }
 
-        public async Task<QuestionResponseDto> UpdateQuestionAsync(int questionId, QuestionUpdateRequestDto questionUpdateRequestDto)
+        public async Task<QuestionResponseDto> UpdateQuestionAsync(int questionId, QuestionRequestDto questionUpdateRequestDto)
         {
+            var userId = authenticatedUserServices.GetAuthenticatedUserId();
             var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionId);
+            if (question.UserId != userId)
+            {
+                throw new UnauthorizedException();
+            }
             var dateNow = DateTime.Now;
             var editHistory = new QuestionHistory()
             {

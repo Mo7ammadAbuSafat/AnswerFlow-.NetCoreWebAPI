@@ -2,6 +2,7 @@
 using BusinessLayer.DTOs.QuestionDtos;
 using BusinessLayer.ExceptionMessages;
 using BusinessLayer.Exceptions;
+using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
 using BusinessLayer.Services.QuestionServices.Interfaces;
 using PersistenceLayer.Entities;
@@ -17,6 +18,7 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
         private readonly IMapper mapper;
         private readonly IBasedRepositoryServices basedRepositoryServices;
         private readonly IKeywordExtractorServices keywordExtractorServices;
+        private readonly IAuthenticatedUserServices authenticatedUserServices;
 
 
         public AddAndDeleteQuestionServices(
@@ -25,7 +27,8 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
             IQuestionRepository questionRepository,
             IMapper mapper,
             IBasedRepositoryServices basedRepositoryServices,
-            IKeywordExtractorServices keywordExtractorServices)
+            IKeywordExtractorServices keywordExtractorServices,
+            IAuthenticatedUserServices authenticatedUserServices)
         {
             this.tagRepository = tagRepository;
             this.unitOfWork = unitOfWork;
@@ -33,11 +36,13 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
             this.mapper = mapper;
             this.basedRepositoryServices = basedRepositoryServices;
             this.keywordExtractorServices = keywordExtractorServices;
+            this.authenticatedUserServices = authenticatedUserServices;
         }
 
-        public async Task<QuestionResponseDto> AddNewQuestionAsync(QuestionToAddRequestDto questionToAddRequestDto)
+        public async Task<QuestionResponseDto> AddNewQuestionAsync(QuestionRequestDto questionToAddRequestDto)
         {
-            var user = await basedRepositoryServices.GetNonNullUserByIdAsync(questionToAddRequestDto.UserId);
+            var userId = authenticatedUserServices.GetAuthenticatedUserId();
+            var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
             if (user.IsBlockedFromPosting == true)
             {
                 throw new BadRequestException(UserExceptionMessages.BlocedUserFromPosting);
@@ -62,10 +67,13 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
 
         public async Task DeleteQuestionAsync(int questionId)
         {
+            var userId = authenticatedUserServices.GetAuthenticatedUserId();
             var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionId);
-
+            if (question.UserId != userId)
+            {
+                throw new UnauthorizedException();
+            }
             questionRepository.Delete(question);
-
             await unitOfWork.SaveChangesAsync();
         }
     }

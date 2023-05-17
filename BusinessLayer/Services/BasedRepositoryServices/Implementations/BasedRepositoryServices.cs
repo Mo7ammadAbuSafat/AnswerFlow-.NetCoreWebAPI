@@ -44,6 +44,16 @@ namespace BusinessLayer.Services.BasedRepositoryServices.Implementations
             return user;
         }
 
+        public async Task<User> GetNonNullUserByEmailAsync(string email)
+        {
+            var user = await userRepository.GetUserByEmail(email);
+            if (user == null)
+            {
+                throw new NotFoundException(UserExceptionMessages.NotFoundUserByEmail);
+            }
+            return user;
+        }
+
         public async Task<Question> GetNonNullQuestionByIdAsync(int id)
         {
             var question = await questionRepository.GetQuestionByIdAsync(id);

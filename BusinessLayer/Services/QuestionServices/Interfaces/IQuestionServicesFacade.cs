@@ -5,7 +5,7 @@ namespace BusinessLayer.Services.QuestionServices.Interfaces
 {
     public interface IQuestionServicesFacade
     {
-        Task<QuestionResponseDto> AddNewQuestionAsync(QuestionToAddRequestDto questionToAddRequestDto);
+        Task<QuestionResponseDto> AddNewQuestionAsync(QuestionRequestDto questionRequestDto);
         Task DeleteQuestionAsync(int questionId);
         Task<QuestionsWithPaginationResponseDto> GetQuestionsWithPaginationAsync(
             int pageNumber,
@@ -17,7 +17,7 @@ namespace BusinessLayer.Services.QuestionServices.Interfaces
             ICollection<string>? tagNames = null,
             string? searchText = null);
         Task<QuestionResponseDto> GetQuestionByIdAsync(int questionId);
-        Task<QuestionResponseDto> UpdateQuestionAsync(int questionId, QuestionUpdateRequestDto questionUpdateRequestDto);
+        Task<QuestionResponseDto> UpdateQuestionAsync(int questionId, QuestionRequestDto questionRequestDto);
         Task<QuestionResponseDto> UpdateQuestionTagsAsync(int questionId, QuestionTagsUpdateRequestDto questionTagsUpdateRequestDto);
     }
 }

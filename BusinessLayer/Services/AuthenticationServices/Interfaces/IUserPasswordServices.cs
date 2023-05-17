@@ -1,11 +1,12 @@
-﻿using BusinessLayer.DTOs.UserDtos;
+﻿using BusinessLayer.DTOs.AuthenticationDtos;
+using BusinessLayer.DTOs.UserDtos;
 
 namespace BusinessLayer.Services.AuthenticationServices.Interfaces
 {
     public interface IUserPasswordServices
     {
         Task ChangePasswordAsync(int userId, ChangePasswordRequestDto changePasswordDto);
-        Task ResetPasswordByCodeSendedToEmailAsync(int userId, ResetPasswordWithCodeRequestDto changePasswordDto);
-        Task<UserOverviewResponseDto> SendResetPasswordCodeAsync(string email);
+        Task ResetPasswordAsync(ResetPasswordRequestDto changePasswordDto);
+        Task SendResetPasswordCodeAsync(string email);
     }
 }

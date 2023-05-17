@@ -72,6 +72,7 @@ builder.Services.AddScoped<IAuthenticationServicesFacade, AuthenticationServices
 builder.Services.AddScoped<ILoginServices, LoginServices>();
 builder.Services.AddScoped<IRegistrationServices, RegistrationServices>();
 builder.Services.AddScoped<IUserPasswordServices, UserPasswordServices>();
+builder.Services.AddScoped<IAuthenticatedUserServices, AuthenticatedUserServices>();
 
 //UserServices
 builder.Services.AddScoped<IUserInformationServices, UserInformationServices>();
@@ -127,6 +128,18 @@ builder.Services.AddSwaggerGen(options =>
     });
 
     options.OperationFilter<SecurityRequirementsOperationFilter>();
+
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "AnswerFlow API",
+        Description = "An ASP.NET Core Web API for managing AnswerFlow website",
+        Contact = new OpenApiContact
+        {
+            Name = "Mohammad Abu-Safat",
+            Url = new Uri("https://www.linkedin.com/in/mohammad-abusafat/")
+        },
+    });
 });
 
 builder.Services.AddHttpContextAccessor();

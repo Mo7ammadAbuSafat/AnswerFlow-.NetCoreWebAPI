@@ -21,9 +21,9 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
             this.questionRetrievalServices = questionRetrievalServices;
         }
 
-        public async Task<QuestionResponseDto> AddNewQuestionAsync(QuestionToAddRequestDto questionToAddRequestDto)
+        public async Task<QuestionResponseDto> AddNewQuestionAsync(QuestionRequestDto questionRequestDto)
         {
-            return await addAndDeleteQuestionServices.AddNewQuestionAsync(questionToAddRequestDto);
+            return await addAndDeleteQuestionServices.AddNewQuestionAsync(questionRequestDto);
         }
 
         public async Task DeleteQuestionAsync(int questionId)
@@ -57,9 +57,9 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
             return await questionRetrievalServices.GetQuestionByIdAsync(questionId);
         }
 
-        public async Task<QuestionResponseDto> UpdateQuestionAsync(int questionId, QuestionUpdateRequestDto questionUpdateRequestDto)
+        public async Task<QuestionResponseDto> UpdateQuestionAsync(int questionId, QuestionRequestDto questionRequestDto)
         {
-            return await updateQuestionServices.UpdateQuestionAsync(questionId, questionUpdateRequestDto);
+            return await updateQuestionServices.UpdateQuestionAsync(questionId, questionRequestDto);
         }
 
         public async Task<QuestionResponseDto> UpdateQuestionTagsAsync(int questionId, QuestionTagsUpdateRequestDto questionTagsUpdateRequestDto)

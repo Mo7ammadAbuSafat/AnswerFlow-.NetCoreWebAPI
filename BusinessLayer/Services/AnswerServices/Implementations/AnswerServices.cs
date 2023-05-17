@@ -3,6 +3,7 @@ using BusinessLayer.DTOs.AnswerDtos;
 using BusinessLayer.ExceptionMessages;
 using BusinessLayer.Exceptions;
 using BusinessLayer.Services.AnswerServices.Interfaces;
+using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
 using PersistenceLayer.Entities;
 using PersistenceLayer.Enums;
@@ -16,13 +17,20 @@ namespace BusinessLayer.Services.AnswerServices.Implementations
         private readonly IAnswerRepository answerRepository;
         private readonly IBasedRepositoryServices basedRepositoryServices;
         private readonly IMapper mapper;
+        private readonly IAuthenticatedUserServices authenticatedUserServices;
 
-        public AnswerServices(IUnitOfWork unitOfWork, IAnswerRepository answerRepository, IBasedRepositoryServices basedRepositoryServices, IMapper mapper)
+        public AnswerServices(
+            IUnitOfWork unitOfWork,
+            IAnswerRepository answerRepository,
+            IBasedRepositoryServices basedRepositoryServices,
+            IMapper mapper,
+            IAuthenticatedUserServices authenticatedUserServices)
         {
             this.unitOfWork = unitOfWork;
             this.basedRepositoryServices = basedRepositoryServices;
             this.answerRepository = answerRepository;
             this.mapper = mapper;
+            this.authenticatedUserServices = authenticatedUserServices;
         }
 
         public async Task<IEnumerable<AnswerResponseDto>> GetAnswersForQuestionAsync(int questionId)
@@ -31,9 +39,10 @@ namespace BusinessLayer.Services.AnswerServices.Implementations
             return mapper.Map<IEnumerable<AnswerResponseDto>>(answers);
         }
 
-        public async Task<AnswerResponseDto> AddNewAnswerAsync(int questionId, AnswerToAddRequestDto answerToAddRequestDto)
+        public async Task<AnswerResponseDto> AddNewAnswerAsync(int questionId, AnswerRequestDto answerRequestDto)
         {
-            var user = await basedRepositoryServices.GetNonNullUserByIdAsync(answerToAddRequestDto.UserId);
+            var userId = authenticatedUserServices.GetAuthenticatedUserId();
+            var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
             if (user.IsBlockedFromPosting == true)
             {
                 throw new BadRequestException(UserExceptionMessages.BlocedUserFromPosting);
@@ -42,7 +51,7 @@ namespace BusinessLayer.Services.AnswerServices.Implementations
             var answer = new Answer()
             {
                 UserId = user.Id,
-                Body = answerToAddRequestDto.Body,
+                Body = answerRequestDto.Body,
                 CreationDate = DateTime.Now,
             };
             question.Answers.Add(answer);
@@ -54,6 +63,11 @@ namespace BusinessLayer.Services.AnswerServices.Implementations
         {
             var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionId);
             var answer = await basedRepositoryServices.GetNonNullAnswerByIdAsync(answerId);
+            var userId = authenticatedUserServices.GetAuthenticatedUserId();
+            if (answer.UserId != userId)
+            {
+                throw new UnauthorizedException();
+            }
             if (answer.QuestionId != question.Id)
             {
                 throw new BadRequestException(AnswerExceptionMessages.AnswerNotForQuestion);
@@ -62,15 +76,20 @@ namespace BusinessLayer.Services.AnswerServices.Implementations
             await unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<AnswerResponseDto> UpdateAnswerAsync(int questionId, int answerId, AnswerUpdateRequestDto answerUpdateRequestDto)
+        public async Task<AnswerResponseDto> UpdateAnswerAsync(int questionId, int answerId, AnswerRequestDto answerRequestDto)
         {
             var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionId);
             var answer = await basedRepositoryServices.GetNonNullAnswerByIdAsync(answerId);
+            var userId = authenticatedUserServices.GetAuthenticatedUserId();
+            if (answer.UserId != userId)
+            {
+                throw new UnauthorizedException();
+            }
             if (answer.QuestionId != question.Id)
             {
                 throw new BadRequestException(AnswerExceptionMessages.AnswerNotForQuestion);
             }
-            answer.Body = answerUpdateRequestDto.Body;
+            answer.Body = answerRequestDto.Body;
 
             await unitOfWork.SaveChangesAsync();
             return mapper.Map<AnswerResponseDto>(answer);
