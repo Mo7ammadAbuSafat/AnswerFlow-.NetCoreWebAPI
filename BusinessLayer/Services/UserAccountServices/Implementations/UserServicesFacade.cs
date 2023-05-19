@@ -55,14 +55,9 @@ namespace BusinessLayer.Services.UserAccountServices.Implementations
             await userPasswordServices.ChangePasswordAsync(userId, changePasswordDto);
         }
 
-        public async Task BlockUserFromPostingAsync(int userId)
+        public async Task UpdatePostingPermisstionAsync(int userId, bool newValue)
         {
-            await userPermissionsServices.BlockUserFromPostingAsync(userId);
-        }
-
-        public async Task UnblockUserFromPostingAsync(int userId)
-        {
-            await userPermissionsServices.UnblockUserFromPostingAsync(userId);
+            await userPermissionsServices.UpdatePostingPermisstionAsync(userId, newValue);
         }
 
         public async Task UpdateRoleForUser(int userId, UserType newType)

@@ -10,42 +10,33 @@ namespace BusinessLayer.Services.UserAccountServices.Implementations
     public class UserPermissionsServices : IUserPermissionsServices
     {
 
-        private readonly IUserRepository userRepository;
         private readonly IUnitOfWork unitOfWork;
         private readonly IBasedRepositoryServices basedRepositoryServices;
 
-        public UserPermissionsServices(IUserRepository userRepository, IUnitOfWork unitOfWork, IBasedRepositoryServices basedRepositoryServices)
+        public UserPermissionsServices(IUnitOfWork unitOfWork, IBasedRepositoryServices basedRepositoryServices)
         {
-            this.userRepository = userRepository;
             this.unitOfWork = unitOfWork;
             this.basedRepositoryServices = basedRepositoryServices;
         }
 
-        public async Task BlockUserFromPostingAsync(int userId)
+        public async Task UpdatePostingPermisstionAsync(int userId, bool newValue)
         {
             var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
-            if (user.IsBlockedFromPosting == true)
+            if (user.IsBlockedFromPosting == true && newValue == true)
             {
                 throw new BadRequestException(UserExceptionMessages.UserAlreadyBlocked);
+            }
+            else if (user.IsBlockedFromPosting == false && newValue == false)
+            {
+                throw new BadRequestException(UserExceptionMessages.UserAlreadyUnblocked);
             }
             if (user.Type == UserType.Expert || user.Type == UserType.Admin)
             {
                 throw new BadRequestException(UserExceptionMessages.CanNotBlock);
             }
-
-            user.IsBlockedFromPosting = true;
+            user.IsBlockedFromPosting = newValue;
             await unitOfWork.SaveChangesAsync();
         }
 
-        public async Task UnblockUserFromPostingAsync(int userId)
-        {
-            var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
-            if (user.IsBlockedFromPosting == false)
-            {
-                throw new BadRequestException(UserExceptionMessages.UserAlreadyUnblocked);
-            }
-            user.IsBlockedFromPosting = false;
-            await unitOfWork.SaveChangesAsync();
-        }
     }
 }

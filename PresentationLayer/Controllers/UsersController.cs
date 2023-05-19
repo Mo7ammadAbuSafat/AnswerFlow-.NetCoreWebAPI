@@ -50,19 +50,13 @@ namespace PresentationLayer.Controllers
             return Ok(user);
         }
 
-        //[HttpPut("{userId}/block")]
-        //public async Task<IActionResult> BlockUserFromPosting(int userId)
-        //{
-        //    await userServices.BlockUserFromPostingAsync(userId);
-        //    return Ok();
-        //}
-
-        //[HttpPut("{userId}/unblock")]
-        //public async Task<IActionResult> UnblockUserFromPosting(int userId)
-        //{
-        //    await userServices.UnblockUserFromPostingAsync(userId);
-        //    return Ok();
-        //}
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{userId}/posting-permissions")]
+        public async Task<IActionResult> UpdatePostingPermisstion(int userId, bool newValue)
+        {
+            await userServicesFacade.UpdatePostingPermisstionAsync(userId, newValue);
+            return Ok();
+        }
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{userId}/roles")]
