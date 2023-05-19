@@ -13,7 +13,7 @@ namespace BusinessLayer.Services.AuthenticationServices.Implementations
             this.httpContextAccessor = httpContextAccessor;
         }
 
-        public int GetAuthenticatedUserId()
+        public int GetAuthenticatedUserIdAsync()
         {
             var userId = 0;
             if (httpContextAccessor.HttpContext != null)

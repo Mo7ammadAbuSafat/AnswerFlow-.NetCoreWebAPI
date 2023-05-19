@@ -42,7 +42,7 @@ namespace BusinessLayer.Services.ReportServices.Implementations
 
         public async Task ReportQuestionAsync(QuestionReportRequestDto questionReportRequestDto)
         {
-            var userId = authenticatedUserServices.GetAuthenticatedUserId();
+            var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
             var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionReportRequestDto.QuestionId);
             var questionReport = new QuestionReport()

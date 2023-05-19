@@ -34,7 +34,7 @@ namespace BusinessLayer.Services.UserAccountServices.Implementations
 
         public async Task<UserOverviewResponseDto> UpdateUserInformationAsync(int userId, UserInformationToUpdateRequestDto userInformationDto)
         {
-            var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserId();
+            var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             if (authenticatedUserId != userId)
             {
                 throw new UnauthorizedException();

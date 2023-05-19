@@ -3,6 +3,7 @@ using BusinessLayer.DTOs.UserDtos;
 using BusinessLayer.Services.UserAccountServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PersistenceLayer.Enums;
 
 namespace PresentationLayer.Controllers
 {
@@ -63,19 +64,13 @@ namespace PresentationLayer.Controllers
         //    return Ok();
         //}
 
-        //[HttpPut("{userId}/upgrade-to-expert")]
-        //public async Task<IActionResult> UpgradeUserToExpert(int userId)
-        //{
-        //    await userServices.UpgradeUserToExpertAsync(userId);
-        //    return Ok();
-        //}
-
-        //[HttpPut("{userId}/upgrade-to-admin")]
-        //public async Task<IActionResult> UpgradeUserToAdmin(int userId)
-        //{
-        //    await userServices.UpgradeUserToAdminAsync(userId);
-        //    return Ok();
-        //}
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{userId}/roles")]
+        public async Task<IActionResult> UpdateUserRole(int userId, UserType newType)
+        {
+            await userServicesFacade.UpdateRoleForUser(userId, newType);
+            return Ok();
+        }
 
         [Authorize]
         [HttpGet("{userId}/feed")]

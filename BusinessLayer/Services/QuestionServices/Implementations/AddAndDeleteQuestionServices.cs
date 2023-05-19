@@ -41,7 +41,7 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
 
         public async Task<QuestionResponseDto> AddNewQuestionAsync(QuestionRequestDto questionToAddRequestDto)
         {
-            var userId = authenticatedUserServices.GetAuthenticatedUserId();
+            var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
             if (user.IsBlockedFromPosting == true)
             {
@@ -67,7 +67,7 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
 
         public async Task DeleteQuestionAsync(int questionId)
         {
-            var userId = authenticatedUserServices.GetAuthenticatedUserId();
+            var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionId);
             if (question.UserId != userId)
             {

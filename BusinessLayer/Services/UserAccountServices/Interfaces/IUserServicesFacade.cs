@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.DTOs.QuestionDtos;
 using BusinessLayer.DTOs.UserDtos;
+using PersistenceLayer.Enums;
 
 namespace BusinessLayer.Services.UserAccountServices.Interfaces
 {
@@ -12,8 +13,7 @@ namespace BusinessLayer.Services.UserAccountServices.Interfaces
         Task<IEnumerable<UserOverviewResponseDto>> GetUsersAsync();
         Task UnblockUserFromPostingAsync(int userId);
         Task<UserOverviewResponseDto> UpdateUserInformationAsync(int userId, UserInformationToUpdateRequestDto userInformationDto);
-        Task UpgradeUserToAdminAsync(int userId);
-        Task UpgradeUserToExpertAsync(int userId);
+        Task UpdateRoleForUser(int userId, UserType newType);
         Task<QuestionsWithPaginationResponseDto> GetFollowingQuestionsForUserByIdAsync(
            int pageNumber,
            int pageSize,

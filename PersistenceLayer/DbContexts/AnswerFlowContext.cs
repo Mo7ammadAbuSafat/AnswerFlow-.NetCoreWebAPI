@@ -35,6 +35,11 @@ namespace PersistenceLayer.DbContexts
                     .WithMany(t => t.Users)
                     .UsingEntity(j => j.ToTable("UserTag"));
 
+            modelBuilder.Entity<User>()
+                    .HasOne(s => s.RoleGivenByUser)
+                    .WithMany(g => g.UsersThatGivenRoleByThisUser)
+                    .HasForeignKey(s => s.RoleGivenByUserId);
+
             modelBuilder.Entity<Question>()
                     .HasMany(t => t.Tags)
                     .WithMany(t => t.Questions)

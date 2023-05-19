@@ -102,5 +102,22 @@ namespace PresentationLayer.Repositories.Implementations
                .Distinct()
                .ToListAsync();
         }
+
+        public async Task<IEnumerable<int>> GetUsersIdsThatHavePermissinForUser(int userId)
+        {
+            List<int> usersIdsThatHavePermissin = new();
+
+            var user = await context.Users.FirstOrDefaultAsync(a => a.Id == userId);
+            while (user != null && user.RoleGivenByUserId != null)
+            {
+                if (usersIdsThatHavePermissin.Any(u => u == user.Id))
+                {
+                    break;
+                }
+                usersIdsThatHavePermissin.Add((int)user.RoleGivenByUserId);
+                user = await context.Users.FirstOrDefaultAsync(a => a.Id == user.RoleGivenByUserId);
+            }
+            return usersIdsThatHavePermissin;
+        }
     }
 }

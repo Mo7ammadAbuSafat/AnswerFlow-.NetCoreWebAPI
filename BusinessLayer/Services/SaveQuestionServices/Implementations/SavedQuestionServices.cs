@@ -42,7 +42,7 @@ namespace BusinessLayer.Services.SaveQuestionServices.Implementations
             int pageSize,
             int userId)
         {
-            var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserId();
+            var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             if (authenticatedUserId != userId)
             {
                 throw new UnauthorizedException();
@@ -75,7 +75,7 @@ namespace BusinessLayer.Services.SaveQuestionServices.Implementations
 
         public async Task SaveQuestionAsync(int userId, int questionId)
         {
-            var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserId();
+            var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             if (authenticatedUserId != userId)
             {
                 throw new UnauthorizedException();
@@ -92,7 +92,7 @@ namespace BusinessLayer.Services.SaveQuestionServices.Implementations
 
         public async Task DeleteSavedQuestionAsync(int userId, int questionId)
         {
-            var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserId();
+            var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             if (authenticatedUserId != userId)
             {
                 throw new UnauthorizedException();

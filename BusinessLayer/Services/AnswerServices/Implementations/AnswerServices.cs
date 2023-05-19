@@ -41,7 +41,7 @@ namespace BusinessLayer.Services.AnswerServices.Implementations
 
         public async Task<AnswerResponseDto> AddNewAnswerAsync(int questionId, AnswerRequestDto answerRequestDto)
         {
-            var userId = authenticatedUserServices.GetAuthenticatedUserId();
+            var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
             if (user.IsBlockedFromPosting == true)
             {
@@ -63,7 +63,7 @@ namespace BusinessLayer.Services.AnswerServices.Implementations
         {
             var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionId);
             var answer = await basedRepositoryServices.GetNonNullAnswerByIdAsync(answerId);
-            var userId = authenticatedUserServices.GetAuthenticatedUserId();
+            var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             if (answer.UserId != userId)
             {
                 throw new UnauthorizedException();
@@ -80,7 +80,7 @@ namespace BusinessLayer.Services.AnswerServices.Implementations
         {
             var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionId);
             var answer = await basedRepositoryServices.GetNonNullAnswerByIdAsync(answerId);
-            var userId = authenticatedUserServices.GetAuthenticatedUserId();
+            var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             if (answer.UserId != userId)
             {
                 throw new UnauthorizedException();

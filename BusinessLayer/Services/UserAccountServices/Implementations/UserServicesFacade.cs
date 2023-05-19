@@ -3,6 +3,7 @@ using BusinessLayer.DTOs.UserDtos;
 using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.FollowingServices.Interfaces;
 using BusinessLayer.Services.UserAccountServices.Interfaces;
+using PersistenceLayer.Enums;
 
 namespace BusinessLayer.Services.UserAccountServices.Implementations
 {
@@ -64,14 +65,9 @@ namespace BusinessLayer.Services.UserAccountServices.Implementations
             await userPermissionsServices.UnblockUserFromPostingAsync(userId);
         }
 
-        public async Task UpgradeUserToExpertAsync(int userId)
+        public async Task UpdateRoleForUser(int userId, UserType newType)
         {
-            await userRolesServices.UpgradeUserToExpertAsync(userId);
-        }
-
-        public async Task UpgradeUserToAdminAsync(int userId)
-        {
-            await userRolesServices.UpgradeUserToAdminAsync(userId);
+            await userRolesServices.UpdateRoleForUser(userId, newType);
         }
 
         public async Task<QuestionsWithPaginationResponseDto> GetFollowingQuestionsForUserByIdAsync(

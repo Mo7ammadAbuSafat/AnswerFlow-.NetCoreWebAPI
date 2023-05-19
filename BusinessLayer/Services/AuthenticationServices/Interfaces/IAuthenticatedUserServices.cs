@@ -2,6 +2,6 @@
 {
     public interface IAuthenticatedUserServices
     {
-        int GetAuthenticatedUserId();
+        int GetAuthenticatedUserIdAsync();
     }
 }

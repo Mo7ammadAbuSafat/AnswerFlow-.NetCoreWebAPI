@@ -34,7 +34,7 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
 
         public async Task<QuestionResponseDto> UpdateQuestionAsync(int questionId, QuestionRequestDto questionUpdateRequestDto)
         {
-            var userId = authenticatedUserServices.GetAuthenticatedUserId();
+            var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionId);
             if (question.UserId != userId)
             {

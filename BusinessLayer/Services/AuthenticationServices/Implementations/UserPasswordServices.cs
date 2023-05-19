@@ -63,7 +63,7 @@ namespace BusinessLayer.Services.AuthenticationServices.Implementations
 
         public async Task ChangePasswordAsync(int userId, ChangePasswordRequestDto changePasswordDto)
         {
-            var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserId();
+            var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             if (authenticatedUserId != userId)
             {
                 throw new UnauthorizedException();

@@ -15,5 +15,6 @@ namespace PersistenceLayer.Repositories.Interfaces
         Task<User> GetUserByEmail(string email);
         Task<User> GetUserById(int userId);
         Task<IEnumerable<User>> GetUsers();
+        Task<IEnumerable<int>> GetUsersIdsThatHavePermissinForUser(int userId);
     }
 }

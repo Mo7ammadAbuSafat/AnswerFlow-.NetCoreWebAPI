@@ -38,7 +38,7 @@ namespace BusinessLayer.Services.VoteServices.Implementations
 
         public async Task<VoteResponseDto> VoteForQuestionAsync(int questionId, VoteRequestDto voteRequestDto)
         {
-            var userId = authenticatedUserServices.GetAuthenticatedUserId();
+            var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
             var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionId);
             var vote = question.Votes.Where(x => x.UserId == userId).FirstOrDefault();
@@ -59,7 +59,7 @@ namespace BusinessLayer.Services.VoteServices.Implementations
 
         public async Task<VoteResponseDto> EditVoteForQuestionAsync(int questionId, int voteId, VoteRequestDto voteRequestDto)
         {
-            var userId = authenticatedUserServices.GetAuthenticatedUserId();
+            var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
             var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionId);
             var vote = question.Votes.Where(x => x.Id == voteId).FirstOrDefault();
@@ -83,7 +83,7 @@ namespace BusinessLayer.Services.VoteServices.Implementations
         public async Task DeleteVoteFromQuestionAsync(int questionId, int voteId)
         {
 
-            var userId = authenticatedUserServices.GetAuthenticatedUserId();
+            var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
             var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionId);
             var vote = question.Votes.Where(x => x.Id == voteId).FirstOrDefault();

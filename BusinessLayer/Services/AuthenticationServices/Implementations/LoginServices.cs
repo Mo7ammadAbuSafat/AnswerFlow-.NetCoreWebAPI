@@ -49,7 +49,7 @@ namespace BusinessLayer.Services.AuthenticationServices.Implementations
 
         public async Task<UserOverviewResponseDto> GetUserByJwtTokenAsync()
         {
-            var userId = authenticatedUserServices.GetAuthenticatedUserId();
+            var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
             return mapper.Map<UserOverviewResponseDto>(user);
         }

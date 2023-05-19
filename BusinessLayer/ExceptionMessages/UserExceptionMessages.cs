@@ -23,10 +23,6 @@
 
         public static string NotFollowedUser = "you did't follow this user";
 
-        public static string UserAlreadyExpert = "the user is already expert";
-
-        public static string UserAlreadyAdmin = "the user is already expert";
-
         public static string UserIsAdmin = "this is admin user";
 
         public static string UserAlreadyBlocked = "the user already blocked";
@@ -36,5 +32,9 @@
         public static string CanNotBlock = "can't block admins and experts";
 
         public static string BlocedUserFromPosting = "the user blocked from posting";
+
+        public static string UserAlreadyHaveRole = "the user already have this role";
+
+        public static string DontHavePermission = "you don't have permisstion for that";
     }
 }

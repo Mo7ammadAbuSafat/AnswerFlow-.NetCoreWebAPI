@@ -39,7 +39,7 @@ namespace BusinessLayer.Services.FollowingServices.Implementations
 
         public async Task FollowTagAsync(int userId, int tagId)
         {
-            var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserId();
+            var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             if (authenticatedUserId != userId)
             {
                 throw new UnauthorizedException();
@@ -52,7 +52,7 @@ namespace BusinessLayer.Services.FollowingServices.Implementations
 
         public async Task UnfollowTagAsync(int userId, int tagId)
         {
-            var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserId();
+            var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             if (authenticatedUserId != userId)
             {
                 throw new UnauthorizedException();
