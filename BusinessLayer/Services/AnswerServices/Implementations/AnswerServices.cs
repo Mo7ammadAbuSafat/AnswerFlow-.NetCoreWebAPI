@@ -39,6 +39,17 @@ namespace BusinessLayer.Services.AnswerServices.Implementations
             return mapper.Map<IEnumerable<AnswerResponseDto>>(answers);
         }
 
+        public async Task<AnswerResponseDto> GetAnswerAsync(int questionId, int answerId)
+        {
+            var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionId);
+            var answer = await basedRepositoryServices.GetNonNullAnswerByIdAsync(answerId);
+            if (answer.QuestionId != question.Id)
+            {
+                throw new BadRequestException(AnswerExceptionMessages.AnswerNotForQuestion);
+            }
+            return mapper.Map<AnswerResponseDto>(answer);
+        }
+
         public async Task<AnswerResponseDto> AddNewAnswerAsync(int questionId, AnswerRequestDto answerRequestDto)
         {
             var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();

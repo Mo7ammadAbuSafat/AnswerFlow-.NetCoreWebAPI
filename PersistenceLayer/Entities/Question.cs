@@ -18,6 +18,7 @@ namespace PersistenceLayer.Entities
         public ICollection<QuestionHistory> EditHistory { get; set; } = new List<QuestionHistory>();
         public DateTime? LastEditDate { get; set; }
         public ICollection<QuestionReport> Reports { get; set; } = new List<QuestionReport>();
+        public ICollection<AnswerReport> AnswerReports { get; set; } = new List<AnswerReport>();
         public ICollection<Keyword> Keywords { get; set; }
     }
 }

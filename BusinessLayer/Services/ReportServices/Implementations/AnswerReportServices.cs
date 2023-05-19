@@ -50,6 +50,7 @@ namespace BusinessLayer.Services.ReportServices.Implementations
                 CreationDate = DateTime.Now,
                 User = user,
                 Description = answerReportRequestDto.Description,
+                QuestionId = answer.QuestionId
             };
             answer.Reports.Add(answerReport);
             await unitOfWork.SaveChangesAsync();

@@ -88,6 +88,12 @@ namespace PersistenceLayer.DbContexts
                     .HasForeignKey(s => s.AnswerId);
 
             modelBuilder.Entity<AnswerReport>()
+                    .HasOne(s => s.Question)
+                    .WithMany(g => g.AnswerReports)
+                    .HasForeignKey(s => s.QuestionId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<AnswerReport>()
                     .HasOne(s => s.User)
                     .WithMany(g => g.AnswerReports)
                     .HasForeignKey(s => s.UserId);

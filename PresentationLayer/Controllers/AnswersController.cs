@@ -19,7 +19,14 @@ namespace PresentationLayer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AnswerResponseDto>>> GetAnswersForQuestion(int questionId)
         {
-            var answer = await answerServices.GetAnswersForQuestionAsync(questionId);
+            var answers = await answerServices.GetAnswersForQuestionAsync(questionId);
+            return Ok(answers);
+        }
+
+        [HttpGet("{answerId}")]
+        public async Task<ActionResult<AnswerResponseDto>> GetAnswer(int questionId, int answerId)
+        {
+            var answer = await answerServices.GetAnswerAsync(questionId, answerId);
             return Ok(answer);
         }
 

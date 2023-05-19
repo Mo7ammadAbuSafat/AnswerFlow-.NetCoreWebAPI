@@ -18,10 +18,6 @@ namespace PersistenceLayer.Repositories.Implementations
             return await context.QuestionReports
                 .Include(r => r.User)
                 .Include(r => r.User.Image)
-                .Include(r => r.Question)
-                .Include(r => r.Question.Tags)
-                .Include(u => u.User)
-                .Include(u => u.User.Image)
                 .ToListAsync();
         }
 

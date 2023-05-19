@@ -43,7 +43,6 @@ builder.Services.AddScoped<IAnswerServices, AnswerServices>();
 //ReportServices
 builder.Services.AddScoped<IAnswerReportServices, AnswerReportServices>();
 builder.Services.AddScoped<IQuestionReportServices, QuestionReportServices>();
-builder.Services.AddScoped<IDualReportDataServices, DualReportDataServices>();
 
 //FollowingServices
 builder.Services.AddScoped<IFollowingQuestionsRetrievalServices, FollowingQuestionsRetrievalServices>();

@@ -9,7 +9,6 @@ namespace BusinessLayer.Porfiles
         public AnswerReportProfile()
         {
             CreateMap<AnswerReport, AnswerReportResponseDto>();
-            CreateMap<AnswerReport, ReportResponseDto>();
         }
     }
 }
