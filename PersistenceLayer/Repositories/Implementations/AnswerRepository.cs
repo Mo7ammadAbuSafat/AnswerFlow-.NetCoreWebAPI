@@ -14,6 +14,11 @@ namespace PersistenceLayer.Repositories.Implementations
             this.context = context;
         }
 
+        public async Task AddAsync(Answer answer)
+        {
+            await context.Answers.AddAsync(answer);
+        }
+
         public void Delete(Answer answer)
         {
             context.Answers.Remove(answer);
@@ -21,7 +26,14 @@ namespace PersistenceLayer.Repositories.Implementations
 
         public async Task<IEnumerable<Answer>> GetAnswersForQuestionAsync(int questionId)
         {
-            return await context.Answers.Where(a => a.QuestionId == questionId).ToListAsync();
+            return await context.Answers
+                .Where(a => a.QuestionId == questionId)
+                .Include(c => c.User)
+                .Include(c => c.User.Image)
+                .Include(c => c.Votes)
+                    .ThenInclude(v => v.User)
+                        .ThenInclude(u => u.Image)
+                .ToListAsync();
         }
         public async Task<Answer> GetAnswerByIdAsync(int answerId)
         {

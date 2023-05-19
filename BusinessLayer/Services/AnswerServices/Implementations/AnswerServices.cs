@@ -64,8 +64,10 @@ namespace BusinessLayer.Services.AnswerServices.Implementations
                 UserId = user.Id,
                 Body = answerRequestDto.Body,
                 CreationDate = DateTime.Now,
+                QuestionId = questionId,
             };
-            question.Answers.Add(answer);
+            await answerRepository.AddAsync(answer);
+            question.AnswersCount++;
             await unitOfWork.SaveChangesAsync();
             return mapper.Map<AnswerResponseDto>(answer);
         }
@@ -84,6 +86,7 @@ namespace BusinessLayer.Services.AnswerServices.Implementations
                 throw new BadRequestException(AnswerExceptionMessages.AnswerNotForQuestion);
             }
             answerRepository.Delete(answer);
+            question.AnswersCount--;
             await unitOfWork.SaveChangesAsync();
         }
 

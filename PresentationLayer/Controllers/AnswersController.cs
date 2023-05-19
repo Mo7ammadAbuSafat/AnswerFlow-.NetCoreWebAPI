@@ -55,7 +55,7 @@ namespace PresentationLayer.Controllers
         }
 
         [Authorize(Roles = "Admin,Expert")]
-        [HttpPut("{answerId}/approve")]
+        [HttpPut("{answerId}/status")]
         public async Task<IActionResult> ApproveAnswer(int questionId, int answerId)
         {
             await answerServices.ApproveAnswerAsync(questionId, answerId);

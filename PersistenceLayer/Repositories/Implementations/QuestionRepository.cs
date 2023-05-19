@@ -32,7 +32,6 @@ namespace PersistenceLayer.Repositories.Implementations
                 .Include(c => c.Tags)
                 .Include(c => c.Votes)
                 .ThenInclude(v => v.User)
-                .Include(c => c.Answers)
                 .Include(c => c.QuestionSavers)
                 .OrderByDescending(c => c.CreationDate)
                 .ToListAsync();
@@ -46,7 +45,6 @@ namespace PersistenceLayer.Repositories.Implementations
                 .Include(c => c.Tags)
                 .Include(c => c.Votes)
                 .ThenInclude(v => v.User)
-                .Include(c => c.Answers)
                 .Include(c => c.QuestionSavers)
                 .Include(c => c.EditHistory.OrderByDescending(e => e.EditDate)));
         }
@@ -62,12 +60,6 @@ namespace PersistenceLayer.Repositories.Implementations
                 .Include(c => c.Votes)
                     .ThenInclude(v => v.User)
                         .ThenInclude(u => u.Image)
-                .Include(c => c.Answers)
-                    .ThenInclude(a => a.User)
-                        .ThenInclude(u => u.Image)
-                .Include(c => c.Answers)
-                    .ThenInclude(a => a.Votes)
-                        .ThenInclude(v => v.User)
                 .Include(c => c.EditHistory)
                 .FirstOrDefaultAsync();
         }
@@ -90,7 +82,6 @@ namespace PersistenceLayer.Repositories.Implementations
                 .Include(c => c.Tags)
                 .Include(c => c.Votes)
                 .ThenInclude(v => v.User)
-                .Include(c => c.Answers)
                 .Include(c => c.QuestionSavers));
         }
     }

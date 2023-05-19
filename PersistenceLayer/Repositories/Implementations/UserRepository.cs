@@ -99,7 +99,6 @@ namespace PresentationLayer.Repositories.Implementations
             return await context.ActivityDateView
                .Where(a => a.UserId == userId)
                .Select(m => m.Date.ToString("yyyy/MM/dd"))
-               .Distinct()
                .ToListAsync();
         }
 
