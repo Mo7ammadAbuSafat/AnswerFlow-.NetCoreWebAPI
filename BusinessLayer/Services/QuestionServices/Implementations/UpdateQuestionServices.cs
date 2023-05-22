@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using BusinessLayer.DTOs.QuestionDtos;
+using BusinessLayer.ExceptionMessages;
 using BusinessLayer.Exceptions;
 using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
 using BusinessLayer.Services.QuestionServices.Interfaces;
 using PersistenceLayer.Entities;
+using PersistenceLayer.Enums;
 using PersistenceLayer.Repositories.Interfaces;
 
 namespace BusinessLayer.Services.QuestionServices.Implementations
@@ -39,6 +41,10 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
             if (question.UserId != userId)
             {
                 throw new UnauthorizedException();
+            }
+            if (question.Status == QuestionStatus.Closed)
+            {
+                throw new BadRequestException(QuestionExceptionMessages.CanNotDeleteOrEditClosedQuesiton);
             }
             var dateNow = DateTime.Now;
             var editHistory = new QuestionHistory()

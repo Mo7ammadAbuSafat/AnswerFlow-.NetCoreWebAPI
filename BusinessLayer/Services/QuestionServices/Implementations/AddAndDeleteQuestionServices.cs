@@ -6,6 +6,7 @@ using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
 using BusinessLayer.Services.QuestionServices.Interfaces;
 using PersistenceLayer.Entities;
+using PersistenceLayer.Enums;
 using PersistenceLayer.Repositories.Interfaces;
 
 namespace BusinessLayer.Services.QuestionServices.Implementations
@@ -72,6 +73,10 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
             if (question.UserId != userId)
             {
                 throw new UnauthorizedException();
+            }
+            if (question.Status == QuestionStatus.Closed)
+            {
+                throw new BadRequestException(QuestionExceptionMessages.CanNotDeleteOrEditClosedQuesiton);
             }
             questionRepository.Delete(question);
             await unitOfWork.SaveChangesAsync();

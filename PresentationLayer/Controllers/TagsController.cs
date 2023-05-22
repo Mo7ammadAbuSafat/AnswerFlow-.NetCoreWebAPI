@@ -22,7 +22,7 @@ namespace PresentationLayer.Controllers
             return Ok(tags);
         }
 
-        [Authorize(Roles = "Admin,Expert")]
+        [Authorize(Roles = "Admin, Expert")]
         [HttpPost]
         public async Task<ActionResult<TagResponseDto>> AddNewTag(TagRequestDto tagRequestDto)
         {
@@ -30,7 +30,7 @@ namespace PresentationLayer.Controllers
             return Ok(tag);
         }
 
-        [Authorize(Roles = "Admin,Expert")]
+        [Authorize(Roles = "Admin, Expert")]
         [HttpPut("{tagId}")]
         public async Task<ActionResult<TagResponseDto>> UpdateTag(int tagId, TagRequestDto tagRequestDto)
         {
@@ -38,7 +38,7 @@ namespace PresentationLayer.Controllers
             return Ok(tag);
         }
 
-        [Authorize(Roles = "Admin,Expert")]
+        [Authorize(Roles = "Admin, Expert")]
         [HttpDelete("{tagId}")]
         public async Task<IActionResult> DeleteTag(int tagId)
         {

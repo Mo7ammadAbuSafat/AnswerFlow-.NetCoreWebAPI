@@ -85,6 +85,10 @@ namespace BusinessLayer.Services.AnswerServices.Implementations
             {
                 throw new BadRequestException(AnswerExceptionMessages.AnswerNotForQuestion);
             }
+            if (answer.AnswerStatus == AnswerStatus.Approved)
+            {
+                throw new BadRequestException(AnswerExceptionMessages.CanNotDeleteOrEditApprovedAnswer);
+            }
             answerRepository.Delete(answer);
             question.AnswersCount--;
             await unitOfWork.SaveChangesAsync();
@@ -103,8 +107,11 @@ namespace BusinessLayer.Services.AnswerServices.Implementations
             {
                 throw new BadRequestException(AnswerExceptionMessages.AnswerNotForQuestion);
             }
+            if (answer.AnswerStatus == AnswerStatus.Approved)
+            {
+                throw new BadRequestException(AnswerExceptionMessages.CanNotDeleteOrEditApprovedAnswer);
+            }
             answer.Body = answerRequestDto.Body;
-
             await unitOfWork.SaveChangesAsync();
             return mapper.Map<AnswerResponseDto>(answer);
         }
