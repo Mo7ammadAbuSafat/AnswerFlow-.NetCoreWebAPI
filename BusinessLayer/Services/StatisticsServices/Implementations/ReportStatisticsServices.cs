@@ -1,8 +1,8 @@
 ﻿using BusinessLayer.DTOs.StatisticsDtos;
-using BusinessLayer.Services.ReportServices.Interfaces;
+using BusinessLayer.Services.StatisticsServices.Interfaces;
 using PersistenceLayer.Repositories.Interfaces;
 
-namespace BusinessLayer.Services.ReportServices.Implementations
+namespace BusinessLayer.Services.StatisticsServices.Implementations
 {
     public class ReportStatisticsServices : IReportStatisticsServices
     {

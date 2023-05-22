@@ -1,6 +1,6 @@
 ﻿using BusinessLayer.DTOs.StatisticsDtos;
 
-namespace BusinessLayer.Services.ReportServices.Interfaces
+namespace BusinessLayer.Services.StatisticsServices.Interfaces
 {
     public interface IReportStatisticsServices
     {

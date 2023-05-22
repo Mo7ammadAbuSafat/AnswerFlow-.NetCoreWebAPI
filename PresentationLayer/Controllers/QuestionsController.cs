@@ -1,5 +1,4 @@
 ﻿using BusinessLayer.DTOs.QuestionDtos;
-using BusinessLayer.DTOs.StatisticsDtos;
 using BusinessLayer.Services.QuestionServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,24 +25,26 @@ namespace PresentationLayer.Controllers
             [FromQuery] string? sortBy = null,
             [FromQuery] DateTime? dateTime = null,
             [FromQuery] QuestionStatus? questionStatus = null,
-            [FromQuery(Name = "tagNames[]")] ICollection<string>? tagNames = null
+            [FromQuery(Name = "tagNames[]")] ICollection<string>? tagNames = null,
+            [FromQuery] string? searchText = null
             )
         {
-            var questions = await questionServicesFacade.GetFilteredQuestionsWithPaginationAsync
+            var questions = await questionServicesFacade.GetQuestionsWithPaginationAsync
                 (pageNumber,
                 pageSize,
                 userId,
                 sortBy,
                 dateTime,
                 questionStatus,
-                tagNames);
+                tagNames,
+                searchText);
 
             return Ok(questions);
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<QuestionResponseDto>> AddNewQuestion([FromBody] QuestionToAddRequestDto questionToAddRequestDto)
+        public async Task<ActionResult<QuestionResponseDto>> AddNewQuestion([FromBody] QuestionRequestDto questionToAddRequestDto)
         {
             var question = await questionServicesFacade.AddNewQuestionAsync(questionToAddRequestDto);
             return Ok(question);
@@ -58,7 +59,7 @@ namespace PresentationLayer.Controllers
 
         [Authorize]
         [HttpPut("{questionId}")]
-        public async Task<ActionResult<QuestionResponseDto>> UpdateQuestion([FromRoute] int questionId, [FromBody] QuestionUpdateRequestDto questionUpdateRequestDto)
+        public async Task<ActionResult<QuestionResponseDto>> UpdateQuestion([FromRoute] int questionId, [FromBody] QuestionRequestDto questionUpdateRequestDto)
         {
             var question = await questionServicesFacade.UpdateQuestionAsync(questionId, questionUpdateRequestDto);
             return Ok(question);
@@ -80,12 +81,6 @@ namespace PresentationLayer.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpGet("statistics")]
-        public async Task<ActionResult<QuestionsStatisticsResponseDto>> GetQuestionsStatistics()
-        {
-            var statistics = await questionServicesFacade.GetQuestionsStatisticsAsync();
-            return Ok(statistics);
-        }
+
     }
 }

@@ -1,5 +1,4 @@
 ﻿using BusinessLayer.DTOs.QuestionDtos;
-using BusinessLayer.DTOs.StatisticsDtos;
 using BusinessLayer.Services.QuestionServices.Interfaces;
 using PersistenceLayer.Enums;
 
@@ -9,24 +8,22 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
     {
         private readonly IAddAndDeleteQuestionServices addAndDeleteQuestionServices;
         private readonly IUpdateQuestionServices updateQuestionServices;
-        private readonly IQuestionStatisticsServices questionStatisticsServices;
         private readonly IQuestionRetrievalServices questionRetrievalServices;
+
 
         public QuestionServicesFacade(
             IAddAndDeleteQuestionServices addAndDeleteQuestionServices,
             IUpdateQuestionServices updateQuestionServices,
-            IQuestionStatisticsServices questionStatisticsServices,
             IQuestionRetrievalServices questionRetrievalServices)
         {
             this.updateQuestionServices = updateQuestionServices;
-            this.questionStatisticsServices = questionStatisticsServices;
             this.addAndDeleteQuestionServices = addAndDeleteQuestionServices;
             this.questionRetrievalServices = questionRetrievalServices;
         }
 
-        public async Task<QuestionResponseDto> AddNewQuestionAsync(QuestionToAddRequestDto questionToAddRequestDto)
+        public async Task<QuestionResponseDto> AddNewQuestionAsync(QuestionRequestDto questionRequestDto)
         {
-            return await addAndDeleteQuestionServices.AddNewQuestionAsync(questionToAddRequestDto);
+            return await addAndDeleteQuestionServices.AddNewQuestionAsync(questionRequestDto);
         }
 
         public async Task DeleteQuestionAsync(int questionId)
@@ -34,23 +31,25 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
             await addAndDeleteQuestionServices.DeleteQuestionAsync(questionId);
         }
 
-        public async Task<QuestionsWithPaginationResponseDto> GetFilteredQuestionsWithPaginationAsync
+        public async Task<QuestionsWithPaginationResponseDto> GetQuestionsWithPaginationAsync
             (int pageNumber,
             int pageSize,
             int? userId = null,
             string? sortBy = null,
             DateTime? dateTime = null,
             QuestionStatus? questionStatus = null,
-            ICollection<string>? tagNames = null)
+            ICollection<string>? tagNames = null,
+            string? searchText = null)
         {
-            return await questionRetrievalServices.GetFilteredQuestionsWithPaginationAsync
+            return await questionRetrievalServices.GetQuestionsWithPaginationAsync
                 (pageNumber,
                  pageSize,
                  userId,
                  sortBy,
                  dateTime,
                  questionStatus,
-                 tagNames);
+                 tagNames,
+                 searchText);
         }
 
         public async Task<QuestionResponseDto> GetQuestionByIdAsync(int questionId)
@@ -58,14 +57,9 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
             return await questionRetrievalServices.GetQuestionByIdAsync(questionId);
         }
 
-        public async Task<QuestionsStatisticsResponseDto> GetQuestionsStatisticsAsync()
+        public async Task<QuestionResponseDto> UpdateQuestionAsync(int questionId, QuestionRequestDto questionRequestDto)
         {
-            return await questionStatisticsServices.GetQuestionsStatisticsAsync();
-        }
-
-        public async Task<QuestionResponseDto> UpdateQuestionAsync(int questionId, QuestionUpdateRequestDto questionUpdateRequestDto)
-        {
-            return await updateQuestionServices.UpdateQuestionAsync(questionId, questionUpdateRequestDto);
+            return await updateQuestionServices.UpdateQuestionAsync(questionId, questionRequestDto);
         }
 
         public async Task<QuestionResponseDto> UpdateQuestionTagsAsync(int questionId, QuestionTagsUpdateRequestDto questionTagsUpdateRequestDto)

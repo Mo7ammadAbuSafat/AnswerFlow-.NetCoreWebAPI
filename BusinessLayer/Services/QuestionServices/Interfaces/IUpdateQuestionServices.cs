@@ -4,7 +4,7 @@ namespace BusinessLayer.Services.QuestionServices.Interfaces
 {
     public interface IUpdateQuestionServices
     {
-        Task<QuestionResponseDto> UpdateQuestionAsync(int questionId, QuestionUpdateRequestDto questionUpdateRequestDto);
+        Task<QuestionResponseDto> UpdateQuestionAsync(int questionId, QuestionRequestDto questionUpdateRequestDto);
         Task<QuestionResponseDto> UpdateQuestionTagsAsync(int questionId, QuestionTagsUpdateRequestDto questionTagsUpdateRequestDto);
     }
 }

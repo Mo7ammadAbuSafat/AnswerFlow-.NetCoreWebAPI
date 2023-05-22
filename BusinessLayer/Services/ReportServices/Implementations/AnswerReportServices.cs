@@ -2,6 +2,7 @@
 using BusinessLayer.DTOs.ReportDtos;
 using BusinessLayer.ExceptionMessages;
 using BusinessLayer.Exceptions;
+using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
 using BusinessLayer.Services.ReportServices.Interfaces;
 using PersistenceLayer.Entities;
@@ -13,21 +14,24 @@ namespace BusinessLayer.Services.ReportServices.Implementations
     public class AnswerReportServices : IAnswerReportServices
     {
         private readonly IAnswerReportRepository answerReportRepository;
-        private readonly IUserRepository userRepository;
-        private readonly IAnswerRepository answerRepository;
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IBasedRepositoryServices basedRepositoryServices;
+        private readonly IAuthenticatedUserServices authenticatedUserServices;
 
 
-        public AnswerReportServices(IAnswerReportRepository answerReportRepository, IUserRepository userRepository, IAnswerRepository answerRepository, IMapper mapper, IUnitOfWork unitOfWork, IBasedRepositoryServices basedRepositoryServices)
+        public AnswerReportServices(
+            IAnswerReportRepository answerReportRepository,
+            IMapper mapper,
+            IUnitOfWork unitOfWork,
+            IBasedRepositoryServices basedRepositoryServices,
+            IAuthenticatedUserServices authenticatedUserServices)
         {
             this.answerReportRepository = answerReportRepository;
-            this.userRepository = userRepository;
-            this.answerRepository = answerRepository;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.basedRepositoryServices = basedRepositoryServices;
+            this.authenticatedUserServices = authenticatedUserServices;
         }
 
         public async Task<IEnumerable<AnswerReportResponseDto>> GetAnswerReportsAsync()
@@ -38,13 +42,15 @@ namespace BusinessLayer.Services.ReportServices.Implementations
 
         public async Task ReportAnswerAsync(AnswerReportRequestDto answerReportRequestDto)
         {
-            var user = await basedRepositoryServices.GetNonNullUserByIdAsync(answerReportRequestDto.UserId);
+            var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
+            var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
             var answer = await basedRepositoryServices.GetNonNullAnswerByIdAsync(answerReportRequestDto.AnswerId);
             var answerReport = new AnswerReport()
             {
                 CreationDate = DateTime.Now,
                 User = user,
                 Description = answerReportRequestDto.Description,
+                QuestionId = answer.QuestionId
             };
             answer.Reports.Add(answerReport);
             await unitOfWork.SaveChangesAsync();

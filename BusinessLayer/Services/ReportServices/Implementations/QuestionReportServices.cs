@@ -2,6 +2,7 @@
 using BusinessLayer.DTOs.ReportDtos;
 using BusinessLayer.ExceptionMessages;
 using BusinessLayer.Exceptions;
+using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
 using BusinessLayer.Services.ReportServices.Interfaces;
 using PersistenceLayer.Entities;
@@ -17,17 +18,20 @@ namespace BusinessLayer.Services.ReportServices.Implementations
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IBasedRepositoryServices basedRepositoryServices;
+        private readonly IAuthenticatedUserServices authenticatedUserServices;
 
         public QuestionReportServices(
             IQuestionReportRepository questionReportRepository,
             IMapper mapper,
             IUnitOfWork unitOfWork,
-            IBasedRepositoryServices basedRepositoryServices)
+            IBasedRepositoryServices basedRepositoryServices,
+            IAuthenticatedUserServices authenticatedUserServices)
         {
             this.questionReportRepository = questionReportRepository;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.basedRepositoryServices = basedRepositoryServices;
+            this.authenticatedUserServices = authenticatedUserServices;
         }
 
         public async Task<IEnumerable<QuestionReportResponseDto>> GetQuestionReportsAsync()
@@ -38,7 +42,8 @@ namespace BusinessLayer.Services.ReportServices.Implementations
 
         public async Task ReportQuestionAsync(QuestionReportRequestDto questionReportRequestDto)
         {
-            var user = await basedRepositoryServices.GetNonNullUserByIdAsync(questionReportRequestDto.UserId);
+            var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
+            var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
             var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionReportRequestDto.QuestionId);
             var questionReport = new QuestionReport()
             {

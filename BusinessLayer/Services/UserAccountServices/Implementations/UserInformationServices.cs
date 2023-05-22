@@ -2,6 +2,7 @@
 using BusinessLayer.DTOs.UserDtos;
 using BusinessLayer.ExceptionMessages;
 using BusinessLayer.Exceptions;
+using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
 using BusinessLayer.Services.UserAccountServices.Interfaces;
 using PersistenceLayer.Repositories.Interfaces;
@@ -15,22 +16,29 @@ namespace BusinessLayer.Services.UserAccountServices.Implementations
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IBasedRepositoryServices basedRepositoryServices;
-
+        private readonly IAuthenticatedUserServices authenticatedUserServices;
 
         public UserInformationServices(
             IUserRepository userRepository,
             IMapper mapper,
             IUnitOfWork unitOfWork,
-            IBasedRepositoryServices basedRepositoryServices)
+            IBasedRepositoryServices basedRepositoryServices,
+            IAuthenticatedUserServices authenticatedUserServices)
         {
             this.userRepository = userRepository;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.basedRepositoryServices = basedRepositoryServices;
+            this.authenticatedUserServices = authenticatedUserServices;
         }
 
         public async Task<UserOverviewResponseDto> UpdateUserInformationAsync(int userId, UserInformationToUpdateRequestDto userInformationDto)
         {
+            var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
+            if (authenticatedUserId != userId)
+            {
+                throw new UnauthorizedException();
+            }
             var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
             user.Username = userInformationDto.Username;
             user.About = userInformationDto.About;

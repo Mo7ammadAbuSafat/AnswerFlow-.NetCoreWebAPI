@@ -2,22 +2,22 @@
 using BusinessLayer.DTOs.UserDtos;
 using BusinessLayer.ExceptionMessages;
 using BusinessLayer.Exceptions;
+using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
 using BusinessLayer.Services.GeneralServices;
-using BusinessLayer.Services.UserAccountServices.Interfaces;
 using PersistenceLayer.Entities;
 using PersistenceLayer.Repositories.Interfaces;
 
-namespace BusinessLayer.Services.UserAccountServices.Implementations
+namespace BusinessLayer.Services.AuthenticationServices.Implementations
 {
-    public class UserRegistrationServices : IUserRegistrationServices
+    public class RegistrationServices : IRegistrationServices
     {
         private readonly IUserRepository userRepository;
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
         private readonly IBasedRepositoryServices basedRepositoryServices;
 
-        public UserRegistrationServices(IUserRepository userRepository, IUnitOfWork unitOfWork, IMapper mapper, IBasedRepositoryServices basedRepositoryServices)
+        public RegistrationServices(IUserRepository userRepository, IUnitOfWork unitOfWork, IMapper mapper, IBasedRepositoryServices basedRepositoryServices)
         {
             this.userRepository = userRepository;
             this.unitOfWork = unitOfWork;
@@ -29,7 +29,7 @@ namespace BusinessLayer.Services.UserAccountServices.Implementations
         {
             if (userRepository.CheckIfEmailExists(userRegistration.Email))
             {
-                throw new NotFoundException(UserExceptionMessages.NotFoundUserByEmail);
+                throw new NotFoundException(UserExceptionMessages.EmailAlreadyExsist);
             }
             PasswordHasher.CreatePasswordHash(userRegistration.Password, out byte[] passwordHash, out byte[] passwordSalt);
             var user = new User()
@@ -48,21 +48,21 @@ namespace BusinessLayer.Services.UserAccountServices.Implementations
             return mapper.Map<UserOverviewResponseDto>(user);
         }
 
-        public async Task<UserOverviewResponseDto> VerifyEmailAsync(int userId, string code)
+        public async Task<string> VerifyEmailAsync(string email, string code)
         {
-            var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
+            var user = await basedRepositoryServices.GetNonNullUserByEmailAsync(email);
             if (code != user.VerificationCode)
             {
                 throw new BadRequestException(UserExceptionMessages.InvalidCode);
             }
             user.VerifiedDate = DateTime.Now;
             await unitOfWork.SaveChangesAsync();
-            return mapper.Map<UserOverviewResponseDto>(user);
+            return TokenGenerator.CreateToken(user);
         }
 
-        public async Task ResendVerificationCodeAsync(int userId)
+        public async Task ResendVerificationCodeAsync(string email)
         {
-            var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
+            var user = await basedRepositoryServices.GetNonNullUserByEmailAsync(email);
             user.VerificationCode = RandomCodeGenerator.GenerateRandomCode();
             await unitOfWork.SaveChangesAsync();
             var emailMessage = EmailMessageGenerator.GenerateEmailMessageForCodeVerification(user.VerificationCode);

@@ -22,6 +22,19 @@ namespace PersistenceLayer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("PersistenceLayer.Entities.ActivityDateView", b =>
+                {
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("ActivityDateView", (string)null);
+                });
+
             modelBuilder.Entity("PersistenceLayer.Entities.Answer", b =>
                 {
                     b.Property<int>("Id")
@@ -52,7 +65,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Answers", (string)null);
+                    b.ToTable("Answers");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.AnswerReport", b =>
@@ -73,6 +86,9 @@ namespace PersistenceLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -85,9 +101,11 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("AnswerId");
 
+                    b.HasIndex("QuestionId");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("AnswerReports", (string)null);
+                    b.ToTable("AnswerReports");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.AnswerVote", b =>
@@ -116,7 +134,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AnswerVotes", (string)null);
+                    b.ToTable("AnswerVotes");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.Image", b =>
@@ -133,7 +151,31 @@ namespace PersistenceLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Images");
+                });
+
+            modelBuilder.Entity("PersistenceLayer.Entities.Keyword", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("name");
+
+                    b.ToTable("Keywords");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.Question", b =>
@@ -143,6 +185,9 @@ namespace PersistenceLayer.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AnswersCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Body")
                         .IsRequired()
@@ -168,7 +213,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Questions", (string)null);
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.QuestionHistory", b =>
@@ -201,7 +246,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("QuestionHistories", (string)null);
+                    b.ToTable("QuestionHistories");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.QuestionReport", b =>
@@ -236,7 +281,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("QuestionReports", (string)null);
+                    b.ToTable("QuestionReports");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.QuestionVote", b =>
@@ -265,7 +310,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("QuestionVotes", (string)null);
+                    b.ToTable("QuestionVotes");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.Tag", b =>
@@ -285,7 +330,7 @@ namespace PersistenceLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags", (string)null);
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.User", b =>
@@ -326,6 +371,9 @@ namespace PersistenceLayer.Migrations
                     b.Property<DateTime?>("ResetPasswordCodeExpiresDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("RoleGivenByUserId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Type")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -346,7 +394,9 @@ namespace PersistenceLayer.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.ToTable("Users", (string)null);
+                    b.HasIndex("RoleGivenByUserId");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("QuestionTag", b =>
@@ -436,6 +486,12 @@ namespace PersistenceLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("PersistenceLayer.Entities.Question", "Question")
+                        .WithMany("AnswerReports")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("PersistenceLayer.Entities.User", "User")
                         .WithMany("AnswerReports")
                         .HasForeignKey("UserId")
@@ -443,6 +499,8 @@ namespace PersistenceLayer.Migrations
                         .IsRequired();
 
                     b.Navigation("Answer");
+
+                    b.Navigation("Question");
 
                     b.Navigation("User");
                 });
@@ -464,6 +522,17 @@ namespace PersistenceLayer.Migrations
                     b.Navigation("Answer");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PersistenceLayer.Entities.Keyword", b =>
+                {
+                    b.HasOne("PersistenceLayer.Entities.Question", "Question")
+                        .WithMany("Keywords")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.Question", b =>
@@ -532,7 +601,13 @@ namespace PersistenceLayer.Migrations
                         .WithMany()
                         .HasForeignKey("ImageId");
 
+                    b.HasOne("PersistenceLayer.Entities.User", "RoleGivenByUser")
+                        .WithMany("UsersThatGivenRoleByThisUser")
+                        .HasForeignKey("RoleGivenByUserId");
+
                     b.Navigation("Image");
+
+                    b.Navigation("RoleGivenByUser");
                 });
 
             modelBuilder.Entity("QuestionTag", b =>
@@ -604,9 +679,13 @@ namespace PersistenceLayer.Migrations
 
             modelBuilder.Entity("PersistenceLayer.Entities.Question", b =>
                 {
+                    b.Navigation("AnswerReports");
+
                     b.Navigation("Answers");
 
                     b.Navigation("EditHistory");
+
+                    b.Navigation("Keywords");
 
                     b.Navigation("Reports");
 
@@ -626,6 +705,8 @@ namespace PersistenceLayer.Migrations
                     b.Navigation("QuestionVotes");
 
                     b.Navigation("Questions");
+
+                    b.Navigation("UsersThatGivenRoleByThisUser");
                 });
 #pragma warning restore 612, 618
         }

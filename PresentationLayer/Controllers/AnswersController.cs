@@ -19,23 +19,30 @@ namespace PresentationLayer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AnswerResponseDto>>> GetAnswersForQuestion(int questionId)
         {
-            var answer = await answerServices.GetAnswersForQuestionAsync(questionId);
+            var answers = await answerServices.GetAnswersForQuestionAsync(questionId);
+            return Ok(answers);
+        }
+
+        [HttpGet("{answerId}")]
+        public async Task<ActionResult<AnswerResponseDto>> GetAnswer(int questionId, int answerId)
+        {
+            var answer = await answerServices.GetAnswerAsync(questionId, answerId);
             return Ok(answer);
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<AnswerResponseDto>> AddNewAnswer(int questionId, [FromBody] AnswerToAddRequestDto answerToAddRequestDto)
+        public async Task<ActionResult<AnswerResponseDto>> AddNewAnswer(int questionId, [FromBody] AnswerRequestDto answerRequestDto)
         {
-            var answer = await answerServices.AddNewAnswerAsync(questionId, answerToAddRequestDto);
+            var answer = await answerServices.AddNewAnswerAsync(questionId, answerRequestDto);
             return Ok(answer);
         }
 
         [Authorize]
         [HttpPut("{answerId}")]
-        public async Task<ActionResult<AnswerResponseDto>> UpdateAnswer(int questionId, int answerId, [FromBody] AnswerUpdateRequestDto answerUpdateRequestDto)
+        public async Task<ActionResult<AnswerResponseDto>> UpdateAnswer(int questionId, int answerId, [FromBody] AnswerRequestDto answerRequestDto)
         {
-            var answer = await answerServices.UpdateAnswerAsync(questionId, answerId, answerUpdateRequestDto);
+            var answer = await answerServices.UpdateAnswerAsync(questionId, answerId, answerRequestDto);
             return Ok(answer);
         }
 
@@ -48,7 +55,7 @@ namespace PresentationLayer.Controllers
         }
 
         [Authorize(Roles = "Admin,Expert")]
-        [HttpPut("{answerId}/approve")]
+        [HttpPut("{answerId}/status")]
         public async Task<IActionResult> ApproveAnswer(int questionId, int answerId)
         {
             await answerServices.ApproveAnswerAsync(questionId, answerId);

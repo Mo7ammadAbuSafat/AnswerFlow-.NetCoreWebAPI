@@ -1,11 +1,11 @@
 ﻿using BusinessLayer.DTOs.StatisticsDtos;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
-using BusinessLayer.Services.UserAccountServices.Interfaces;
+using BusinessLayer.Services.StatisticsServices.Interfaces;
 using PersistenceLayer.Entities;
 using PersistenceLayer.Enums;
 using PersistenceLayer.Repositories.Interfaces;
 
-namespace BusinessLayer.Services.UserAccountServices.Implementations
+namespace BusinessLayer.Services.StatisticsServices.Implementations
 {
     public class UserStatisticsServices : IUserStatisticsServices
     {

@@ -1,9 +1,9 @@
 ﻿using BusinessLayer.DTOs.QuestionDtos;
-using BusinessLayer.DTOs.StatisticsDtos;
 using BusinessLayer.DTOs.UserDtos;
 using BusinessLayer.Services.UserAccountServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PersistenceLayer.Enums;
 
 namespace PresentationLayer.Controllers
 {
@@ -32,50 +32,7 @@ namespace PresentationLayer.Controllers
             return Ok(user);
         }
 
-        [HttpPost("registration")]
-        public async Task<IActionResult> RegisterUser(UserRegistrationRequestDto userRegistration)
-        {
-            var user = await userServicesFacade.RegisterUserAsync(userRegistration);
-            return Ok(user);
-        }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> LoginUser(UserLoginRequestDto userLogin)
-        {
-            var token = await userServicesFacade.LoginUserAsync(userLogin);
-            return Ok(token);
-        }
-
-        [HttpPost("verifying-email")]
-        public async Task<IActionResult> VerifyUserEmail([FromRoute] int userId, [FromQuery] string code)
-
-        {
-            var user = await userServicesFacade.VerifyEmailAsync(userId, code);
-            return Ok(user);
-        }
-
-        [HttpPost("verification-email-code")]
-        public async Task<IActionResult> ResendEmailVerificationCode([FromRoute] int userId)
-
-        {
-            await userServicesFacade.ResendVerificationCodeAsync(userId);
-            return Ok("success");
-        }
-
-        [HttpPost("reset-password-code")]
-        public async Task<IActionResult> SendResetPasswordCode([FromQuery] string email)
-
-        {
-            var user = await userServicesFacade.SendResetPasswordCodeAsync(email);
-            return Ok(user);
-        }
-
-        [HttpPut("reset-password")]
-        public async Task<IActionResult> ResetPasswordByCodeSendedToEmail([FromRoute] int userId, [FromBody] ResetPasswordWithCodeRequestDto resetPasswordDto)
-        {
-            await userServicesFacade.ResetPasswordByCodeSendedToEmailAsync(userId, resetPasswordDto);
-            return Ok("success");
-        }
 
         [Authorize]
         [HttpPut("{userId}/change-password")]
@@ -85,61 +42,28 @@ namespace PresentationLayer.Controllers
             return Ok("success");
         }
 
-        //[HttpPut("{userId}/user-information")]
-        //public async Task<IActionResult> UpdateUserInformation([FromRoute] int userId, [FromBody] UserInformationToUpdateRequestDto userInformationDto)
-        //{
-        //    var user = await userServices.UpdateUserInformationAsync(userId, userInformationDto);
-        //    return Ok(user);
-        //}
-
-        //[HttpPut("{userId}/block")]
-        //public async Task<IActionResult> BlockUserFromPosting(int userId)
-        //{
-        //    await userServices.BlockUserFromPostingAsync(userId);
-        //    return Ok();
-        //}
-
-        //[HttpPut("{userId}/unblock")]
-        //public async Task<IActionResult> UnblockUserFromPosting(int userId)
-        //{
-        //    await userServices.UnblockUserFromPostingAsync(userId);
-        //    return Ok();
-        //}
-
-        //[HttpPut("{userId}/upgrade-to-expert")]
-        //public async Task<IActionResult> UpgradeUserToExpert(int userId)
-        //{
-        //    await userServices.UpgradeUserToExpertAsync(userId);
-        //    return Ok();
-        //}
-
-        //[HttpPut("{userId}/upgrade-to-admin")]
-        //public async Task<IActionResult> UpgradeUserToAdmin(int userId)
-        //{
-        //    await userServices.UpgradeUserToAdminAsync(userId);
-        //    return Ok();
-        //}
+        [Authorize]
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> UpdateUserInformation([FromRoute] int userId, [FromBody] UserInformationToUpdateRequestDto userInformationDto)
+        {
+            var user = await userServicesFacade.UpdateUserInformationAsync(userId, userInformationDto);
+            return Ok(user);
+        }
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("statistics")]
-        public async Task<ActionResult<UsersStatisticsResponseDto>> GetUsersStatistics()
+        [HttpPut("{userId}/posting-permissions")]
+        public async Task<IActionResult> UpdatePostingPermisstion(int userId, bool newValue)
         {
-            var statistics = await userServicesFacade.GetUsersStatisticsAsync();
-            return Ok(statistics);
+            await userServicesFacade.UpdatePostingPermisstionAsync(userId, newValue);
+            return Ok();
         }
 
-        [HttpGet("{userId}/calendar-statistics")]
-        public async Task<ActionResult<IEnumerable<int>>> GetUserActivityCurrentYearStatistic(int userId)
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{userId}/roles")]
+        public async Task<IActionResult> UpdateUserRole(int userId, UserType newType)
         {
-            var calendar = await userServicesFacade.GetUserActivityCurrentYearStatisticAsync(userId);
-            return Ok(calendar);
-        }
-
-        [HttpGet("{userId}/statistics")]
-        public async Task<ActionResult<UserStatisticsResponseDto>> GetUserStatistics(int userId)
-        {
-            var statistics = await userServicesFacade.GetUserStatisticsAsync(userId);
-            return Ok(statistics);
+            await userServicesFacade.UpdateRoleForUser(userId, newType);
+            return Ok();
         }
 
         [Authorize]

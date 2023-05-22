@@ -2,7 +2,6 @@
 {
     public interface IUserPermissionsServices
     {
-        Task BlockUserFromPostingAsync(int userId);
-        Task UnblockUserFromPostingAsync(int userId);
+        Task UpdatePostingPermisstionAsync(int userId, bool newValue);
     }
 }

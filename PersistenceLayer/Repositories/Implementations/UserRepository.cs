@@ -89,9 +89,8 @@ namespace PresentationLayer.Repositories.Implementations
 
         public async Task<IEnumerable<Tag>> GetFollowingTagsForUserById(int userId)
         {
-            return (IEnumerable<Tag>)await context.Users
-                 .Where(c => c.Id == userId)
-                 .Select(c => c.Tags)
+            return await context.Tags
+                 .Where(t => t.Users.Any(u => u.Id == userId))
                  .ToListAsync();
         }
 
@@ -100,8 +99,24 @@ namespace PresentationLayer.Repositories.Implementations
             return await context.ActivityDateView
                .Where(a => a.UserId == userId)
                .Select(m => m.Date.ToString("yyyy/MM/dd"))
-               .Distinct()
                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<int>> GetUsersIdsThatHavePermissinForUser(int userId)
+        {
+            List<int> usersIdsThatHavePermissin = new();
+
+            var user = await context.Users.FirstOrDefaultAsync(a => a.Id == userId);
+            while (user != null && user.RoleGivenByUserId != null)
+            {
+                if (usersIdsThatHavePermissin.Any(u => u == user.Id))
+                {
+                    break;
+                }
+                usersIdsThatHavePermissin.Add((int)user.RoleGivenByUserId);
+                user = await context.Users.FirstOrDefaultAsync(a => a.Id == user.RoleGivenByUserId);
+            }
+            return usersIdsThatHavePermissin;
         }
     }
 }

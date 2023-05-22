@@ -18,31 +18,31 @@ namespace PresentationLayer.Controllers
         [HttpGet]
         public async Task<IActionResult> GetVotes(int questionId)
         {
-            await questionVoteServices.GetVotesForQuestionAsync(questionId);
-            return Ok();
+            var votes = await questionVoteServices.GetVotesForQuestionAsync(questionId);
+            return Ok(votes);
         }
 
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> VoteForAnQuestion(int questionId, VoteRequestDto voteRequestDto)
         {
-            await questionVoteServices.VoteForQuestionAsync(questionId, voteRequestDto);
-            return Ok();
+            var vote = await questionVoteServices.VoteForQuestionAsync(questionId, voteRequestDto);
+            return Ok(vote);
         }
 
         [Authorize]
         [HttpPut("{voteId}")]
         public async Task<IActionResult> EditVoteForQuestion(int questionId, int voteId, VoteRequestDto voteRequestDto)
         {
-            await questionVoteServices.EditVoteForQuestionAsync(questionId, voteId, voteRequestDto);
-            return Ok();
+            var vote = await questionVoteServices.EditVoteForQuestionAsync(questionId, voteId, voteRequestDto);
+            return Ok(vote);
         }
 
         [Authorize]
         [HttpDelete("{voteId}")]
-        public async Task<IActionResult> DeleteVoteFromQuestion(int questionId, int voteId, int userId)
+        public async Task<IActionResult> DeleteVoteFromQuestion(int questionId, int voteId)
         {
-            await questionVoteServices.DeleteVoteFromQuestionAsync(questionId, voteId, userId);
+            await questionVoteServices.DeleteVoteFromQuestionAsync(questionId, voteId);
             return Ok();
         }
 

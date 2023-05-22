@@ -17,6 +17,7 @@ namespace PersistenceLayer.DbContexts
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<ActivityDateView> ActivityDateView { get; set; }
+        public DbSet<Keyword> Keywords { get; set; }
 
 
         public AnswerFlowContext(DbContextOptions<AnswerFlowContext> options) : base(options) { }
@@ -33,6 +34,11 @@ namespace PersistenceLayer.DbContexts
                     .HasMany(t => t.Tags)
                     .WithMany(t => t.Users)
                     .UsingEntity(j => j.ToTable("UserTag"));
+
+            modelBuilder.Entity<User>()
+                    .HasOne(s => s.RoleGivenByUser)
+                    .WithMany(g => g.UsersThatGivenRoleByThisUser)
+                    .HasForeignKey(s => s.RoleGivenByUserId);
 
             modelBuilder.Entity<Question>()
                     .HasMany(t => t.Tags)
@@ -82,10 +88,23 @@ namespace PersistenceLayer.DbContexts
                     .HasForeignKey(s => s.AnswerId);
 
             modelBuilder.Entity<AnswerReport>()
+                    .HasOne(s => s.Question)
+                    .WithMany(g => g.AnswerReports)
+                    .HasForeignKey(s => s.QuestionId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<AnswerReport>()
                     .HasOne(s => s.User)
                     .WithMany(g => g.AnswerReports)
                     .HasForeignKey(s => s.UserId);
 
+            modelBuilder.Entity<Keyword>()
+                    .HasOne(s => s.Question)
+                    .WithMany(g => g.Keywords)
+                    .HasForeignKey(s => s.QuestionId);
+
+            modelBuilder.Entity<Keyword>()
+                    .HasIndex(e => e.name);
 
             modelBuilder.Entity<User>().Property(u => u.About).IsRequired(false);
             modelBuilder.Entity<User>().Property(u => u.VerifiedDate).IsRequired(false);

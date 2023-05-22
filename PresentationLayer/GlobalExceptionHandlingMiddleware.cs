@@ -40,6 +40,10 @@ namespace PresentationLayer
             {
                 statusCode = HttpStatusCode.BadRequest;
             }
+            else if (exceptionType == typeof(UnauthorizedException))
+            {
+                statusCode = HttpStatusCode.Unauthorized;
+            }
             else
             {
                 statusCode = HttpStatusCode.InternalServerError;

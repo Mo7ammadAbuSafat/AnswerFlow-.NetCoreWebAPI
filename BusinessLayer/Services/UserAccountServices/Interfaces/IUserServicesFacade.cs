@@ -1,29 +1,18 @@
 ﻿using BusinessLayer.DTOs.QuestionDtos;
-using BusinessLayer.DTOs.StatisticsDtos;
 using BusinessLayer.DTOs.UserDtos;
+using PersistenceLayer.Enums;
 
 namespace BusinessLayer.Services.UserAccountServices.Interfaces
 {
     public interface IUserServicesFacade
     {
-        Task BlockUserFromPostingAsync(int userId);
         Task ChangePasswordAsync(int userId, ChangePasswordRequestDto changePasswordDto);
         Task<FullUserResponseDto> GetFullUserByIdAsync(int userId);
-        Task<IEnumerable<string>> GetUserActivityCurrentYearStatisticAsync(int userId);
         Task<UserOverviewResponseDto> GetUserByEmailAsync(string email);
         Task<IEnumerable<UserOverviewResponseDto>> GetUsersAsync();
-        Task<UsersStatisticsResponseDto> GetUsersStatisticsAsync();
-        Task<UserStatisticsResponseDto> GetUserStatisticsAsync(int userId);
-        Task<string> LoginUserAsync(UserLoginRequestDto userLogin);
-        Task<UserOverviewResponseDto> RegisterUserAsync(UserRegistrationRequestDto userRegistration);
-        Task ResendVerificationCodeAsync(int userId);
-        Task ResetPasswordByCodeSendedToEmailAsync(int userId, ResetPasswordWithCodeRequestDto resetPasswordDto);
-        Task<UserOverviewResponseDto> SendResetPasswordCodeAsync(string email);
-        Task UnblockUserFromPostingAsync(int userId);
+        Task UpdatePostingPermisstionAsync(int userId, bool newValue);
         Task<UserOverviewResponseDto> UpdateUserInformationAsync(int userId, UserInformationToUpdateRequestDto userInformationDto);
-        Task UpgradeUserToAdminAsync(int userId);
-        Task UpgradeUserToExpertAsync(int userId);
-        Task<UserOverviewResponseDto> VerifyEmailAsync(int userId, string code);
+        Task UpdateRoleForUser(int userId, UserType newType);
         Task<QuestionsWithPaginationResponseDto> GetFollowingQuestionsForUserByIdAsync(
            int pageNumber,
            int pageSize,

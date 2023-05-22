@@ -10,6 +10,7 @@ namespace PersistenceLayer.Entities
         public string Title { get; set; }
         public string Body { get; set; }
         public DateTime CreationDate { get; set; }
+        public int AnswersCount { get; set; } = 0;
         public ICollection<Tag> Tags { get; set; } = new List<Tag>();
         public ICollection<Answer> Answers { get; set; } = new List<Answer>();
         public ICollection<QuestionVote> Votes { get; set; } = new List<QuestionVote>();
@@ -18,5 +19,7 @@ namespace PersistenceLayer.Entities
         public ICollection<QuestionHistory> EditHistory { get; set; } = new List<QuestionHistory>();
         public DateTime? LastEditDate { get; set; }
         public ICollection<QuestionReport> Reports { get; set; } = new List<QuestionReport>();
+        public ICollection<AnswerReport> AnswerReports { get; set; } = new List<AnswerReport>();
+        public ICollection<Keyword> Keywords { get; set; }
     }
 }

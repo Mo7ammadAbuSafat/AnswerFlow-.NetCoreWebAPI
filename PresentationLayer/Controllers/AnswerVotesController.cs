@@ -27,23 +27,23 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public async Task<IActionResult> VoteForAnAnswer(int questionId, int answerId, VoteRequestDto voteRequestDto)
         {
-            await answerVoteServices.VoteForAnswerAsync(questionId, answerId, voteRequestDto);
-            return Ok();
+            var vote = await answerVoteServices.VoteForAnswerAsync(questionId, answerId, voteRequestDto);
+            return Ok(vote);
         }
 
         [Authorize]
         [HttpPut("{voteId}")]
         public async Task<IActionResult> EditVoteForAnswer(int questionId, int answerId, int voteId, VoteRequestDto voteRequestDto)
         {
-            await answerVoteServices.EditVoteForAnswerAsync(questionId, answerId, voteId, voteRequestDto);
-            return Ok();
+            var vote = await answerVoteServices.EditVoteForAnswerAsync(questionId, answerId, voteId, voteRequestDto);
+            return Ok(vote);
         }
 
         [Authorize]
         [HttpDelete("{voteId}")]
-        public async Task<IActionResult> DeleteVoteFromAnswer(int questionId, int answerId, int voteId, int userId)
+        public async Task<IActionResult> DeleteVoteFromAnswer(int questionId, int answerId, int voteId)
         {
-            await answerVoteServices.DeleteVoteFromAnswerAsync(questionId, answerId, voteId, userId);
+            await answerVoteServices.DeleteVoteFromAnswerAsync(questionId, answerId, voteId);
             return Ok();
         }
     }

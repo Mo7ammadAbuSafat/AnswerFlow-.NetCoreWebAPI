@@ -2,6 +2,7 @@
 using BusinessLayer.DTOs.VoteDtos;
 using BusinessLayer.ExceptionMessages;
 using BusinessLayer.Exceptions;
+using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
 using BusinessLayer.Services.VoteServices.Interfaces;
 using PersistenceLayer.Entities;
@@ -14,12 +15,18 @@ namespace BusinessLayer.Services.VoteServices.Implementations
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
         private readonly IBasedRepositoryServices basedRepositoryServices;
+        private readonly IAuthenticatedUserServices authenticatedUserServices;
 
-        public AnswerVoteServices(IUnitOfWork unitOfWork, IMapper mapper, IBasedRepositoryServices basedRepositoryServices)
+        public AnswerVoteServices(
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
+            IBasedRepositoryServices basedRepositoryServices,
+            IAuthenticatedUserServices authenticatedUserServices)
         {
             this.unitOfWork = unitOfWork;
             this.basedRepositoryServices = basedRepositoryServices;
             this.mapper = mapper;
+            this.authenticatedUserServices = authenticatedUserServices;
         }
 
         public async Task<IEnumerable<VoteResponseDto>> GetVotesForAnswerAsync(int questionId, int answerId)
@@ -34,54 +41,35 @@ namespace BusinessLayer.Services.VoteServices.Implementations
             return mapper.Map<IEnumerable<VoteResponseDto>>(votes);
         }
 
-        public async Task VoteForAnswerAsync(int questionId, int answerId, VoteRequestDto voteRequestDto)
+        public async Task<VoteResponseDto> VoteForAnswerAsync(int questionId, int answerId, VoteRequestDto voteRequestDto)
         {
-            var user = await basedRepositoryServices.GetNonNullUserByIdAsync(voteRequestDto.UserId);
+            var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
+            var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
             var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionId);
             var answer = await basedRepositoryServices.GetNonNullAnswerByIdAsync(answerId);
             if (answer.QuestionId != questionId)
             {
                 throw new Exception(AnswerExceptionMessages.AnswerNotForQuestion);
             }
-            var vote = answer.Votes.Where(x => x.UserId == voteRequestDto.UserId).FirstOrDefault();
+            var vote = answer.Votes.Where(x => x.UserId == userId).FirstOrDefault();
             if (vote != null)
             {
                 throw new BadRequestException(VoteExceptionMessages.AlreadyVoted);
             }
             vote = new AnswerVote()
             {
-                UserId = voteRequestDto.UserId,
+                UserId = userId,
                 Type = voteRequestDto.Type,
                 CreationDate = DateTime.Now
             };
             answer.Votes.Add(vote);
             await unitOfWork.SaveChangesAsync();
+            return mapper.Map<VoteResponseDto>(vote);
         }
 
-        public async Task EditVoteForAnswerAsync(int questionId, int answerId, int voteId, VoteRequestDto voteRequestDto)
+        public async Task<VoteResponseDto> EditVoteForAnswerAsync(int questionId, int answerId, int voteId, VoteRequestDto voteRequestDto)
         {
-            var user = await basedRepositoryServices.GetNonNullUserByIdAsync(voteRequestDto.UserId);
-            var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionId);
-            var answer = await basedRepositoryServices.GetNonNullAnswerByIdAsync(answerId);
-            if (answer.QuestionId != questionId)
-            {
-                throw new Exception(AnswerExceptionMessages.AnswerNotForQuestion);
-            }
-            var vote = answer.Votes.Where(x => x.Id == voteId).FirstOrDefault();
-            if (vote == null || vote.UserId != voteRequestDto.UserId)
-            {
-                throw new NotFoundException(VoteExceptionMessages.NotFoundVote);
-            }
-            else if (vote.Type != voteRequestDto.Type)
-            {
-                vote.Type = voteRequestDto.Type;
-                vote.CreationDate = DateTime.Now;
-            }
-            await unitOfWork.SaveChangesAsync();
-        }
-
-        public async Task DeleteVoteFromAnswerAsync(int questionId, int answerId, int voteId, int userId)
-        {
+            var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
             var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionId);
             var answer = await basedRepositoryServices.GetNonNullAnswerByIdAsync(answerId);
@@ -90,9 +78,41 @@ namespace BusinessLayer.Services.VoteServices.Implementations
                 throw new Exception(AnswerExceptionMessages.AnswerNotForQuestion);
             }
             var vote = answer.Votes.Where(x => x.Id == voteId).FirstOrDefault();
-            if (vote == null || vote.UserId != userId)
+            if (vote == null)
             {
                 throw new NotFoundException(VoteExceptionMessages.NotFoundVote);
+            }
+            if (vote.UserId != userId)
+            {
+                throw new UnauthorizedException();
+            }
+            if (vote.Type != voteRequestDto.Type)
+            {
+                vote.Type = voteRequestDto.Type;
+                vote.CreationDate = DateTime.Now;
+            }
+            await unitOfWork.SaveChangesAsync();
+            return mapper.Map<VoteResponseDto>(vote);
+        }
+
+        public async Task DeleteVoteFromAnswerAsync(int questionId, int answerId, int voteId)
+        {
+            var userId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
+            var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
+            var question = await basedRepositoryServices.GetNonNullQuestionByIdAsync(questionId);
+            var answer = await basedRepositoryServices.GetNonNullAnswerByIdAsync(answerId);
+            if (answer.QuestionId != questionId)
+            {
+                throw new Exception(AnswerExceptionMessages.AnswerNotForQuestion);
+            }
+            var vote = answer.Votes.Where(x => x.Id == voteId).FirstOrDefault();
+            if (vote == null)
+            {
+                throw new NotFoundException(VoteExceptionMessages.NotFoundVote);
+            }
+            if (vote.UserId != userId)
+            {
+                throw new UnauthorizedException();
             }
             answer.Votes.Remove(vote);
             await unitOfWork.SaveChangesAsync();

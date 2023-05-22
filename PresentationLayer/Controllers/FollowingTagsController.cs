@@ -32,7 +32,7 @@ namespace PresentationLayer.Controllers
 
         [Authorize]
         [HttpDelete("{tagId}")]
-        public async Task<IActionResult> unfollowTag(int userId, int tagId)
+        public async Task<IActionResult> UnfollowTag(int userId, int tagId)
         {
             await followingTagsServices.UnfollowTagAsync(userId, tagId);
             return Ok("successful");
