@@ -50,6 +50,30 @@ namespace PresentationLayer.Controllers
             return Ok(user);
         }
 
+        [Authorize]
+        [HttpPost("{userId}/profile-picture")]
+        public async Task<IActionResult> AddProfilePicture([FromRoute] int userId, IFormFile image)
+        {
+            await userServicesFacade.AddProfilePictureAsync(userId, image);
+            return Ok("success");
+        }
+
+        [Authorize]
+        [HttpPut("{userId}/profile-picture")]
+        public async Task<IActionResult> ChangeProfilePicture([FromRoute] int userId, IFormFile image)
+        {
+            await userServicesFacade.ChangeProfilePictureAsync(userId, image);
+            return Ok("success");
+        }
+
+        [Authorize]
+        [HttpDelete("{userId}/profile-picture")]
+        public async Task<IActionResult> DeleteProfilePicture([FromRoute] int userId)
+        {
+            await userServicesFacade.DeleteProfilePictureAsync(userId);
+            return Ok("success");
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPut("{userId}/posting-permissions")]
         public async Task<IActionResult> UpdatePostingPermisstion(int userId, bool newValue)

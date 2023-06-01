@@ -3,6 +3,7 @@ using BusinessLayer.DTOs.UserDtos;
 using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.FollowingServices.Interfaces;
 using BusinessLayer.Services.UserAccountServices.Interfaces;
+using Microsoft.AspNetCore.Http;
 using PersistenceLayer.Enums;
 
 namespace BusinessLayer.Services.UserAccountServices.Implementations
@@ -14,13 +15,15 @@ namespace BusinessLayer.Services.UserAccountServices.Implementations
         private readonly IUserPermissionsServices userPermissionsServices;
         private readonly IUserRolesServices userRolesServices;
         private readonly IFollowingQuestionsRetrievalServices followingQuestionsRetrievalServices;
+        private readonly IUserProfilePictureServices userProfilePictureServices;
 
         public UserServicesFacade(
             IUserInformationServices userInformationServices,
             IUserPasswordServices userPasswordServices,
             IUserPermissionsServices userPermissionsServices,
             IUserRolesServices userRolesServices,
-            IFollowingQuestionsRetrievalServices followingQuestionsRetrievalServices
+            IFollowingQuestionsRetrievalServices followingQuestionsRetrievalServices,
+            IUserProfilePictureServices userProfilePictureServices
             )
         {
             this.userInformationServices = userInformationServices;
@@ -28,6 +31,7 @@ namespace BusinessLayer.Services.UserAccountServices.Implementations
             this.userPermissionsServices = userPermissionsServices;
             this.userRolesServices = userRolesServices;
             this.followingQuestionsRetrievalServices = followingQuestionsRetrievalServices;
+            this.userProfilePictureServices = userProfilePictureServices;
         }
 
         public async Task<UserOverviewResponseDto> UpdateUserInformationAsync(int userId, UserInformationToUpdateRequestDto userInformationDto)
@@ -71,6 +75,21 @@ namespace BusinessLayer.Services.UserAccountServices.Implementations
            int userId)
         {
             return await followingQuestionsRetrievalServices.GetFollowingQuestionsForUserByIdAsync(pageNumber, pageSize, userId);
+        }
+
+        public async Task ChangeProfilePictureAsync(int userId, IFormFile image)
+        {
+            await userProfilePictureServices.ChangeProfilePictureAsync(userId, image);
+        }
+
+        public async Task AddProfilePictureAsync(int userId, IFormFile image)
+        {
+            await userProfilePictureServices.AddProfilePictureAsync(userId, image);
+        }
+
+        public async Task DeleteProfilePictureAsync(int userId)
+        {
+            await userProfilePictureServices.DeleteProfilePictureAsync(userId);
         }
     }
 }
