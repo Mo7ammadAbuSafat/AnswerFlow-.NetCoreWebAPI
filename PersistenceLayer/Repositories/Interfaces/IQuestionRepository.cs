@@ -6,7 +6,6 @@ namespace PersistenceLayer.Repositories.Interfaces
     {
         Task AddAsync(Question question);
         void Delete(Question question);
-        Task<IEnumerable<Question>> GetAllQuestionsAsync();
         Task<IQueryable<Question>> GetIQueryableQuestions();
         Task<Question> GetQuestionByIdAsync(int questionId);
 

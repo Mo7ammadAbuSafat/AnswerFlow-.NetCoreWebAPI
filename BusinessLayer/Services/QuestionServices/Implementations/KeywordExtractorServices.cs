@@ -16,7 +16,7 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
 
         public async Task<ICollection<Keyword>> GetKeywordsAsync(string text)
         {
-            string url = $"http://127.0.0.1:5000/process_text?text={text}";
+            string url = $"http://127.0.0.1:5000/keywords?text={text}";
             HttpResponseMessage response = await httpClient.GetAsync(url);
 
             string jsonResponse = await response.Content.ReadAsStringAsync();
