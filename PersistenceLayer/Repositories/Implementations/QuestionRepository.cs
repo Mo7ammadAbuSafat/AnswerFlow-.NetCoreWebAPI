@@ -24,25 +24,13 @@ namespace PersistenceLayer.Repositories.Implementations
             context.Questions.Remove(question);
         }
 
-        public async Task<IEnumerable<Question>> GetAllQuestionsAsync()
-        {
-            return await context.Questions
-                .Include(c => c.User)
-                .Include(c => c.User.Image)
-                .Include(c => c.Tags)
-                .Include(c => c.Votes)
-                .ThenInclude(v => v.User)
-                .Include(c => c.QuestionSavers)
-                .OrderByDescending(c => c.CreationDate)
-                .ToListAsync();
-        }
-
         public async Task<IQueryable<Question>> GetIQueryableQuestions()
         {
             return await Task.FromResult(context.Questions
                 .Include(c => c.User)
                 .Include(c => c.User.Image)
                 .Include(c => c.Tags)
+                .Include(c => c.Image)
                 .Include(c => c.Votes)
                 .ThenInclude(v => v.User)
                 .Include(c => c.QuestionSavers)
@@ -56,6 +44,7 @@ namespace PersistenceLayer.Repositories.Implementations
                 .Include(c => c.User)
                 .Include(c => c.User.Image)
                 .Include(c => c.Tags)
+                .Include(c => c.Image)
                 .Include(c => c.QuestionSavers)
                 .Include(c => c.Votes)
                     .ThenInclude(v => v.User)
@@ -80,6 +69,7 @@ namespace PersistenceLayer.Repositories.Implementations
                 .Include(c => c.User)
                 .Include(c => c.User.Image)
                 .Include(c => c.Tags)
+                .Include(c => c.Image)
                 .Include(c => c.Votes)
                 .ThenInclude(v => v.User)
                 .Include(c => c.QuestionSavers));

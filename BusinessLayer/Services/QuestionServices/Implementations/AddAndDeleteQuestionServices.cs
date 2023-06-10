@@ -4,6 +4,8 @@ using BusinessLayer.ExceptionMessages;
 using BusinessLayer.Exceptions;
 using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
+using BusinessLayer.Services.GeneralServices;
+using BusinessLayer.Services.ImageServices.Interfaces;
 using BusinessLayer.Services.QuestionServices.Interfaces;
 using PersistenceLayer.Entities;
 using PersistenceLayer.Enums;
@@ -20,6 +22,8 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
         private readonly IBasedRepositoryServices basedRepositoryServices;
         private readonly IKeywordExtractorServices keywordExtractorServices;
         private readonly IAuthenticatedUserServices authenticatedUserServices;
+        private readonly IFileServices fileServices;
+        private readonly ICloudinaryServices cloudinaryServices;
 
 
         public AddAndDeleteQuestionServices(
@@ -29,7 +33,9 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
             IMapper mapper,
             IBasedRepositoryServices basedRepositoryServices,
             IKeywordExtractorServices keywordExtractorServices,
-            IAuthenticatedUserServices authenticatedUserServices)
+            IAuthenticatedUserServices authenticatedUserServices,
+            IFileServices fileServices,
+            ICloudinaryServices cloudinaryServices)
         {
             this.tagRepository = tagRepository;
             this.unitOfWork = unitOfWork;
@@ -38,6 +44,8 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
             this.basedRepositoryServices = basedRepositoryServices;
             this.keywordExtractorServices = keywordExtractorServices;
             this.authenticatedUserServices = authenticatedUserServices;
+            this.cloudinaryServices = cloudinaryServices;
+            this.fileServices = fileServices;
         }
 
         public async Task<QuestionResponseDto> AddNewQuestionAsync(QuestionRequestDto questionToAddRequestDto)
@@ -60,6 +68,16 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
                 UserId = user.Id,
                 Keywords = keywords
             };
+            if (questionToAddRequestDto.Image != null)
+            {
+                var imageLocalPath = await fileServices.StoreImageToLocalFolder(questionToAddRequestDto.Image);
+                var upludeResults = await cloudinaryServices.UploadImageToCloudinary(imageLocalPath);
+                question.Image = new Image()
+                {
+                    ImagePath = upludeResults.Item1,
+                    CloudinaryIdentifier = upludeResults.Item2,
+                };
+            }
 
             await questionRepository.AddAsync(question);
             await unitOfWork.SaveChangesAsync();
@@ -77,6 +95,10 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
             if (question.Status == QuestionStatus.Closed)
             {
                 throw new BadRequestException(QuestionExceptionMessages.CanNotDeleteOrEditClosedQuesiton);
+            }
+            if (question.Image != null)
+            {
+                await cloudinaryServices.DeleteImageFromCloudinary(question.Image.CloudinaryIdentifier);
             }
             questionRepository.Delete(question);
             await unitOfWork.SaveChangesAsync();

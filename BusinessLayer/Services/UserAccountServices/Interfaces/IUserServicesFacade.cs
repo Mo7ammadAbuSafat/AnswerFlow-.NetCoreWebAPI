@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.DTOs.QuestionDtos;
 using BusinessLayer.DTOs.UserDtos;
+using Microsoft.AspNetCore.Http;
 using PersistenceLayer.Enums;
 
 namespace BusinessLayer.Services.UserAccountServices.Interfaces
@@ -17,5 +18,8 @@ namespace BusinessLayer.Services.UserAccountServices.Interfaces
            int pageNumber,
            int pageSize,
            int userId);
+        Task ChangeProfilePictureAsync(int userId, IFormFile image);
+        Task DeleteProfilePictureAsync(int userId);
+        Task AddProfilePictureAsync(int userId, IFormFile image);
     }
 }

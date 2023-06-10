@@ -36,5 +36,9 @@
         public static string UserAlreadyHaveRole = "the user already have this role";
 
         public static string DontHavePermission = "you don't have permisstion for that";
+
+        public static string AlreadyHaveProfilePicture = "user already have profile picture";
+
+        public static string DoNotHaveProfilePicture = "user don't have profile picture";
     }
 }

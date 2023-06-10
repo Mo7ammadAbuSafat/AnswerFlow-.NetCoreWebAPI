@@ -6,6 +6,9 @@ using BusinessLayer.Services.BasedRepositoryServices.Implementations;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
 using BusinessLayer.Services.FollowingServices.Implementations;
 using BusinessLayer.Services.FollowingServices.Interfaces;
+using BusinessLayer.Services.GeneralServices;
+using BusinessLayer.Services.ImageServices.Implementations;
+using BusinessLayer.Services.ImageServices.Interfaces;
 using BusinessLayer.Services.QuestionServices.Implementations;
 using BusinessLayer.Services.QuestionServices.Interfaces;
 using BusinessLayer.Services.ReportServices.Implementations;
@@ -77,6 +80,7 @@ builder.Services.AddScoped<IAuthenticatedUserServices, AuthenticatedUserServices
 builder.Services.AddScoped<IUserInformationServices, UserInformationServices>();
 builder.Services.AddScoped<IUserPermissionsServices, UserPermissionsServices>();
 builder.Services.AddScoped<IUserRolesServices, UserRolesServices>();
+builder.Services.AddScoped<IUserProfilePictureServices, UserProfilePictureServices>();
 builder.Services.AddScoped<IUserServicesFacade, UserServicesFacade>();
 
 //StatisticsServices
@@ -84,6 +88,10 @@ builder.Services.AddScoped<IStatisticsServicesFacade, StatisticsServicesFacade>(
 builder.Services.AddScoped<IUserStatisticsServices, UserStatisticsServices>();
 builder.Services.AddScoped<IQuestionStatisticsServices, QuestionStatisticsServices>();
 builder.Services.AddScoped<IReportStatisticsServices, ReportStatisticsServices>();
+
+//ImageServices
+builder.Services.AddScoped<ICloudinaryServices, CloudinaryServices>();
+builder.Services.AddScoped<IFileServices, FileServices>();
 
 //Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -93,6 +101,7 @@ builder.Services.AddScoped<IQuestionReportRepository, QuestionReportRepository>(
 builder.Services.AddScoped<IAnswerReportRepository, AnswerReportRepository>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 
 builder.Services.AddHttpClient();
@@ -162,6 +171,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
 
 app.UseHsts();
 

@@ -44,7 +44,7 @@ namespace PresentationLayer.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<QuestionResponseDto>> AddNewQuestion([FromBody] QuestionRequestDto questionToAddRequestDto)
+        public async Task<ActionResult<QuestionResponseDto>> AddNewQuestion([FromForm] QuestionRequestDto questionToAddRequestDto)
         {
             var question = await questionServicesFacade.AddNewQuestionAsync(questionToAddRequestDto);
             return Ok(question);

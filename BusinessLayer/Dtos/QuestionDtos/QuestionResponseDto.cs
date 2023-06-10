@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.DTOs.AnswerDtos;
+using BusinessLayer.DTOs.ImageDtos;
 using BusinessLayer.DTOs.TagDtos;
 using BusinessLayer.DTOs.UserDtos;
 using BusinessLayer.DTOs.VoteDtos;
@@ -12,6 +13,7 @@ namespace BusinessLayer.DTOs.QuestionDtos
         public UserOverviewResponseDto User { get; set; }
         public string Title { get; set; }
         public string Body { get; set; }
+        public ImageResponseDto Image { get; set; }
         public DateTime CreationDate { get; set; }
         public ICollection<TagResponseDto> Tags { get; set; }
         public ICollection<UserOverviewResponseDto> QuestionSavers { get; set; }
