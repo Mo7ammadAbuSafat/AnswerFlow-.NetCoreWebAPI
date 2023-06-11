@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.DTOs.StatisticsDtos;
+using PersistenceLayer.StatisticsModels;
 
 namespace BusinessLayer.Services.StatisticsServices.Interfaces
 {
@@ -9,5 +10,6 @@ namespace BusinessLayer.Services.StatisticsServices.Interfaces
         Task<IEnumerable<string>> GetUserActivityCurrentYearStatisticAsync(int userId);
         Task<UsersStatisticsResponseDto> GetUsersStatisticsAsync();
         Task<UserStatisticsResponseDto> GetUserStatisticsAsync(int userId);
+        Task<IEnumerable<QuestionsPerMonth>> GetQuestionsPerMonthStatisticsAsync();
     }
 }

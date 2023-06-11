@@ -1,4 +1,5 @@
 ﻿using PersistenceLayer.Entities;
+using PersistenceLayer.StatisticsModels;
 
 namespace PersistenceLayer.Repositories.Interfaces
 {
@@ -8,7 +9,7 @@ namespace PersistenceLayer.Repositories.Interfaces
         void Delete(Question question);
         Task<IQueryable<Question>> GetIQueryableQuestions();
         Task<Question> GetQuestionByIdAsync(int questionId);
-
         Task<IQueryable<Question>> GetIQueryableQuestionsByKeywordsAsync(ICollection<string> keywordNames);
+        Task<IEnumerable<QuestionsPerMonth>> GetQuestionsPerMonthStatisticsAsync();
     }
 }

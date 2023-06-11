@@ -2,6 +2,7 @@
 using PersistenceLayer.DbContexts;
 using PersistenceLayer.Entities;
 using PersistenceLayer.Repositories.Interfaces;
+using PersistenceLayer.StatisticsModels;
 
 namespace PersistenceLayer.Repositories.Implementations
 {
@@ -73,6 +74,20 @@ namespace PersistenceLayer.Repositories.Implementations
                 .Include(c => c.Votes)
                 .ThenInclude(v => v.User)
                 .Include(c => c.QuestionSavers));
+        }
+
+        public async Task<IEnumerable<QuestionsPerMonth>> GetQuestionsPerMonthStatisticsAsync()
+        {
+            DateTime lastYear = DateTime.Now.AddYears(-1);
+            return await context.Questions.Where(q => q.CreationDate >= lastYear)
+                    .GroupBy(q => q.CreationDate.Month)
+                    .Select(g => new QuestionsPerMonth
+                    {
+                        Month = g.Key,
+                        NumOfQuestions = g.Count()
+                    })
+                    .OrderBy(g => g.Month)
+                    .ToListAsync();
         }
     }
 }

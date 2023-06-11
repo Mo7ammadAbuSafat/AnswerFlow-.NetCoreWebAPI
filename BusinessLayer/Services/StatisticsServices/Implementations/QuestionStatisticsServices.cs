@@ -2,6 +2,7 @@
 using BusinessLayer.Services.StatisticsServices.Interfaces;
 using PersistenceLayer.Enums;
 using PersistenceLayer.Repositories.Interfaces;
+using PersistenceLayer.StatisticsModels;
 
 namespace BusinessLayer.Services.StatisticsServices.Implementations
 {
@@ -25,6 +26,10 @@ namespace BusinessLayer.Services.StatisticsServices.Implementations
                 LastMonthQuestionsCount = questions.Where(q => q.CreationDate >= DateTime.Now.AddMonths(-1)).Count(),
             };
             return statistics;
+        }
+        public async Task<IEnumerable<QuestionsPerMonth>> GetQuestionsPerMonthStatisticsAsync()
+        {
+            return await questionRepository.GetQuestionsPerMonthStatisticsAsync();
         }
     }
 }

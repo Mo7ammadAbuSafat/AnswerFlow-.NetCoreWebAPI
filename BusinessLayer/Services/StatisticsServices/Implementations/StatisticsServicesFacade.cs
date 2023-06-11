@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.DTOs.StatisticsDtos;
 using BusinessLayer.Services.StatisticsServices.Interfaces;
+using PersistenceLayer.StatisticsModels;
 
 namespace BusinessLayer.Services.StatisticsServices.Implementations
 {
@@ -39,6 +40,11 @@ namespace BusinessLayer.Services.StatisticsServices.Implementations
         public async Task<ReportsStatisticsResponseDto> GetReportsStatisticsAsync()
         {
             return await reportStatisticsServices.GetReportsStatisticsAsync();
+        }
+
+        public async Task<IEnumerable<QuestionsPerMonth>> GetQuestionsPerMonthStatisticsAsync()
+        {
+            return await questionStatisticsServices.GetQuestionsPerMonthStatisticsAsync();
         }
 
     }
