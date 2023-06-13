@@ -18,7 +18,7 @@ namespace PersistenceLayer.DbContexts
         public DbSet<Image> Images { get; set; }
         public DbSet<ActivityDateView> ActivityDateView { get; set; }
         public DbSet<Keyword> Keywords { get; set; }
-
+        public DbSet<Notification> Notifications { get; set; }
 
         public AnswerFlowContext(DbContextOptions<AnswerFlowContext> options) : base(options) { }
 
@@ -106,6 +106,21 @@ namespace PersistenceLayer.DbContexts
             modelBuilder.Entity<Keyword>()
                     .HasIndex(e => e.name);
 
+            modelBuilder.Entity<Notification>()
+                    .HasOne(s => s.Question)
+                    .WithMany(g => g.Notifications)
+                    .HasForeignKey(s => s.QuestionId);
+
+            modelBuilder.Entity<Notification>()
+                   .HasOne(s => s.User)
+                   .WithMany(g => g.Notifications)
+                   .HasForeignKey(s => s.UserId);
+
+            modelBuilder.Entity<Notification>()
+                   .HasOne(s => s.CreatedByUser)
+                   .WithMany(g => g.CreatedNotifications)
+                   .HasForeignKey(s => s.CreatedByUserId);
+
             modelBuilder.Entity<User>().Property(u => u.About).IsRequired(false);
             modelBuilder.Entity<User>().Property(u => u.VerifiedDate).IsRequired(false);
             modelBuilder.Entity<User>().Property(u => u.ResetPasswordCode).IsRequired(false);
@@ -116,7 +131,7 @@ namespace PersistenceLayer.DbContexts
             modelBuilder.Entity<User>().Property(u => u.Email).HasColumnType("varchar(100)");
             modelBuilder.Entity<User>().Property(u => u.VerificationCode).HasColumnType("varchar(20)");
             modelBuilder.Entity<User>().Property(u => u.ResetPasswordCode).HasColumnType("varchar(20)");
-            modelBuilder.Entity<User>().Property(u => u.About).HasColumnType("varchar(200)");
+            modelBuilder.Entity<User>().Property(u => u.About).HasColumnType("varchar(1000)");
 
 
             modelBuilder.Entity<Tag>().Property(t => t.SourceLink).IsRequired(false);

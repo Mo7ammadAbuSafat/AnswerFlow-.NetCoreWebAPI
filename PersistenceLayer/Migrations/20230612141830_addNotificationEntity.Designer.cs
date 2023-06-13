@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PersistenceLayer.DbContexts;
 
@@ -11,9 +12,11 @@ using PersistenceLayer.DbContexts;
 namespace PersistenceLayer.Migrations
 {
     [DbContext(typeof(AnswerFlowContext))]
-    partial class AnswerFlowContextModelSnapshot : ModelSnapshot
+    [Migration("20230612141830_addNotificationEntity")]
+    partial class addNotificationEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,9 +193,6 @@ namespace PersistenceLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CreatedByUserId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
@@ -209,8 +209,6 @@ namespace PersistenceLayer.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedByUserId");
 
                     b.HasIndex("QuestionId");
 
@@ -583,10 +581,6 @@ namespace PersistenceLayer.Migrations
 
             modelBuilder.Entity("PersistenceLayer.Entities.Notification", b =>
                 {
-                    b.HasOne("PersistenceLayer.Entities.User", "CreatedByUser")
-                        .WithMany("CreatedNotifications")
-                        .HasForeignKey("CreatedByUserId");
-
                     b.HasOne("PersistenceLayer.Entities.Question", "Question")
                         .WithMany("Notifications")
                         .HasForeignKey("QuestionId");
@@ -596,8 +590,6 @@ namespace PersistenceLayer.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("CreatedByUser");
 
                     b.Navigation("Question");
 
@@ -776,8 +768,6 @@ namespace PersistenceLayer.Migrations
                     b.Navigation("AnswerVotes");
 
                     b.Navigation("Answers");
-
-                    b.Navigation("CreatedNotifications");
 
                     b.Navigation("Notifications");
 

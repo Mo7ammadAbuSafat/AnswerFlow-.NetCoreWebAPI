@@ -10,6 +10,7 @@ using BusinessLayer.Services.QuestionServices.Interfaces;
 using PersistenceLayer.Entities;
 using PersistenceLayer.Enums;
 using PersistenceLayer.Repositories.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace BusinessLayer.Services.QuestionServices.Implementations
 {
@@ -58,7 +59,8 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
             }
             questionToAddRequestDto.TagsNames = questionToAddRequestDto.TagsNames.Select(t => t.ToLower()).ToList();
             var tags = await tagRepository.GetTagsByNamesAsync(questionToAddRequestDto.TagsNames);
-            var keywords = await keywordExtractorServices.GetKeywordsAsync(questionToAddRequestDto.Title + " " + questionToAddRequestDto.Body);
+            var bodyWithOutHtmlFormat = Regex.Replace(questionToAddRequestDto.Body, "<.*?>", string.Empty);
+            var keywords = await keywordExtractorServices.GetKeywordsAsync(questionToAddRequestDto.Title + " " + bodyWithOutHtmlFormat);
             var question = new Question()
             {
                 Title = questionToAddRequestDto.Title,
@@ -72,7 +74,7 @@ namespace BusinessLayer.Services.QuestionServices.Implementations
             {
                 var imageLocalPath = await fileServices.StoreImageToLocalFolder(questionToAddRequestDto.Image);
                 var upludeResults = await cloudinaryServices.UploadImageToCloudinary(imageLocalPath);
-                question.Image = new Image()
+                question.Image = new PersistenceLayer.Entities.Image()
                 {
                     ImagePath = upludeResults.Item1,
                     CloudinaryIdentifier = upludeResults.Item2,

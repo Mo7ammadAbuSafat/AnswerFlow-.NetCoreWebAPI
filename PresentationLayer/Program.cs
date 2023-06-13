@@ -9,6 +9,8 @@ using BusinessLayer.Services.FollowingServices.Interfaces;
 using BusinessLayer.Services.GeneralServices;
 using BusinessLayer.Services.ImageServices.Implementations;
 using BusinessLayer.Services.ImageServices.Interfaces;
+using BusinessLayer.Services.NotificationServices.Implementations;
+using BusinessLayer.Services.NotificationServices.Interfaces;
 using BusinessLayer.Services.QuestionServices.Implementations;
 using BusinessLayer.Services.QuestionServices.Interfaces;
 using BusinessLayer.Services.ReportServices.Implementations;
@@ -93,6 +95,9 @@ builder.Services.AddScoped<IReportStatisticsServices, ReportStatisticsServices>(
 builder.Services.AddScoped<ICloudinaryServices, CloudinaryServices>();
 builder.Services.AddScoped<IFileServices, FileServices>();
 
+//NotificationServices
+builder.Services.AddScoped<INotificationServices, NotificationServices>();
+
 //Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
@@ -101,6 +106,7 @@ builder.Services.AddScoped<IQuestionReportRepository, QuestionReportRepository>(
 builder.Services.AddScoped<IAnswerReportRepository, AnswerReportRepository>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 
 
 
@@ -120,7 +126,7 @@ builder.Services.AddDbContext<AnswerFlowContext>(options => options.UseSqlServer
 builder.Services.AddControllers(options =>
 {
     options.ReturnHttpNotAcceptable = true;
-}).AddNewtonsoftJson()
+}).AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
 .AddXmlDataContractSerializerFormatters();
 
 builder.Services.AddEndpointsApiExplorer();

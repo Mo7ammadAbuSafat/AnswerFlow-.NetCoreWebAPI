@@ -24,6 +24,14 @@ namespace PresentationLayer.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        [HttpGet("questions-per-month")]
+        public async Task<IActionResult> GetQuestionsPerMonthStatistics()
+        {
+            var statistics = await statisticsServiceFacade.GetQuestionsPerMonthStatisticsAsync();
+            return Ok(statistics);
+        }
+
+        [Authorize(Roles = "Admin")]
         [HttpGet("reports")]
         public async Task<ActionResult<ReportsStatisticsResponseDto>> GetReportsStatistics()
         {

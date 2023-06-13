@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PersistenceLayer.DbContexts;
 
@@ -11,9 +12,11 @@ using PersistenceLayer.DbContexts;
 namespace PersistenceLayer.Migrations
 {
     [DbContext(typeof(AnswerFlowContext))]
-    partial class AnswerFlowContextModelSnapshot : ModelSnapshot
+    [Migration("20230612005446_increaseAboutColumnSizeInUserEntity")]
+    partial class increaseAboutColumnSizeInUserEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,43 +183,6 @@ namespace PersistenceLayer.Migrations
                     b.HasIndex("name");
 
                     b.ToTable("Keywords");
-                });
-
-            modelBuilder.Entity("PersistenceLayer.Entities.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CreatedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedByUserId");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("PersistenceLayer.Entities.Question", b =>
@@ -581,29 +547,6 @@ namespace PersistenceLayer.Migrations
                     b.Navigation("Question");
                 });
 
-            modelBuilder.Entity("PersistenceLayer.Entities.Notification", b =>
-                {
-                    b.HasOne("PersistenceLayer.Entities.User", "CreatedByUser")
-                        .WithMany("CreatedNotifications")
-                        .HasForeignKey("CreatedByUserId");
-
-                    b.HasOne("PersistenceLayer.Entities.Question", "Question")
-                        .WithMany("Notifications")
-                        .HasForeignKey("QuestionId");
-
-                    b.HasOne("PersistenceLayer.Entities.User", "User")
-                        .WithMany("Notifications")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedByUser");
-
-                    b.Navigation("Question");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("PersistenceLayer.Entities.Question", b =>
                 {
                     b.HasOne("PersistenceLayer.Entities.Image", "Image")
@@ -762,8 +705,6 @@ namespace PersistenceLayer.Migrations
 
                     b.Navigation("Keywords");
 
-                    b.Navigation("Notifications");
-
                     b.Navigation("Reports");
 
                     b.Navigation("Votes");
@@ -776,10 +717,6 @@ namespace PersistenceLayer.Migrations
                     b.Navigation("AnswerVotes");
 
                     b.Navigation("Answers");
-
-                    b.Navigation("CreatedNotifications");
-
-                    b.Navigation("Notifications");
 
                     b.Navigation("QuestionReports");
 
