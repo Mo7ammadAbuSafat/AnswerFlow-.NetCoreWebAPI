@@ -4,8 +4,10 @@ using BusinessLayer.ExceptionMessages;
 using BusinessLayer.Exceptions;
 using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
+using BusinessLayer.Services.NotificationServices.Interfaces;
 using BusinessLayer.Services.VoteServices.Interfaces;
 using PersistenceLayer.Entities;
+using PersistenceLayer.Enums;
 using PersistenceLayer.Repositories.Interfaces;
 
 namespace BusinessLayer.Services.VoteServices.Implementations
@@ -16,17 +18,20 @@ namespace BusinessLayer.Services.VoteServices.Implementations
         private readonly IMapper mapper;
         private readonly IBasedRepositoryServices basedRepositoryServices;
         private readonly IAuthenticatedUserServices authenticatedUserServices;
+        private readonly INotificationServices notificationServices;
 
         public AnswerVoteServices(
             IUnitOfWork unitOfWork,
             IMapper mapper,
             IBasedRepositoryServices basedRepositoryServices,
-            IAuthenticatedUserServices authenticatedUserServices)
+            IAuthenticatedUserServices authenticatedUserServices,
+            INotificationServices notificationServices)
         {
             this.unitOfWork = unitOfWork;
             this.basedRepositoryServices = basedRepositoryServices;
             this.mapper = mapper;
             this.authenticatedUserServices = authenticatedUserServices;
+            this.notificationServices = notificationServices;
         }
 
         public async Task<IEnumerable<VoteResponseDto>> GetVotesForAnswerAsync(int questionId, int answerId)
@@ -63,6 +68,7 @@ namespace BusinessLayer.Services.VoteServices.Implementations
                 CreationDate = DateTime.Now
             };
             answer.Votes.Add(vote);
+            await notificationServices.AddNotificationAsync(answer.UserId, userId, questionId, NotificationType.VoteAnswer);
             await unitOfWork.SaveChangesAsync();
             return mapper.Map<VoteResponseDto>(vote);
         }

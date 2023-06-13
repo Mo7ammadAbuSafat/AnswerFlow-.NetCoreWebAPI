@@ -32,8 +32,6 @@ namespace PresentationLayer.Controllers
             return Ok(user);
         }
 
-
-
         [Authorize]
         [HttpPut("{userId}/change-password")]
         public async Task<IActionResult> ChangePassword([FromRoute] int userId, [FromBody] ChangePasswordRequestDto resetPasswordDto)

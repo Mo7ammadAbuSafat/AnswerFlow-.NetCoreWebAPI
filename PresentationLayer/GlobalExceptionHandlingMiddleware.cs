@@ -26,7 +26,7 @@ namespace PresentationLayer
 
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            Logger.LogError(exception, exception.Message);
+            Logger.LogError(exception, exception.Message, exception.StackTrace);
             HttpStatusCode statusCode;
             string massege = exception.Message;
 
@@ -43,6 +43,7 @@ namespace PresentationLayer
             else if (exceptionType == typeof(UnauthorizedException))
             {
                 statusCode = HttpStatusCode.Unauthorized;
+                massege = "Unothorized";
             }
             else
             {

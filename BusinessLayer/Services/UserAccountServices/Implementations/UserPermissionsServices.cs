@@ -1,6 +1,8 @@
 ﻿using BusinessLayer.ExceptionMessages;
 using BusinessLayer.Exceptions;
+using BusinessLayer.Services.AuthenticationServices.Interfaces;
 using BusinessLayer.Services.BasedRepositoryServices.Interfaces;
+using BusinessLayer.Services.NotificationServices.Interfaces;
 using BusinessLayer.Services.UserAccountServices.Interfaces;
 using PersistenceLayer.Enums;
 using PersistenceLayer.Repositories.Interfaces;
@@ -12,15 +14,24 @@ namespace BusinessLayer.Services.UserAccountServices.Implementations
 
         private readonly IUnitOfWork unitOfWork;
         private readonly IBasedRepositoryServices basedRepositoryServices;
+        private readonly IAuthenticatedUserServices authenticatedUserServices;
+        private readonly INotificationServices notificationServices;
 
-        public UserPermissionsServices(IUnitOfWork unitOfWork, IBasedRepositoryServices basedRepositoryServices)
+        public UserPermissionsServices(
+            IUnitOfWork unitOfWork,
+            IBasedRepositoryServices basedRepositoryServices,
+            IAuthenticatedUserServices authenticatedUserServices,
+            INotificationServices notificationServices)
         {
             this.unitOfWork = unitOfWork;
             this.basedRepositoryServices = basedRepositoryServices;
+            this.authenticatedUserServices = authenticatedUserServices;
+            this.notificationServices = notificationServices;
         }
 
         public async Task UpdatePostingPermisstionAsync(int userId, bool newValue)
         {
+            var adminId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
             var user = await basedRepositoryServices.GetNonNullUserByIdAsync(userId);
             if (user.IsBlockedFromPosting == true && newValue == true)
             {
@@ -35,6 +46,10 @@ namespace BusinessLayer.Services.UserAccountServices.Implementations
                 throw new BadRequestException(UserExceptionMessages.CanNotBlock);
             }
             user.IsBlockedFromPosting = newValue;
+            if (user.IsBlockedFromPosting == true)
+            {
+                await notificationServices.AddNotificationAsync(userId, adminId, null, NotificationType.Block);
+            }
             await unitOfWork.SaveChangesAsync();
         }
 
