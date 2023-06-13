@@ -37,7 +37,7 @@ namespace BusinessLayer.Services.NotificationServices.Implementations
         {
             if (createdByUserId == userId) { return; }
             var authenticatedUserId = authenticatedUserServices.GetAuthenticatedUserIdAsync();
-            if (authenticatedUserId != userId)
+            if (authenticatedUserId != createdByUserId)
             {
                 throw new UnauthorizedException();
             }
