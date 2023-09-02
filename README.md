@@ -17,7 +17,11 @@
 
 ## Description
 
-AnswerFlow is an online platform aimed at fostering a community among students and graduates of Computer Systems Engineering at a specific university. In response to the ever-evolving fields of college subjects, programming, and technological development, AnswerFlow serves as a knowledge-sharing refuge, saving time and money while breaking geographical barriers. This project addresses common obstacles like the lack of confidence in general Q&A applications, catering specifically to Palestinian programmers and university students. It offers a free alternative to paid apps, prioritizes user-friendly features, and encourages active participation, all within an agile development framework to streamline the platform's efficiency. AnswerFlow's core objectives include facilitating collaborative knowledge exchange, reducing the time and effort needed to find accurate answers, and creating an interactive space for learning and experience sharing.
+AnswerFlow is an online platform aimed at fostering a community among students and graduates of Computer Systems Engineering at a specific university. In response to the ever-evolving fields of college subjects, programming, and technological development, AnswerFlow serves as a knowledge-sharing refuge, saving time and money while breaking geographical barriers. 
+
+This project addresses common obstacles like the lack of confidence in general Q&A applications, catering specifically to Palestinian programmers and university students. It offers a free alternative to paid apps, prioritizes user-friendly features, and encourages active participation, all within an agile development framework to streamline the platform's efficiency. 
+
+AnswerFlow's core objectives include facilitating collaborative knowledge exchange, reducing the time and effort needed to find accurate answers, and creating an interactive space for learning and experience sharing.
 
 See the full analysis for the project [AnswerFlow Analysis Doc](https://drive.google.com/file/d/1FzbiNRBBJ7my5vH__nT4r5XpCum999_r/view?usp=sharing).
 
